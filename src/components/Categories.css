@@ -1,0 +1,74 @@
+.ct-content {
+    display: flex;
+    overflow-x: scroll;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: left;
+    width: 100%;
+    height: auto;
+    border-radius: 10px 10px 0 0;
+    
+}
+
+.ct-content::-webkit-scrollbar {
+    display: none;
+}
+
+.ct-card {
+    
+    min-width: calc(90px + (170 - 90) * ((100vw - 270px) / (1200 - 270)));
+    height: calc(90px + (170 - 90) * ((100vw - 270px) / (1200 - 270)));
+    margin-top: 10px;
+    margin-bottom: calc(18px + (50 - 18) * ((100vw - 270px) / (1200 - 270)));
+    margin-right: calc(-18px + (10 + 18) * ((100vw - 270px) / (1200 - 270)));
+}
+
+.ct-img {
+    
+    height: calc(40px + (80 - 40) * ((100vw - 270px) / (1200 - 270)));
+    object-fit: contain;
+    margin: 0 auto;
+    padding-top: calc(12px + (22 - 12) * ((100vw - 270px) / (1200 - 270)));
+
+    
+}
+
+.ct-text {
+    margin: 0.5em;
+    font: calc(12px + (26 - 12) * ((100vw - 270px) / (1200 - 270)))/calc(12px + (30 - 12) * ((100vw - 270px) / (1200 - 270))) Arial;
+    text-align: center;
+}
+
+.ct-chip {
+    word-wrap: normal;
+    
+}
+.ct-circle {
+    
+    margin:0 auto;
+    width:70%;
+    height:70%;
+    position:relative;
+    border-radius: 100%;
+    border: 2px solid #b8b8b8;
+    display: flex;
+    flex-direction: column;
+    
+    
+}
+
+.ct-chip-div {
+    min-width: 2900em;
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #4d4d4d;
+    padding-left: 10px;
+    
+
+}
+ion-chip{
+    background-color: #a7c565 !important; 
+    color: #fff 
+}
+

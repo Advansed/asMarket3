@@ -1,0 +1,131 @@
+.bs-icon {
+    margin: 0.5em;
+}
+
+.bs-red {
+    position: absolute;
+    top: 0;
+    right: 1.5em;
+    color: red;
+    z-index: 800;
+    font: bold;
+}
+.btn{
+    background-color: white;
+    margin-top: 0 auto;
+    width: 100%;
+    bottom: 1em;
+    position: absolute;
+    
+}
+a{
+    font-size: 14px;
+}
+.b-size-btnx{
+    font-size: calc(14px + (36 - 14) * ((100vw - 270px) / (1200 - 270)));
+}
+.footer{
+    position:fixed;
+   background-color: #f0f0f0;
+   bottom:0px;
+   height: calc(100px + (200 - 100) * ((100vw - 270px) / (1200 - 270))) !important;
+   width:100%;
+   border-radius: 15px 15px 0 0;
+   
+}
+.footer2{
+    height: 60%;
+    vertical-align: center;
+    padding-top: calc(5px + (30 - 5) * ((100vw - 270px) / (1200 - 270)));
+}
+.basketimg { 
+        
+    position: relative;
+    width: 45px !important;
+    height: 45px !important;
+    padding: 0;
+    text-align: center;
+}
+.basketnameofgood{
+    font-size: calc(12px + (24 - 12) * ((100vw - 270px) / (1200 - 270)));
+   
+}
+.basketimg img{
+    position: absolute;
+    left:50%;
+    top:50%;
+    transform: translate(-50%, -50%) ;
+    max-width:calc(30px + (100 - 30) * ((100vw - 270px) / (1200 - 270)));
+    max-height: calc(30px + (100 - 30) * ((100vw - 270px) / (1200 - 270))) ;
+    width: auto;
+    height: auto;
+}
+.right{
+    margin-right: 1.5rem;
+    text-align: right;
+}
+.left{
+    margin-left: 1rem;
+}
+.orange-clr-fnt{
+    color: #FF8C00;
+    font-size: calc(12px + (24 - 12) * ((100vw - 270px) / (1200 - 270)));
+}
+.white-bg{
+    background-color: white;
+}
+.orange-clr-bg{
+    color: white;
+    background-color: #FF8C00;
+    width: calc(230px + (1000 - 230) * ((100vw - 270px) / (1200 - 270))) !important;
+    height: calc(40px + (100 - 40) * ((100vw - 270px) / (1200 - 270))) !important;
+    font-size: calc(12px + (24 - 12) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 10px 10px 10px 10px;
+}
+.content{
+    width:100%;
+    position:relative ;
+    margin-top: 15%;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    margin-bottom: 67%;
+}
+.header{
+    margin-top: calc(40px + (70 - 40) * ((100vw - 270px) / (1200 - 270)));
+    position: absolute !important;
+    vertical-align: middle;
+}
+.header-font{
+    font-size: calc(14px + (26 - 14) * ((100vw - 270px) / (1200 - 270)));
+    margin-bottom: calc(2px + (4 - 2) * ((100vw - 270px) / (1200 - 270)));
+}
+.header-font2{
+    font-size: calc(12px + (26 - 14) * ((100vw - 270px) / (1200 - 270)));
+    margin-bottom: calc(2px + (4 - 2) * ((100vw - 270px) / (1200 - 270)));
+}
+.text-align{
+    
+    margin-top: calc(-12px + (2 + 12) * ((100vw - 270px) / (1200 - 270)));
+    text-align: center;
+    margin-left: calc(10px + (15 + 10) * ((100vw - 270px) / (1200 - 270)));
+    
+}
+.bs-btn{
+    width: calc(5px + (40 - 5) * ((100vw - 270px) / (1200 - 270)));
+    height: calc(5px + (40 - 5) * ((100vw - 270px) / (1200 - 270)));
+    font-size: calc(12px + (26 - 14) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 50%;
+    border: 1px solid #FF8C00;
+    color: #FF8C00;
+    background-color: rgba(255, 255, 255, 0) !important;
+    text-align: center;
+    margin: 0 auto;
+}
+.bs-quan{
+    font-size: calc(12px + (26 - 12) * ((100vw - 270px) / (1200 - 270))) !important;;
+}
+.bs-size-btn{
+    width: calc(18px + (40 - 18) * ((100vw - 270px) / (1200 - 270))) !important;
+    height: calc(18px + (40 - 18) * ((100vw - 270px) / (1200 - 270))) !important;
+    font-size: calc(12px + (26 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
+}

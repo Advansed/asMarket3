@@ -1,0 +1,122 @@
+
+:root {
+    --ion-color-gcardclr: #FF8C00;
+ 
+  }
+
+ @media screen and (max-width: 2900px) {
+    .f-card { 
+        
+        position: relative;
+        width: 250px !important;
+        height: 200px !important;
+        padding: 0;
+        text-align: center;
+    }
+    .f-card img{
+        position: absolute;
+        left:50%;
+        top:50%;
+        transform: translate(-50%, -50%) ;
+        max-width:100%;
+        max-height: 100% ;
+        width: auto;
+        height: auto;
+    }
+    .f-content {
+        background-color: #ecececbe !important; 
+        margin-top: 1em;
+        width: 100%;
+        height: 100%;
+        border-radius: 15px 15px 0 0;
+        
+        
+    }   
+    .f-price {
+        /* margin-left: 1em; */
+        
+        font-size: 20px !important;
+        color: #FF8C00;
+      }
+    
+    .gc-div-1{
+        border: 0;
+        padding-top: 3px;
+        font-size: var(--sizeFontLg);
+        font-weight: 700;
+        text-align: center;
+       
+    }
+
+    .gc-div-2{
+
+        height: 40%;
+        color: darkgray;
+        font-size: 14px;
+        text-align: center;
+        
+
+    }
+    
+
+    .gc-card {
+        width: 760px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .gc-text-2 {
+        line-height: 3;
+        font: 18px/22px Sans;
+        margin-left: 5%;
+        margin-right: 5%;
+        text-align: justify;
+    }
+    .gc-btn{
+        border-color: 1px solid #FF8C00 !important;
+        color: #FF8C00;
+        background-color: #ecececbe !important;
+
+    }
+    .gc-btn-2{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid #FF8C00;
+    }
+}
+ion-item{
+    background-color: #e6e6e6e8 !important; 
+    
+}
+ion-chip{
+    background-color: #ecececbe !important;
+    color: #31ac26;
+    
+}
+
+@media screen and (max-width: 500px) {
+    .f-card { 
+        width: 95%;
+        height: auto; 
+        margin-left: auto; 
+        margin-right: auto;
+        margin-top: 0;
+    }
+    
+    .f-price {
+        /* margin-left: 1em; */
+        margin-top: 0.3em;
+        font: 16px Montserrat_bold;
+      }
+    
+    .gc-card {
+        width: 95%;
+    }
+}
+.ion-color-gcardclr {
+    --ion-color: var(--ion-color-gcardclr);
+
+
+  }
+  

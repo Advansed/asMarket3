@@ -1,0 +1,285 @@
+
+.body{
+    margin: 0;
+    margin-top: 3%;
+    padding: 0;
+    height: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.box{
+
+    width: calc(260px + (700 - 260) * ((100vw - 270px) / (1200 - 270)));
+    height: calc(140px + (350 - 140) * ((100vw - 270px) / (1200 - 270)));
+    margin: 0 auto;
+    margin-top: 0.5em;
+}
+.slider{
+    display: flex;
+    width: calc(260px + (700 - 260) * ((100vw - 270px) / (1200 - 270)));
+    height: calc(140px + (350 - 140) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 15px;
+    
+    margin-right: 1em;
+    
+}
+
+.slides input{
+    display: none;
+}
+
+.sl-img{
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    margin-top: -20%;
+
+}
+.discountsliderbox{
+    
+    height: calc(110px + (370 - 120) * ((100vw - 270px) / (1200 - 270)));
+    
+    padding-top:  calc(3px + (10 - 3) * ((100vw - 270px) / (1200 - 270)));
+    padding-left: calc(3px + (10 - 3) * ((100vw - 270px) / (1200 - 270)));
+    margin-bottom: calc(5px + (10 - 5) * ((100vw - 270px) / (1200 - 270)));
+}
+.discountscrollbar
+{
+    padding:1em;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    display: flex;
+    -webkit-scrollbar-display: none;
+    -webkit-overflow-scrolling: touch;
+}
+.discountbox1{
+    flex: 0 0 auto;
+    background-color: #f48711;
+    min-height: calc(90px + (320 - 90) * ((100vw - 270px) / (1200 - 270)));
+    min-width: calc(80px + (300 - 80) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 10px; 
+    margin-right: calc(6px + (15 - 6) * ((100vw - 270px) / (1200 - 270)));
+    padding-top:3%;
+    padding-left: 3%;
+    
+}
+.discountbox2{
+    flex: 0 0 auto;
+    background-color: #dab814;
+    min-height: calc(90px + (320 - 90) * ((100vw - 270px) / (1200 - 270)));
+    min-width: calc(80px + (300 - 80) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 10px; 
+    margin-right: calc(6px + (15 - 6) * ((100vw - 270px) / (1200 - 270)));;
+    padding-top:3%;
+    padding-left: 3%;
+}
+.discountbox3{
+    flex: 0 0 auto;
+    background-color: #efd00c;
+    min-height: calc(90px + (320 - 90) * ((100vw - 270px) / (1200 - 270)));
+    min-width: calc(80px + (300 - 80) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 10px;
+    margin-right: calc(6px + (15 - 6) * ((100vw - 270px) / (1200 - 270)));;
+    padding-top:3%;
+    padding-left: 3%; 
+}
+.discountbox4{
+    flex: 0 0 auto;
+    background-color: #018baf;
+    min-height: calc(90px + (320 - 90) * ((100vw - 270px) / (1200 - 270)));
+    min-width: calc(80px + (300 - 80) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 10px; 
+    margin-right: calc(6px + (15 - 6) * ((100vw - 270px) / (1200 - 270)));;
+    padding-top:3%;
+    padding-left: 3%;
+}
+.discountbox5{
+    flex: 0 0 auto;
+    background-color: #35b4c2;
+    min-height: calc(90px + (320 - 90) * ((100vw - 270px) / (1200 - 270)));
+    min-width: calc(80px + (300 - 80) * ((100vw - 270px) / (1200 - 270)));
+    border-radius: 10px;
+    margin-right:calc(6px + (15 - 6) * ((100vw - 270px) / (1200 - 270)));;
+    padding-top:3%;
+    padding-left: 3%; 
+}
+.boxcolor{
+    font-size: calc(14px + (30 - 14) * ((100vw - 270px) / (1200 - 270)));
+    text-align: left;
+    color: white;
+
+}
+.bestchoice{
+    height: 25%;
+    background-color: white;
+}
+h2{
+    margin-left: 1.2em;
+}
+
+ion-slide{
+    width: 100% !important;
+    min-height: 150% !important;
+}
+@media screen and (max-width: 2900px) {
+    .cr-content {
+        display: flex;
+        overflow-x: scroll;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: left;
+    }   
+
+    .cr-content::-webkit-scrollbar {
+        display: none;
+    }
+
+    .cr-card {
+        width: 200px;
+        height: 100px;
+        position: relative;
+    }
+    .cr-title { 
+        margin-top: 1em;
+        margin-left: 1em;
+        color: white;
+        font: bold 16px/12px Arial;
+    }   
+    
+    .cr-subtitle { 
+        margin-top: 0.5em;
+        margin-left: 1em;
+        color: white;
+        font: 12px/10px Arial;
+    }   
+    
+    .cr-img {
+        display: inline;
+        position: absolute;
+        width: 100px;
+        height: 25px;
+        bottom: 0.5em;
+        right: 0.5em;
+    }
+
+    
+    ion-button {
+        --text-decoration: none; 
+        text-transform: none;
+    }
+
+    ion-segment-button {
+        min-width: auto !important;
+        font: 10px Arial;
+    }
+    
+    hr{
+        width: 96%;
+        position: relative;
+
+        left: 2%;
+    }
+    
+}
+
+.ct-content1 {
+    display: flex;
+    overflow-x: scroll;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: left;
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    
+}
+
+.ct-content1::-webkit-scrollbar {
+    display: none;
+}
+.circle1 {
+    
+    margin:0 auto;
+    width:70%;
+    height:70%;
+    position:relative;
+    border-radius: 100%;
+    border: 2px solid #b8b8b8;
+    display: flex;
+    flex-direction: column;
+    
+    
+}
+.ct-card1 {
+    width: 100px;
+    min-width: 100px;
+    height: auto;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.ct-img1 {
+    
+    height: 50px;
+    object-fit: contain;
+    margin: 0 auto;
+    padding-top: 10px;
+
+    
+}
+
+.ct-text1 {
+    margin: 0.5em;
+    font: 12px/12px Arial;
+    text-align: center;
+}
+
+.ct-chip1 {
+    word-wrap: normal;
+    
+}
+.ct-circle1 {
+    
+    margin:0 auto;
+    width:70%;
+    height:70%;
+    position:relative;
+    border-radius: 100%;
+    border: 2px solid #b8b8b8;
+    display: flex;
+    flex-direction: column;
+    
+    
+}
+
+.ct-chip-div1 {
+    min-width: 2900em;
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #4d4d4d;
+    padding-left: 10px;
+    
+
+}
+ion-chip{
+    background-color: #a7c565 !important; 
+    color: #fff 
+}
+
+
+
+
+@media screen and (max-width: 500px) {
+    .cr-card {
+        width: 45%;
+        min-width: 45%;
+        height: 90px;
+    }
+
+    .cr-img {
+        display: none;
+    }
+}
+  
