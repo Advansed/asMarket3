@@ -124,22 +124,13 @@ export function Action():JSX.Element {
     }
 
     return <>
-            <div className="discountsliderbox">
-            <div className="discountscrollbar">
-                <div className="discountbox1"><b className="boxcolor">Акция 1</b></div>
-                <div className="discountbox2"><b className="boxcolor">Акция 2</b></div>
-                <div className="discountbox3"><b className="boxcolor">Акция 3</b></div>
-                <div className="discountbox4"><b className="boxcolor">Акция 4</b></div>
-                <div className="discountbox5"><b className="boxcolor">Акция 5</b></div>
-            </div>
-        </div>
-        <div className="ct-content">
-            { elem }
-        </div>
-        <div className="ct-content">
-            <div className="ct-chip-div"> 
-                { items }
-            </div>
+        <div>
+            <iframe src="https://samolet.ru/purchase/family/?utm_source=domclick_media&utm_medium=cpm&utm_campaign=domclick_servisnyj_blok_vo_2_ekrane_13_samoletgroup_static_realty_special_rf_25~nzbkmzfh#1-8" 
+                width = "100%"
+                height = { window.screen.height }
+            >
+                Ваш браузер не поддерживает плавающие фреймы!
+            </iframe>
         </div>
     </>
 

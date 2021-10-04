@@ -223,10 +223,10 @@ function  delBasket(Код){
       let sumtotal=0;
       sumtotal=sum+delivery;
 
-      items = <>
-        
+      return <>
+        <div>
           <IonGrid className="w-100 header">
-              <IonRow className="m-top">
+              <IonRow>
                 <IonCol size="1">
                   <button 
                       onClick = {()=>{
@@ -241,8 +241,7 @@ function  delBasket(Код){
 > 
                     <h4 className="header-font"><b>Корзина</b></h4>
                   </button>
-                </IonCol> 
-                
+                </IonCol>                
                 <IonCol size="5">
                   <button  className="header btn"
                       onClick = {()=>{
@@ -255,11 +254,10 @@ function  delBasket(Код){
                 </IonCol> 
               </IonRow>        
             </IonGrid>
-         
+        </div>            
+        
           <div className="content">
-            <div className="b-content w-100 h-80 ">
               { items }
-            </div>
           </div>
           <div className="footer">
             <div className="footer2 ">
@@ -296,8 +294,6 @@ function  delBasket(Код){
           </div>
         
        </>
-    
-      return items
   }
 
   export function   count(info){

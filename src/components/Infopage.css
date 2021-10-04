@@ -1,0 +1,60 @@
+.ip-div-1 {
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 1.5em;
+}
+
+.ip-div-2 {
+    margin-top: 1em;
+}
+.info-header{
+    text-align: center;
+    width: 50%;
+}
+.info-header h3{
+    font-size: 20px;
+    border-bottom: 3px solid #FF8C00;
+    
+    
+}
+.info-content{
+    margin: 0 auto;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+}
+.info-content2{
+    margin: 0 auto;
+    font-size: 15px;
+    
+    color: rgb(110, 110, 110) !important; 
+    margin-bottom: 1em;
+}
+details{
+    border-bottom: 1px solid rgb(219, 219, 219);
+    width: 90%;
+    margin: 0 auto;
+}
+details summary{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600 !important;
+}
+
+details summary::-webkit-details-marker {
+    display: none
+  }
+  details > summary {
+    list-style: none;
+  }
+  details summary:before {
+    content: '\002B';
+    font-weight: 400;
+    font-size: 25px;
+    margin-top: -7px;
+    margin-left: 86%;
+    position: absolute;
+    
+  }
+  details[open] summary:before {
+    content: '\00D7';
+  }

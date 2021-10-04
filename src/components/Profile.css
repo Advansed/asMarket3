@@ -1,0 +1,190 @@
+:root {
+    --ion-placeholder-color: #FF8C00;
+ 
+  }
+@media screen and (max-width: 2900px) {
+    .pr-card {
+        width: 90%;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .pr-container {
+
+    }
+    .pr-img {
+        width:  8em;
+        height: 6em;
+    }
+    .op-icon {
+        width:      1.8em;
+        height:     1.8em;
+    }
+    .op-header{
+        background-color: #FF8C00 !important;
+    }
+    .op-text-2 {
+        font:       13px/15px Arial;
+    } 
+    .op-thumb {
+        height: 2em;
+        width: 2em;
+        background-color:blue;
+        border-radius: 15%;
+    }
+    .op-thumb1 {
+        height: 2em;
+        width: 2em;
+        background-color:red;
+        border-radius: 15%;
+    }
+    .op-thumb2 {
+        height: 2em;
+        width: 2em;
+        background-color:green;
+        border-radius: 15%;
+    }
+    .op-thumb3 {
+        height: 2em;
+        width: 2em;
+        background-color:orange;
+        border-radius: 15%;
+    }
+    .op-icon {
+        width: 80%;
+        height: 80%;
+        margin-left: 10%;
+        margin-top: 10%;
+        color: white;
+    }
+    .op-item {
+       /* / height: 2em; */
+    }
+    
+    .p-card { 
+        
+        position: relative;
+        width: 150px !important;
+        height: 150px !important;
+        padding: 0;
+        text-align: center;
+        margin: 0 auto;
+        border-radius: 50%;
+        border: 3px solid #acacac; 
+        margin-bottom: 1em;
+    }
+    .p-card img{
+        position: absolute;
+        left:50%;
+        top:50%;
+        transform: translate(-50%, -50%) ;
+        max-width:100%;
+        max-height: 100% ;
+        width: auto;
+        height: auto;
+        border-radius: 50%;
+    }
+    .btn-add-photo{
+        position: relative;
+        width: 40px;
+        height: 40px ;
+        margin-top: 110px !important;
+        margin-left: 110px !important;
+        border-radius: 50%;
+        border: 1px solid #FF8C00;
+        background-color: #FF8C00;
+    }
+    .pr-btn{
+        color: white !important;
+        position: absolute;
+        left:48%;
+        top:40%;
+        transform: translate(-50%, -50%) ;
+        max-width:300%;
+        max-height: 300% ;
+
+    }
+    .pr-btn2{
+        color: black !important;
+    }
+    .pr-header{
+        text-align: center;
+        margin-left: -15%;
+        margin-top: -3%;
+    }
+    .orange-clr-bg{
+        color: white;
+        background-color: #FF8C00;
+        width: 85%;
+        height: 3rem;
+        border-radius: 15px 15px 15px 15px;
+    
+    }
+    .btn-r{
+        background-color: white ;
+        margin-top: 0 auto;
+        width: 100%;
+        padding-top: 1em;
+        text-align: center;
+    }
+}
+.ion-color-placeholder{
+    --ion-placeholder-color:var(--ion-placeholder-color)
+}
+@media screen and (max-width: 500px) {
+
+    .pr-card {
+        width: 95%;
+        height: auto;
+    }
+
+    .pr-container {
+
+    }
+
+    .op-icon {
+        width:      1.8em;
+        height:     1.8em;
+    }
+    .op-text-2 {
+        font:       13px/15px Arial;
+    }
+  
+    .op-thumb {
+        height: 2em;
+        width: 2em;
+        background-color:#FF8C00;
+        border-radius: 15%;
+    }
+    .op-thumb1 {
+        height: 2em;
+        width: 2em;
+        background-color:#FF8C00;
+        border-radius: 15%;
+    }
+    .op-thumb2 {
+        height: 2em;
+        width: 2em;
+        background-color:#FF8C00;
+        border-radius: 15%;
+    }
+    .op-thumb3 {
+        height: 2em;
+        width: 2em;
+        background-color:#FF8C00;
+        border-radius: 15%;
+    }
+    .op-icon {
+        width: 80%;
+        height: 80%;
+        margin-left: 10%;
+        margin-top: 10%;
+        color: white;
+    }
+  
+    .op-item {
+       /* / height: 2em; */
+    }
+   
+}
+  

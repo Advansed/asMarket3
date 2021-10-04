@@ -93,6 +93,10 @@
     display: none;
 }
 
+.hidden {
+    display: none;
+}
+
 .blue {
     color:blue;
 }

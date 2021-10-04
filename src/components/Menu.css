@@ -111,3 +111,42 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 } 
+
+.m-img {
+  height: calc(80px + (100 - 80) * ((100vw - 270px) / (1200 - 270)));
+  width: calc(80px + (100 - 80) * ((100vw - 270px) / (1200 - 270)));
+  margin-left: calc(5px + (10 - 5) * ((100vw - 270px) / (1200 - 270)));
+  margin-top: calc(5px + (20 - 5) * ((100vw - 270px) / (1200 - 270)));
+}
+.m-header{
+  font-size: calc(15px + (23 - 15) * ((100vw - 270px) / (1200 - 270)));
+  
+  font-weight: 600;
+  margin-left: calc(5px + (10 - 5) * ((100vw - 270px) / (1200 - 270)));
+  margin-top: calc(15px + (30 - 15) * ((100vw - 270px) / (1200 - 270)));
+  margin-bottom: calc(20px + (40 - 20) * ((100vw - 270px) / (1200 - 270)));
+  
+}
+.m-btn{
+  background-color: white;
+  color: black;
+}
+.m-sizetext{
+  font-size: calc(15px + (26 - 15) * ((100vw - 270px) / (1200 - 270))) !important;
+  margin-top: calc(17px + (30 - 17) * ((100vw - 270px) / (1200 - 270))) !important;
+  color: black !important;
+}
+.m-mr{
+  margin-right: calc(15px + (25 - 15) * ((100vw - 270px) / (1200 - 270)));
+  margin-top: calc(5px + (10 - 5) * ((100vw - 270px) / (1200 - 270)));
+  color: rgb(77, 77, 99);
+}
+.m-mr2{
+  margin-right: calc(20px + (30 - 20) * ((100vw - 270px) / (1200 - 270)));
+  margin-top: calc(5px + (10 - 5) * ((100vw - 270px) / (1200 - 270)));
+  color: rgb(77, 77, 99) !important;
+}
+hr{
+  width: 200% !important;
+ 
+}

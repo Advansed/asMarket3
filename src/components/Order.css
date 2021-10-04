@@ -1,0 +1,80 @@
+.btn2{
+    background-color: white;
+
+}
+.header-name{
+    text-align: center;
+    padding-bottom: 1.15rem;
+}
+.left-align{
+    left:-20px;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+}
+.footer-order{
+    position: relative;
+    width: 100%;
+    height: 20%;
+    margin-top: calc(80px + (300 - 100) * ((100vw - 270px) / (1200 - 270))) ;
+    background-color: white;
+    margin-left:calc(-3px + (10 + 3) * ((100vw - 270px) / (1200 - 270))) ;
+}
+.order-box{
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    height: 100%;
+    border-radius: 15px 15px 0px 0px;
+    
+}
+.order-clr{
+    background-color: #FF8C00;
+    height:15px;
+    width: 100%;
+}
+.order-content{
+    position: relative;
+    height:15px;
+    width: 100%;
+}
+.order-image{
+
+    width: 100%;
+    height:25%;
+
+}
+img{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+@media screen and (max-width: 2900px) {
+    .o-card { 
+        width: 480px;
+        height: auto; 
+        margin-left: auto; 
+        margin-right: auto;
+        margin-top: 0;
+    }
+    .o-phone {
+        display: flex;
+        justify-content: left;
+    }
+    
+}
+  
+@media screen and (max-width: 500px) {
+    .o-card { 
+        width: 90%;
+        height: auto; 
+        margin-left: auto; 
+        margin-right: auto;
+        margin-top: 0;
+    }
+
+}
+  
