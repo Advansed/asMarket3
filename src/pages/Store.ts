@@ -153,10 +153,11 @@ export const Store   =  create_Store(rootReducer, i_state)
 
 export const URL1C = "https://marketac.ru/ut/hs/API/V1/"
 
-export const URL = "http://marketac.ru:3000/"
+export const URL = "https://marketac.ru:3010/"
 
 export async function   getDatas(){
 }
+
 
 async function load( categ, page = 1 ){
     let res = await getData("method", {
@@ -196,25 +197,28 @@ export async function getProfile(phone){
 async function exec(){
     let res: any
 
-    res = await getData("method", {method: "Акции"})
+    res = await getData1C("Category", {})
     console.log(res)
-    Store.dispatch({type: "actions", actions: res.map((e) => {
-        e.Товары = JSON.parse(e.Товары)
-        return e
-    })})  
 
-    let phone = localStorage.getItem("marketAs.login")
-  //if(phone !== undefined) getProfile(phone)
+//     res = await getData("method", {method: "Акции"})
+//     console.log(res)
+//     Store.dispatch({type: "actions", actions: res.map((e) => {
+//         e.Товары = JSON.parse(e.Товары)
+//         return e
+//     })})  
 
-    console.log("exec")
-    res = await getData("method", {method: "Категории"})
-    console.log(res)
-    Store.dispatch({type: "categories", categories: res.map((e) => {
-        e.Категории = JSON.parse(e.Категории)
-        return e
-    })})
+//     let phone = localStorage.getItem("marketAs.login")
+//   //if(phone !== undefined) getProfile(phone)
 
-    load( "", 1)
+//     console.log("exec")
+//     res = await getData("method", {method: "Категории"})
+//     console.log(res)
+//     Store.dispatch({type: "categories", categories: res.map((e) => {
+//         e.Категории = JSON.parse(e.Категории)
+//         return e
+//     })})
+
+//     load( "", 1)
 
 }
 
