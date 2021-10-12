@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from 'react';
-import { IonSlide,IonImg, IonChip, IonSlides, IonText } from '@ionic/react';
 import { Carousel } from 'react-responsive-carousel';
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -31,6 +30,7 @@ export function Carusel():JSX.Element {
                     autoPlay = { true }
                     infiniteLoop = { true} 
                     interval = { 3000 }
+                    showThumbs = { false }
 
                 >
                         { info.map((e, ind) =>{ 

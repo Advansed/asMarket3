@@ -30,11 +30,10 @@ export function Login(props): JSX.Element {
             <div className="r-circle"><div className="r-circle2"></div></div>
             <div className="r-content">
             <div className="lg-input">
-                <div>+7</div>
                 <MaskedInput 
-                    mask={[ ' ','(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-',/\d/, /\d/]}
+                    mask={[ '+', /\d/,'(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-',/\d/, /\d/]}
                     className="m-input"
-                    placeholder = "(---)-- -- --"
+                    placeholder = "+7(---)-- -- --"
                     onChange={(e: any) => {
                         let st = e.target.value;
                         phone = "+7" + st;
@@ -47,6 +46,7 @@ export function Login(props): JSX.Element {
                   <button
                     slot="end"
                     onClick={()=>{
+                        console.log("SMS")
                         let login = Store.getState().login
                         if(login === "") login = { Код: phone }
                         else login.Код = phone

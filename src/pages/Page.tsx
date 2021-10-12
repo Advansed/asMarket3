@@ -1,12 +1,13 @@
 import { IonPage } from '@ionic/react';
 import { useParams, useHistory } from 'react-router';
+import { Action1 } from '../components/Actions';
 import { Basket } from '../components/Basket';
 import { Action } from '../components/Carusel';
 import { GCard } from '../components/GCard';
 import { InfoPage1, InfoPage2 } from '../components/Infopage';
 import { General } from '../components/Main';
 import { Order } from '../components/Order';
-import { Orders } from '../components/Orders';
+import { OHistory, Orders } from '../components/Orders';
 import { Options, Profile } from '../components/Profile';
 import { Login, SMS } from '../components/Registration';
 import './Page.css';
@@ -51,18 +52,22 @@ const Page: React.FC = () => {
         </div>
       </>
     } else    switch (props.name) {
-      case "root" :     elem = <General />; break;
-      case "basket" :   elem = <Basket />; break;
-      case "order" :    elem = <Order />; break;
-      case "login":     elem = <Login />; break
-      case "SMS":       elem = <SMS />; break
-      case "options":   elem = <Options />; break
-      case "profile":   elem = <Profile />; break
-      case "orders":    elem = <Orders />; break
-      case "contacts":  elem = <InfoPage1 />; break
-      case "info":      elem = <InfoPage2 />; break
-      case "action":    elem = <Action />; break
-      default :         elem = <></> 
+      case "root" :         elem = <General />; break;
+      case "basket" :       elem = <Basket />; break;
+      case "order" :        elem = <Order />; break;
+      case "login":         elem = <Login />; break
+      case "SMS":           elem = <SMS />; break
+      case "options":       elem = <Options />; break
+      case "profile":       elem = <Profile />; break
+      case "orders":        elem = <Orders />; break
+      case "contacts":      elem = <InfoPage1 />; break
+      case "info":          elem = <InfoPage2 />; break
+      case "action":        elem = <Action1 />; break
+      case "actionpage":    elem = <General info = { "01-00000100"} />; break
+      case "login":         elem = <Login />; break
+      case "orders":        elem = <Orders />; break
+      case "history":       elem = <OHistory />; break
+      default :             elem = <></> 
     }
 
     return elem;

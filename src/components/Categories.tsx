@@ -6,7 +6,7 @@ import './Categories.css'
 import './bootstrap.css'
 import './style.css'
 
-export function Categories():JSX.Element {
+export function Categories(props):JSX.Element {
     const [info, setInfo] = useState<any>([])
     const [cats, setCats] = useState<any>([])
     const [cat,  setCat]  = useState<any>()
@@ -17,8 +17,17 @@ export function Categories():JSX.Element {
 
     useEffect(()=> { 
         if(info.length > 0) {
-            setCats(info[0]) 
-            Store.dispatch({type: "category", category: info[0]})
+            if(props.info === undefined) {
+                setCats(info[0]) 
+               // Store.dispatch({type: "category", category: info[0]})
+            } else {
+                var ind = info.findIndex(function(b) { 
+                    return b.Код === props.info
+                });
+                if(ind < 0) ind = 0
+                setCats(info[ind]) 
+               // Store.dispatch({type: "category", category: info[ind]})    
+            }
         }
     }, [info])
 

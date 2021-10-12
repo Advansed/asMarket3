@@ -66,7 +66,7 @@ export function   Good(props):JSX.Element {
             <IonCard class="g-card"
                 onClick={()=>{
                     Store.dispatch({type: "gcard", gcard: info})
-                    hist.push("/page/_" + info.Код)    
+                    hist.push("/page1/_" + info.Код)    
 //                    Store.dispatch({type: "route", route: "/page/#" + info.Код})
                 }}
             >
@@ -86,11 +86,13 @@ export function   Good(props):JSX.Element {
                     {
                     info.СтараяЦена > 0 
                         ?<>
-                        <div className="red f-12">
-                            <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Цена)}</b>
-                        </div>
-                        <div className="t-line f-12 ml-1">
-                            <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СтараяЦена)}</b>
+                        <div>
+                            <div className="red f-10">
+                                <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Цена)}</b>
+                            </div>
+                            <div className="t-line f-10">
+                                <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СтараяЦена)}</b>
+                            </div>
                         </div>
                         </>
                         :<div className="f-12">

@@ -36,31 +36,31 @@ const appPages: AppPage[] = [
   },
   {
     title: 'Акции',
-    url: '/goods/about',
+    url: '',
     iosIcon: heartOutline,
     mdIcon: archiveSharp
   },
   {
     title: 'Заказы',
-    url: '/goods/orders',
+    url: '/page/orders',
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp
   },
   {
     title: 'История заказов',
-    url: '/goods/history',
+    url: '/page/history',
     iosIcon: bookmarksOutline,
     mdIcon: heartSharp
   },
   {
     title: 'Условия работы',
-    url: '/goods/cond',
+    url: '/page/info',
     iosIcon: checkboxOutline,
     mdIcon: trashSharp
   },
   {
     title: 'О нас',
-    url: '/goods/about',
+    url: '/page/contacts',
     iosIcon: happyOutline,
     mdIcon: archiveSharp
   },
@@ -111,7 +111,14 @@ const Menu: React.FC = () => {
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
-                <IonItem routerLink={appPage.url} routerDirection="none" lines="none" detail={false} >
+                <IonItem routerLink={appPage.url} routerDirection="none" lines="none" detail={false} 
+                  onClick = {()=>{
+                    
+                    if(appPage.title === "Акции"){
+                      console.log(appPage.title)
+                    }
+                  }} 
+                >
                   <IonIcon  className="m-mr2" ios={appPage.iosIcon}  />
                   <IonLabel className=" m-sizetext">{appPage.title}</IonLabel>
                 </IonItem>
