@@ -166,7 +166,6 @@ async function load( categ, page = 1 ){
         page: page,
     })  
     if(res.length > 0){
-        console.log(res)
         Store.dispatch({ type: "goods", goods: res })
   //      if( categ === Store.getState().category.Код )
         load( categ, page + 1 )
@@ -200,7 +199,6 @@ async function exec(){
 
 
     res = await getData("method", {method: "Акции"})
-    console.log(res)
     Store.dispatch({type: "actions", actions: res.map((e) => {
         e.Товары = JSON.parse(e.Товары)
         return e
@@ -211,7 +209,7 @@ async function exec(){
 
     console.log("exec")
     res = await getData("method", {method: "Категории"})
-    console.log(res)
+
     Store.dispatch({type: "categories", categories: res.map((e) => {
         e.Категории = JSON.parse(e.Категории)
         return e

@@ -6,57 +6,91 @@ import './Categories.css'
 import './bootstrap.css'
 import './style.css'
 
+interface t_info {
+    categories :    any,
+    cats:           any,
+    cat:            any,
+}
+
+const i_info : t_info | any = {
+    categories:     [],
+    cats:           [],
+}
 export function Categories(props):JSX.Element {
-    const [info, setInfo] = useState<any>([])
-    const [cats, setCats] = useState<any>([])
-    const [cat,  setCat]  = useState<any>()
+    const [info, setInfo] = useState<t_info>(i_info)
+    const [upd,  setUpd]  = useState(0)
 
-    Store.subscribe({num: 11, type: "categories", func : ()=>{ setInfo( Store.getState().categories ) }})
-
-    useEffect(()=>{ setInfo( Store.getState().categories ) }, [])
-
-    useEffect(()=> { 
-        if(info.length > 0) {
-            if(props.info === undefined) {
-                setCats(info[0]) 
-               // Store.dispatch({type: "category", category: info[0]})
-            } else {
-                var ind = info.findIndex(function(b) { 
-                    return b.Код === props.info
-                });
-                if(ind < 0) ind = 0
-                setCats(info[ind]) 
-               // Store.dispatch({type: "category", category: info[ind]})    
+    function Load(){
+        info.categories = Store.getState().categories;
+        if(info.categories.length > 0){
+            info.cats = info.categories[0];
+            if(info.cats.Категории?.length > 0) {
+                info.cat = info.cats.Категории[0] 
+                Store.dispatch({type: "sub", sub: info.cat})
             }
+            setInfo( info );setUpd(upd + 1);
         }
-    }, [info])
+        console.log(upd)
+    }
 
-    useEffect(()=> { 
-        if(cats.Категории?.length > 0) {
-            setCat(cats.Категории[0]) 
-            Store.dispatch({type: "sub", sub: cats.Категории[0]})
+    Store.subscribe({num: 11, type: "categories", func : ()=>{ 
+        Load()
+    }})
+
+    Store.subscribe({num: 12, type: "category", func : ()=>{ 
+        console.log("category")
+        let Код = Store.getState().category;
+        var ind = info.categories.findIndex(function(b) { 
+            return b.Код === Код
+        });
+        if( ind < 0 ) ind = 0
+        info.cats = info.categories[ind]
+        if(info.cats.Категории?.length > 0) {
+            info.cat = info.cats.Категории[0] 
+            Store.dispatch({type: "sub", sub: info.cat})
         }
-    }, [cats])
+        console.log(info)
+        setInfo( info );setUpd(upd + 1)
+    }})
 
-    function onClick(info, num) {
-        if(num === 0) { setCats(info) }
+    useEffect(()=>{ 
+        console.log("useEffect")
+        Load()
+        console.log(info)
+        console.log(upd)
+    }, [])
+
+    function onClick(inf, num) {
+        if(num === 0) { 
+            let in_fo = i_info
+            in_fo.categories = info.categories
+            in_fo.cats = inf; 
+            in_fo.cat = inf.Категории[0];
+           // setUpd(upd + 1) 
+            setInfo(in_fo)
+            Store.dispatch({type: "sub", sub: in_fo.cat})
+        }
         if(num === 1) { 
-            setCat(info)
-            Store.dispatch({type: "sub", sub: info})
+            let in_fo = i_info
+            in_fo.categories = info.categories
+            in_fo.cats = info.cats; 
+            in_fo.cat = inf;
+            setInfo(in_fo)//setUpd(upd + 1)
+            Store.dispatch({type: "sub", sub: inf})
         }
     }
     let elem = <></>
 
-    for(let i = 0;i < info.length;i++){
+    for(let i = 0;i < info.categories.length;i++){
         elem = <>
             { elem }
             <div className="ct-card" key = { i }
-                onClick = { () => onClick(info[i], 0) }
+                onClick = { () => onClick(info.categories[i], 0) }
             >
                 <div className="ct-circle">
-                <IonImg class="ct-img" src={ info[i].Картинка } /></div>
+                <IonImg class="ct-img" src={ info.categories[i].Картинка } /></div>
                 <div className="ct-text">
-                    <IonText> { info[i].Наименование }</IonText>
+                    <IonText> { info.categories[i].Наименование }</IonText>
                 </div>
 
             </div>
@@ -66,15 +100,15 @@ export function Categories(props):JSX.Element {
     let items = <></>
 
     
-    for(let i = 0;i < cats.Категории?.length;i++){
+    for(let i = 0;i < info.cats.Категории?.length;i++){
         
         items = <>
             { items }
 
             <IonChip className={ "ct-chip " + "bgcolor" + (i + 1).toString()} key = { i }
-                onClick = { () => onClick( cats.Категории[i], 1)}
+                onClick = { () => onClick( info.cats.Категории[i], 1)}
             >
-                { cats.Категории[i].Наименование }
+                { info.cats.Категории[i].Наименование }
             </IonChip>
         </>
     }

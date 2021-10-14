@@ -115,7 +115,8 @@ const Menu: React.FC = () => {
                   onClick = {()=>{
                     
                     if(appPage.title === "Акции"){
-                      console.log(appPage.title)
+                      Store.dispatch({type: "category", category: "01-00000100"})
+                      console.log("menu")
                     }
                   }} 
                 >
