@@ -1,62 +1,59 @@
 import { IonAlert, IonCardContent, IonCardHeader, IonCardSubtitle, IonCol
   , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText } from "@ionic/react";
+import { setErrorHandler } from "ionicons/dist/types/stencil-public-runtime";
 import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline } from "ionicons/icons";
+import { setUncaughtExceptionCaptureCallback } from "process";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
 import MaskedInput from "../mask/reactTextMask";
 import { getData1C, Store } from "../pages/Store";
 import './Order.css'
+import { IPAY, ipayCheckout } from './sber'
 
 declare type Dictionary = {
     [key: string]: any;
   };
 
+const info = {
+  StatusId:         0,
+  Order_No:           "",
+  Phone:            "",
+  Address:          "",
+  CustomerName :    "",
+  DeliveryMethod:   "",
+  DeliveryTime:     "",
+  PaymentMethodId:  "",
+  CustomerComment:  "",
+  PaymentStatus:    0,
+  Total:            0,
+  DelivSum:         0,
+  OrderDetails:     []
+}
+
 export function   Order( props ):JSX.Element {
     const [message,   setMessage] = useState("")
-    const [mp,        setMP]      = useState(false)
+    const [mp,        setMP]      = useState(true)
     const [dost,      setDost]    = useState(true)
-    const [info,      setInfo]    = useState<any>({
-        type:             "order",
-        Организация:      Store.getState().market.name,
-        Адрес:            Store.getState().market.address,
-        token:            "",
-        Телефон:          Store.getState().login.code,
-        Доставка:         "Доставка",
-        МетодОплаты:      "картой",
-        АдресДоставки:    "",
-        ВремяДоставки:    "",
-        СуммаЗаказа:      0,
-        СуммаДоставки:    0,
-        СуммаВсего:       0,
-        Товары:           [] 
-    })
     const [upd,       setUpd]     = useState(0)
-    const [deliv,     setDeliv]   = useState(false)
+    const [deliv,     setDeliv]   = useState(0)
+    const [choice,    setChoice]  = useState(false)
+
 
     useEffect(()=>{
-      let basket = Store.getState().basket
-      let login = Store.getState().login;
-      let sum = basket.reduce(function(a, b){ return a + b.Сумма;}, 0); 
-        let order = {
-          type:             "order",
-          Организация:      Store.getState().market.name,
-          Адрес:            Store.getState().market.address,
-          token:            "",
-          Телефон:          login.code,
-          Доставка:         "Доставка",
-          МетодОплаты:      "картой",
-          АдресДоставки:    login.address,
-          ВремяДоставки:    "",
-          СуммаЗаказа:      sum,
-          СуммаДоставки:    sum >= 1000 ? 0 : Store.getState().market.sum,
-          СуммаВсего:       sum >= 1000 ? sum : Store.getState().market.sum + sum,
-          Товары:           Store.getState().basket  
-        }
-        setInfo(order)
-        Store.dispatch({type: "order", order: order})
-        setUpd(upd + 1)
-
-
+        let sum = Store.getState().basket.reduce(function(a, b){ return a + b.Сумма;}, 0)
+        info.Phone =           Store.getState().login.code
+        info.CustomerName =    Store.getState().login.name
+        info.Total =           sum
+        info.DelivSum =        sum >= 1000 ? 0 : Store.getState().market.sum
+        info.OrderDetails =    Store.getState().basket.map(e =>{
+          return {
+              ProductId:  e.Код, 
+              Name:       e.Наименование, 
+              Weight:     e.Вес, 
+              Amount:     e.Количество, 
+              Price:      e.Цена, 
+              Total:      e.Сумма}
+        })
     },[])
 
     let item : Dictionary = {"city": "Якутск"};
@@ -69,8 +66,17 @@ export function   Order( props ):JSX.Element {
       } else return ""
     }
 
+    function        showSuccessfulPurchase(){
+      setDeliv(1)  
+    }
+  
+    function        showFailurefulPurchase(){
+      setChoice(true)
+    }
+
+
     function Page1():JSX.Element {
-      console.log("page1")
+      
       let elem = <>
       
       <IonCardHeader>
@@ -98,16 +104,15 @@ export function   Order( props ):JSX.Element {
           <IonItem> 
             <IonIcon slot="start" icon={ cardOutline } />
             <IonLabel position="stacked">Оплата</IonLabel>
-            <IonSelect value={ info?.МетодОплаты } okText="Да" cancelText="Нет" onIonChange={e => {
-                info.МетодОплаты = e.detail.value
-                setInfo(info);
-                if(info.МетодОплаты === "Эквайринг") setMP(true)
+            <IonSelect value={ info.PaymentMethodId } okText="Да" cancelText="Нет" onIonChange={e => {
+                info.PaymentMethodId = e.detail.value
+                if(info.PaymentMethodId === "Эквайринг") setMP(true)
                 else setMP(false)
             }}>
-              {/* <IonSelectOption value="Эквайринг">Эквайринг</IonSelectOption> */}
+              <IonSelectOption value="Эквайринг">Эквайринг</IonSelectOption>
               <IonSelectOption value="наличными">Наличными</IonSelectOption>
               <IonSelectOption value="картой">Картой</IonSelectOption>
-              <IonSelectOption value="посчету">По счету</IonSelectOption>
+              {/* <IonSelectOption value="посчету">По счету</IonSelectOption> */}
             </IonSelect>
           </IonItem>
           {/* Телефон */}
@@ -124,11 +129,10 @@ export function   Order( props ):JSX.Element {
                   placeholder="(___) ___-__-__"
                   id='1'
                   type='text'
-                  value = { phone(info?.Телефон) }
+                  value = { phone(info?.Phone) }
                   onChange={(e: any) => {
                     let st = e.target.value;
-                    info.Телефон = "+7" + st;
-                    setInfo(info)
+                    info.Phone = "+7" + st;
                   }}
                 />
               </div>
@@ -138,22 +142,16 @@ export function   Order( props ):JSX.Element {
           <IonItem>
             <IonIcon slot="start" icon={ bicycleOutline } />
             <IonLabel position="stacked">Доставка</IonLabel>
-            <IonSelect value={ info?.Доставка } okText="Да" cancelText="Нет" onIonChange={e => {
-                info.Доставка = e.detail.value
-                if(info.Доставка === "Доставка") {
-                  info.Адрес = "";
-                  info.АдресДоставки = "";
-                  info.СуммаДоставки = info.СуммаЗаказа  < 1000 ? Store.getState().market.sum : 0
-                  info.СуммаВсего = info.СуммаЗаказа + info.СуммаДоставки
-                  setInfo(info)
+            <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" onIonChange={e => {
+                info.DeliveryMethod = e.detail.value
+                if(info.DeliveryMethod === "Доставка") {
+                  info.Address = "";
+                  info.DelivSum = info.Total  < 1000 ? Store.getState().market.sum : 0
                   setDost(true); 
                   
                 } else {
-                  info.Адрес = Store.getState().market.address
-                  info.АдресДоставки = "";
-                  info.СуммаДоставки = 0;
-                  info.СуммаВсего = info.СуммаЗаказа 
-                  setInfo(info)
+                  info.Address = "";
+                  info.DelivSum = 0;
                   setDost(false)
                 }
                 Store.dispatch({type: "order", order: info})
@@ -172,46 +170,27 @@ export function   Order( props ):JSX.Element {
                 hintText = { "г. Якутск" }
                 onChange={(e)=>{
                   if(e !== undefined)
-                    info.АдресДоставки = e.value
-                    setInfo(info)
+                    info.Address = e.value
                 }}
               /> 
-
-            {/* <IonItem>
-              <IonIcon slot= "start" icon={ timeOutline }/>
-              <IonLabel position="stacked">Удобное время для доставки</IonLabel>
-              <MaskedInput
-                mask={[/[1-9]/, /\d/, ':', /\d/, /\d/, ' ', '-', ' ', /\d/, /\d/, ':', /\d/, /\d/,]}
-                className="m-input"
-                autoComplete="off"
-                placeholder="12:00 - 21:00"
-                id='2'
-                type='text'
-                value = { order.ВремяДоставки }
-                onChange={(e: any) => {
-                    order.ВремяДоставки = (e.target.value as string);
-                    Store.dispatch({type: "order", order: order})
-                  }}
-              />
-            </IonItem> */}
           </div>
         <IonCardHeader className="header-name "><b> Итоги по заказу</b> </IonCardHeader>   
           <IonList class="f-14">
             <IonItem class="ml-1" lines="none">
               <IonCardSubtitle>Доставка </IonCardSubtitle>
               <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СуммаДоставки)
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum)
               } </IonLabel>
             </IonItem>
             <IonItem class="ml-1" lines="none">
               <IonCardSubtitle>Сумма товаров </IonCardSubtitle>
               <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СуммаЗаказа) } </IonLabel>
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total) } </IonLabel>
             </IonItem>
             <IonItem class="ml-1" lines="none">
               <IonCardSubtitle>Итого </IonCardSubtitle>
               <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СуммаВсего)
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum)
               } </IonLabel>
             </IonItem>
           </IonList>
@@ -219,14 +198,22 @@ export function   Order( props ):JSX.Element {
          
          <div className="btn">
                <button
+                  className = { mp ? "hidden" : "orange-clr-bg"}
                  slot="end"
                  onClick={()=>{
                    Proov();
-                 }}  className="orange-clr-bg"
+                 }}  
                >
-                 {"Оформить заказ"}
+                  Заказать
                </button>
-             </div>
+               <button slot="end" 
+                  className = { mp ? "orange-clr-bg" : "hidden"}
+                onClick={()=>{
+                  Proov();
+                }}>
+              Оплатить
+            </button>
+          </div>
      
      </div>
         </IonCardContent>
@@ -256,62 +243,66 @@ export function   Order( props ):JSX.Element {
           </div>
         </div>
         
-        <IonItem class="mt-3">
-              <IonItem lines="none">
-                <IonIcon slot="start" icon = { businessOutline }/>
-                <IonLabel position="stacked"> Организация </IonLabel>
-                <IonText><b> { info.Организация } </b></IonText>
-              </IonItem>
-            </IonItem>
-            <IonItem>
-              <IonItem lines="none">
-                <IonIcon slot="start" icon = { bicycleOutline }/>
-                <IonLabel position="stacked"> Доставка </IonLabel>
-                <IonText><b> { info.Доставка } </b></IonText>
-              </IonItem>
-            </IonItem>
-            <IonItem className={ info.Доставка === "Доставка" ? "" : "hide"}>
-              <IonItem lines="none">
-                <IonIcon slot="start" icon = { homeOutline }/>
-                <IonLabel position="stacked"> Адрес доставки </IonLabel>
-                <IonText><b> { info.АдресДоставки } </b></IonText>
-              </IonItem>
-            </IonItem>
-            <IonItem className={ info.Доставка === "Доставка" ? "hide" : ""}>
+        <div className="mt-3">
+          <IonItem lines="none">
+            <IonIcon slot="start" icon = { businessOutline }/>
+            <IonLabel position="stacked"> Организация </IonLabel>
+            <IonText><b> { Store.getState().market.name } </b></IonText>
+          </IonItem>
+        </div>
+        <div>
+          <IonItem lines="none">
+            <IonIcon slot="start" icon = { bicycleOutline }/>
+            <IonLabel position="stacked"> Доставка </IonLabel>
+            <IonText><b> { info.DeliveryMethod } </b></IonText>
+          </IonItem>
+        </div>
+        <div className={ info.DeliveryMethod === "Доставка" ? "" : "hidden"}>
+          <IonItem lines="none">
+            <IonIcon slot="start" icon = { homeOutline }/>
+            <IonLabel position="stacked"> Адрес доставки </IonLabel>
+            <IonText><b> { info.Address } </b></IonText>
+          </IonItem>
+        </div>
+            <div className={ info.DeliveryMethod === "Доставка" ? "hidden" : ""}>
               <IonItem lines="none">
                 <IonIcon slot="start" icon = { storefrontOutline }/>
                 <IonLabel position="stacked"> Адрес получения </IonLabel>
-                <IonText><b> { info.Адрес } </b></IonText>
+                <IonText><b> { Store.getState().market.address } </b></IonText>
               </IonItem>
-            </IonItem>
-            <IonItem>
+            </div>
+            <div>
               <IonItem lines="none">
                 <IonIcon slot="start" icon = { cashOutline }/>
                 <IonLabel position="stacked"
-                  className={ info.МетодОплаты === "Эквайринг" ? "hide" : ""}
-                > Оплата { info.МетодОплаты } </IonLabel>
+                  className={ info.PaymentMethodId === "Эквайринг" ? "hidden" : ""}
+                > Оплата { info.PaymentMethodId } </IonLabel>
                 <IonText
-                  className={ info.МетодОплаты === "Эквайринг" ? "hide" : ""}
-                ><b> Заказано на сумму { info.СуммаВсего } руб </b></IonText>
+                  className={ info.PaymentMethodId === "Эквайринг" ? "hidden" : ""}
+                ><b> Заказано на сумму { info.Total + info.DelivSum } руб </b></IonText>
                 <IonText
-                  className={ info.МетодОплаты === "Эквайринг" ? "" : "hide"}
-                ><b> Оплачено { info.СуммаВсего } руб </b></IonText>
+                  className={ info.PaymentMethodId === "Эквайринг" ? "" : "hidden"}
+                ><b> Оплачено { info?.Total + info?.DelivSum } руб </b></IonText>
               </IonItem>
-            </IonItem>
-            <IonItem className={ info.Доставка === "Доставка" ? "hide" : ""}>
-             <IonText class="f-14">
-                Вы можете забрать свой заказ с указанного адреса в рабочее время течение трех дней.
-                Потом заказ будет отменен. 
-                <span className={ info.МетодОплаты === "Эквайринг" ? "" : "hide"}>
-                  Деньги будут возвращены на карту
-                </span>
-             </IonText>
-            </IonItem>
-            <IonItem className={ info.Доставка === "Доставка" ? "" : "hide"}>
-             <IonText class="f-14">
-               В ближайшее время с Вами свяжутся и обговорят время доставки заказа
-             </IonText>
-            </IonItem>
+            </div>
+            <div className={ info?.DeliveryMethod === "Доставка" ? "hidden" : ""}>
+              <div className = "mr-1 ml-1">
+                 <IonText class="f-14">
+                    Вы можете забрать свой заказ с указанного адреса в рабочее время течение трех дней.
+                    Потом заказ будет отменен. 
+                   <span className={ info.PaymentMethodId === "Эквайринг" ? "" : "hidden"}>
+                     Деньги будут возвращены на карту
+                  </span>
+                 </IonText>
+               </div>
+            </div>
+            <div className={ info.DeliveryMethod === "Доставка" ? "" : "hidden"}>
+              <div className = "mr-1 ml-1">
+                <IonText class="f-14">
+                  В ближайшее время с Вами свяжутся и обговорят время доставки заказа
+                </IonText>
+              </div>
+            </div>
        
             
           
@@ -336,65 +327,119 @@ export function   Order( props ):JSX.Element {
       return elem
     }
 
-    let elem = <>
-      { !deliv 
-          ? <Page1 />
-          : <Page2 />
-      }
-    </>
-  
+    function Page3():JSX.Element {
+      console.log("page2")
+      let elem = <>
+      
+        <div className="order-image">
+              <img src = "assets/errorimg.png" />
+        </div>
+        <div className="order-clr">
+          <div className="order-box">
+          </div>
+        </div>
+        <h1>
+          Ошибка создания заказа!!
+          Извините что то пошло не так
+        </h1>
+        <div className="footer-order"> 
+         <div className="btn">
+               <button
+                 slot="end"
+                 onClick={()=>{
+                   Store.dispatch({type: "route", route: "/page/root"})
+                 }}  className="orange-clr-bg"
+               >
+                 {"Закрыть"}
+               </button>
+             </div>
+          
+        </div>
+                
+      </>
+
+      return elem
+    }
+
+
     function Proov(){
       console.log(info)
       Store.dispatch({type: "order", order: info})
 
-      if( dost && info.АдресДоставки === "") 
+      if( dost && info.Address === "") 
         setMessage("Заполните адрес")
       else 
-      if(info.Телефон === "" || info.Телефон.indexOf('_') > -1)
+      if(info.Phone === "" || info.Phone.indexOf('_') > -1)
         setMessage("Заполните телефон")
       else 
-      if(info.МетодОплаты === "Эквайринг"){
-        Order(info)
-      } else {
-        Order(info)
-      }
+        Order()
     }
   
-    async function Order(order){
-      let login = Store.getState().login
-      let auth = Store.getState().auth
-      let basket = Store.getState().basket;
-      let Zakaz = {
-        StatusId: 0,
-        Phone: login.code,
-        Address: order.АдресДоставки,
-        CustomerName : login.name,
-        token: "",
-        DeliveryMethod: order.Доставка,
-        DeliveryTime: order.ВремяДоставки,
-        PaymentMethodId: order.МетодОплаты,
-        CustomerMethodId: login.name,
-        CustomerComment: "",
-        PaymentStatus: 0,
-        OrderDetails: basket.map(e =>{
-          return {
-              ProductId: e.Код, 
-              Name: e.Наименование, 
-              Weight: e.Вес, 
-              Amount: e.Количество, 
-              Price: e.Цена, 
-              Total: e.Сумма}
-          }),
-      }
-      let res = await getData1C("Order", Zakaz);
-      if(res === "Создан документ") {
+    async function Order(){
+      
+      let res = await getData1C("Заказ", info);
+      if(res.Код === "100") {
+        info.Order_No   = res.НомерЗаказа
+        if( mp ) {
+          IPAY({api_token: 'YRF3C5RFICWISEWFR6GJ'});
+          ipayCheckout({
+            amount:         info.Total + info.DelivSum,
+            currency:       'RUB',
+            order_number:   res.НомерЗаказа,
+            description:    'Тестовая оплата'},
+            function() { showSuccessfulPurchase() },
+            function() { showFailurefulPurchase() })
+        }
         Store.dispatch({type: "basket", basket: []})
-        setDeliv(true)
       } else {
-        setDeliv(true)
+        setDeliv(2)
       }
     }
+
   
-    return elem;
+    let elem = <></>
+
+    switch(deliv){
+
+      case 0: elem = <Page1 /> ; break;      
+      case 1: elem = <Page2 /> ; break; 
+      case 2: elem = <Page3 /> ; break;            
+
+    }
+
+
+    return <>
+      { elem }
+      <IonAlert
+          isOpen={ choice }
+          onDidDismiss={() => setChoice(false)}
+          cssClass='my-custom-class'
+          header={'Ошибка'}
+          message={'К Сожалению оплата по эквайрингу не прошла, повторить попытку ?'}
+          buttons={[
+            {
+              text: 'Нет',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: blah => {
+                setDeliv(2)
+              }
+            },
+            {
+              text: 'Да',
+              handler: () => {
+                IPAY({api_token: 'YRF3C5RFICWISEWFR6GJ'});
+                ipayCheckout({
+                  amount:         info.Total + info.DelivSum,
+                  currency:       'RUB',
+                  order_number:   info.Order_No,
+                  description:    'Тестовая оплата'},
+                  function() { showSuccessfulPurchase() },
+                  function() { showFailurefulPurchase() })
+              }
+            }
+          ]}
+        />
+    </>;
   }
   
