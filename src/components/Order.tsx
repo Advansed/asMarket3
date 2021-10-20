@@ -20,9 +20,9 @@ const info = {
   Phone:            "",
   Address:          "",
   CustomerName :    "",
-  DeliveryMethod:   "",
+  DeliveryMethod:   "Доставка",
   DeliveryTime:     "",
-  PaymentMethodId:  "",
+  PaymentMethodId:  "Эквайринг",
   CustomerComment:  "",
   PaymentStatus:    0,
   Total:            0,
@@ -33,7 +33,7 @@ const info = {
 export function   Order( props ):JSX.Element {
     const [message,   setMessage] = useState("")
     const [mp,        setMP]      = useState(true)
-    const [dost,      setDost]    = useState(true)
+    const [dost,      setDost]    = useState(info.DeliveryMethod === "Доставка")
     const [upd,       setUpd]     = useState(0)
     const [deliv,     setDeliv]   = useState(0)
     const [choice,    setChoice]  = useState(false)
@@ -42,9 +42,24 @@ export function   Order( props ):JSX.Element {
     useEffect(()=>{
         let sum = Store.getState().basket.reduce(function(a, b){ return a + b.Сумма;}, 0)
         info.Phone =           Store.getState().login.code
+        console.log(Store.getState().login.code)
+        console.log(info)
         info.CustomerName =    Store.getState().login.name
         info.Total =           sum
-        info.DelivSum =        sum >= 1000 ? 0 : Store.getState().market.sum
+        
+        let del = Store.getState().market.sum;
+        let tabs = Store.getState().market.tabs;
+        
+        for(let i = 0; i < tabs.length; i++){
+            console.log(sum.toString() + ' - ' + tabs[i].sum.toString())
+            console.log(tabs[i].sum <= sum)
+            if(tabs[i].sum <= sum) {
+              del = tabs[i].del
+              console.log(del)
+            }
+        }
+        console.log(del)
+        info.DelivSum =        del;
         info.OrderDetails =    Store.getState().basket.map(e =>{
           return {
               ProductId:  e.Код, 
@@ -54,6 +69,7 @@ export function   Order( props ):JSX.Element {
               Price:      e.Цена, 
               Total:      e.Сумма}
         })
+        setUpd(upd + 1)
     },[])
 
     let item : Dictionary = {"city": "Якутск"};
@@ -67,7 +83,7 @@ export function   Order( props ):JSX.Element {
     }
 
     function        showSuccessfulPurchase(){
-      setDeliv(1)  
+        getData1C("Оплата", info);   
     }
   
     function        showFailurefulPurchase(){
@@ -133,6 +149,7 @@ export function   Order( props ):JSX.Element {
                   onChange={(e: any) => {
                     let st = e.target.value;
                     info.Phone = "+7" + st;
+                    console.log(info.Phone)
                   }}
                 />
               </div>
@@ -179,7 +196,7 @@ export function   Order( props ):JSX.Element {
             <IonItem class="ml-1" lines="none">
               <IonCardSubtitle>Доставка </IonCardSubtitle>
               <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum)
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format( info?.DelivSum )
               } </IonLabel>
             </IonItem>
             <IonItem class="ml-1" lines="none">
@@ -378,9 +395,11 @@ export function   Order( props ):JSX.Element {
     async function Order(){
       
       let res = await getData1C("Заказ", info);
-      if(res.Код === "100") {
+      console.log(res)
+      if(res.Код === 100 ) {
         info.Order_No   = res.НомерЗаказа
-        if( mp ) {
+        if( info.PaymentMethodId === "Эквайринг" ) {
+          console.log("equaring")
           IPAY({api_token: 'YRF3C5RFICWISEWFR6GJ'});
           ipayCheckout({
             amount:         info.Total + info.DelivSum,
@@ -391,6 +410,7 @@ export function   Order( props ):JSX.Element {
             function() { showFailurefulPurchase() })
         }
         Store.dispatch({type: "basket", basket: []})
+        setDeliv(1)
       } else {
         setDeliv(2)
       }

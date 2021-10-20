@@ -19,6 +19,12 @@ export const i_state = {
         name:     "АсМаркет",
         address:    "ул. Полины Осипенко, 8/1, Якутск, Респ. Саха (Якутия), 677001",
         sum:                                       250,
+        tabs:                                       [
+            {sum: 0,        del: 150},
+            {sum: 1000,     del: 100},
+            {sum: 1500,     del: 50},
+            {sum: 2000,     del: 0},
+        ] 
     },
     search:                                         "",
     orders:                                         [],
@@ -153,7 +159,7 @@ export const Store   =  create_Store(rootReducer, i_state)
 
 export const URL1C = "https://marketac.ru/ut/hs/API/V1/"
 
-export const URL = "http://marketac.ru:3000/"
+export const URL = "https://marketac.ru/node/"
 
 export async function   getDatas(){
 }

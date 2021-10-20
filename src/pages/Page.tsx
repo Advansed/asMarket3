@@ -62,8 +62,7 @@ const Page: React.FC = () => {
       case "orders":        elem = <Orders />; break
       case "contacts":      elem = <InfoPage1 />; break
       case "info":          elem = <InfoPage2 />; break
-      case "action":        elem = <Action1 />; break
-      case "actionpage":    elem = <General info = { "01-00000100"} />; break
+      case "action":        elem = <Action />; break
       case "login":         elem = <Login />; break
       case "orders":        elem = <Orders />; break
       case "history":       elem = <OHistory />; break

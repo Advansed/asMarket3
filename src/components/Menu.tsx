@@ -35,12 +35,6 @@ const appPages: AppPage[] = [
     mdIcon: mailSharp
   },
   {
-    title: 'Акции',
-    url: '',
-    iosIcon: heartOutline,
-    mdIcon: archiveSharp
-  },
-  {
     title: 'Заказы',
     url: '/page/orders',
     iosIcon: paperPlaneOutline,
@@ -54,7 +48,7 @@ const appPages: AppPage[] = [
   },
   {
     title: 'Условия работы',
-    url: '/page/info',
+    url: '',
     iosIcon: checkboxOutline,
     mdIcon: trashSharp
   },
@@ -67,7 +61,7 @@ const appPages: AppPage[] = [
  
 ];
 
-
+const labels = ['Акции', 'Скидки', 'Бренды'];
 
 const Menu: React.FC = () => {
   const location = useLocation();
@@ -128,6 +122,25 @@ const Menu: React.FC = () => {
           })}
         </IonList>
 
+        <IonList id="labels-list">
+          <IonListHeader>Возможности</IonListHeader>
+          <IonMenuToggle autoHide={false}>
+            {labels.map((label, index) => (
+                <IonItem lines="none" key={index}
+                  onClick = {()=>{
+      
+                    if(label === "Акции"){
+                      Store.dispatch({type: "category", category: "01-00000100"})
+                      console.log("menu")
+                    }                
+                  }}
+                >
+                  <IonIcon slot="start" icon={bookmarkOutline} />
+                  <IonLabel>{label}</IonLabel>
+                </IonItem>
+              ))}
+          </IonMenuToggle>
+        </IonList>
         
       </IonContent>
     </IonMenu>

@@ -56,26 +56,31 @@ export function Categories(props):JSX.Element {
     useEffect(()=>{ 
         console.log("useEffect")
         Load()
-        console.log(info)
-        console.log(upd)
     }, [])
 
     function onClick(inf, num) {
         if(num === 0) { 
-            let in_fo = i_info
+            let in_fo = {
+                categories: [],
+                cats:       [],
+                cat:        "",
+            }
             in_fo.categories = info.categories
             in_fo.cats = inf; 
             in_fo.cat = inf.Категории[0];
-           // setUpd(upd + 1) 
             setInfo(in_fo)
             Store.dispatch({type: "sub", sub: in_fo.cat})
         }
         if(num === 1) { 
-            let in_fo = i_info
+            let in_fo = {
+                categories: [],
+                cats:       [],
+                cat:        "",
+            }
             in_fo.categories = info.categories
             in_fo.cats = info.cats; 
             in_fo.cat = inf;
-            setInfo(in_fo)//setUpd(upd + 1)
+            setInfo(in_fo);
             Store.dispatch({type: "sub", sub: inf})
         }
     }
