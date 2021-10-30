@@ -1,0 +1,30 @@
+.os-right {
+    display:            flex;
+    -webkit-box-align:  center;
+    align-items:        center;
+    border-bottom: 1px solid lightgray;
+}
+
+.os-ul1 {
+    width: 100%;
+    margin:             0px;
+    padding:            0px;
+    position:           relative;
+    white-space:        nowrap;
+}
+
+.os-li1 {
+    position:           relative;
+    display:            inline-block;
+    vertical-align:     top;
+    width:              33%;
+    text-align:         center;
+    list-style:         none;
+    padding:            0px;
+    margin:             0px;
+}
+
+.os-icon {
+    width: 2em;
+    height: 2em;
+}

@@ -36,7 +36,7 @@ export function Login(props): JSX.Element {
                     placeholder = "+7(---)-- -- --"
                     onChange={(e: any) => {
                         let st = e.target.value;
-                        phone = "+7" + st;
+                        phone = st;
                     }}
                         
                 />

@@ -2,6 +2,8 @@
 import { IonText } from "@ionic/react"
 
 export function Action1():JSX.Element {
+
+    
     let elem = <>
         <div>
             <h1 className="a-center"> Акция!!! </h1>

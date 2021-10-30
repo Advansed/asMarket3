@@ -179,8 +179,20 @@ async function load( categ, page = 1 ){
 
 }
 
+export function setToken(token) {
+    let auth = Store.getState().auth;
+    if( auth ) {
+        getData("method", {
+            method:     "Токен",
+            phone:      Store.getState().login.code,
+            token:      token.value,
+        })
+    }
+}
+
 export function Phone(phone): string {
     if(phone === undefined) return ""
+    if(phone === null) return ""
     let str = "+"
     for(let i = 0;i < phone.length;i++){
       let ch = phone.charCodeAt(i)
@@ -195,6 +207,7 @@ export async function getProfile(phone){
             method: "Профиль",
             phone:  Phone(phone),
         })
+    console.log(res)
     let login = res[0];login.type = "login"
     Store.dispatch( login )
     console.log(res[0])
@@ -210,8 +223,11 @@ async function exec(){
         return e
     })})  
 
+   // localStorage.setItem("marketAs.login", "+79142227300");
     let phone = localStorage.getItem("marketAs.login")
-  //if(phone !== undefined) getProfile(phone)
+    console.log(phone)
+    if((phone !== undefined) && (phone !== null)) 
+        getProfile(phone)
 
     console.log("exec")
     res = await getData("method", {method: "Категории"})
@@ -226,10 +242,3 @@ async function exec(){
 }
 
 exec();
-
-export const car_jarr = [
-    {Имя: "Сертификат в подарок",       Описание: "Подарите сертификат близким",    Картинка: "", Цвет: '#9c0c3c'}
-  , {Имя: "ПромоКод",                   Описание: "Скидка на первый заказ 15%",     Картинка: "", Цвет: '#03bd38'}
-  , {Имя: "Акционные товары, скидки",   Описание: "",                               Картинка: "", Цвет: '#ff0000'}
-  , {Имя: "Бесплатная доставка",        Описание: "Купите товары больше 2000 руб",  Картинка: "", Цвет: '#00dd00'}
-]

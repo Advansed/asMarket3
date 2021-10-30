@@ -42,9 +42,8 @@ export function   Order( props ):JSX.Element {
     useEffect(()=>{
         let sum = Store.getState().basket.reduce(function(a, b){ return a + b.Сумма;}, 0)
         info.Phone =           Store.getState().login.code
-        console.log(Store.getState().login.code)
-        console.log(info)
         info.CustomerName =    Store.getState().login.name
+        info.Address =         Store.getState().login.address
         info.Total =           sum
         
         let del = Store.getState().market.sum;
@@ -162,7 +161,7 @@ export function   Order( props ):JSX.Element {
             <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" onIonChange={e => {
                 info.DeliveryMethod = e.detail.value
                 if(info.DeliveryMethod === "Доставка") {
-                  info.Address = "";
+                  info.Address = Store.getState().login.address;
                   info.DelivSum = info.Total  < 1000 ? Store.getState().market.sum : 0
                   setDost(true); 
                   
@@ -185,6 +184,7 @@ export function   Order( props ):JSX.Element {
                 token="23de02cd2b41dbb9951f8991a41b808f4398ec6e"
                 filterLocations ={ dict }
                 hintText = { "г. Якутск" }
+                defaultQuery = { info.Address }
                 onChange={(e)=>{
                   if(e !== undefined)
                     info.Address = e.value
