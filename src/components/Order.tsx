@@ -9,6 +9,7 @@ import MaskedInput from "../mask/reactTextMask";
 import { getData1C, Store } from "../pages/Store";
 import './Order.css'
 import { IPAY, ipayCheckout } from './sber'
+import { v4 as uuidv4 } from 'uuid';
 
 declare type Dictionary = {
     [key: string]: any;
@@ -45,6 +46,8 @@ export function   Order( props ):JSX.Element {
         info.CustomerName =    Store.getState().login.name
         info.Address =         Store.getState().login.address
         info.Total =           sum
+
+        info.StatusId =        uuidv4()
         
         let del = Store.getState().market.sum;
         let tabs = Store.getState().market.tabs;

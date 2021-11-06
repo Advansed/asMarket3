@@ -186,7 +186,7 @@ export function   Options():JSX.Element {
             >
               <IonItem lines="none">
                 <IonAvatar slot="start">
-                  <img src={ login.Картинка === "" ? personCircleOutline : login.Картинка } 
+                  <img src={ login.image === "" ? personCircleOutline : login.image } 
                   alt=""
                 />
                 </IonAvatar>
@@ -194,7 +194,7 @@ export function   Options():JSX.Element {
                   <IonRow>
                     <IonCol>
                       <IonInput placeholder="ФИО, псевдоним" disabled
-                        value = { login.ФИО }  
+                        value = { login.name }  
                       >
                       </IonInput> 
                     </IonCol>           
@@ -202,7 +202,7 @@ export function   Options():JSX.Element {
                   <IonRow>
                     <IonCol>
                     <IonInput placeholder="Телефон" disabled
-                      value = { login.Телефон }  
+                      value = { login.code }  
                     >
                     </IonInput>
                     </IonCol>           

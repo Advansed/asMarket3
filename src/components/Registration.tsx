@@ -6,18 +6,31 @@ import './Registration.css'
 
 let phone = "";
 
-async function getSMS(phone) {
+async function getSMS1(phone) {
 
     let login = Store.getState().login;
-    let res = await  getData1C("ПолучитьСМС", {
+    let res = await  getData1C("Регистрация", {
         Телефон:    phone,    
     })
-
     console.log(res)
-    if(res.СМС !== undefined) {
-        Store.dispatch({type: "login", SMS: res.СМС })
-        Store.dispatch({type: "route", route: "/page/SMS"})
+    if(res.Код === 100) {
+        login = res.Данные;
+        login.type = "login"
+        Store.dispatch( login )
+
+        res = await  getData1C("ПолучитьСМС", {
+            Телефон:    phone,    
+        })
+    
+        console.log("ПолучитьСМС")
+        console.log(res)
+        if(res.СМС !== undefined) {
+            Store.dispatch({type: "login", SMS: res.СМС })
+            Store.dispatch({type: "route", route: "/page/SMS"})
+        }
+    
     }
+
 
 }
 
@@ -48,10 +61,11 @@ export function Login(props): JSX.Element {
                     onClick={()=>{
                         console.log("SMS")
                         let login = Store.getState().login
-                        if(login === "") login = { Код: phone }
-                        else login.Код = phone
+                        if(login === "") login = { code: phone }
+                        else login.code = phone
+                        console.log(login)
                         Store.dispatch({type: "login", login: login})
-                        getSMS(phone)
+                        getSMS1(phone)
                     }}  className="orange-clr-bg"
                   >
                     Получить код
@@ -116,7 +130,7 @@ export function SMS(props):JSX.Element {
                   <button
                     slot="end"
                     onClick={()=>{
-                        getSMS(phone)
+                        getSMS1(phone)
                     }}  className="orange-clr-bg"
                   >
                     Отправить код повторно

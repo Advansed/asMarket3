@@ -20,6 +20,7 @@ export function Orders(props):JSX.Element{
             phone: login.code,
         })
 
+        console.log(login);
         setInfo(res);
         console.log(res);
         setLoad(false);

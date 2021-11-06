@@ -11,7 +11,7 @@ import { OHistory, Orders } from '../components/Orders';
 import { Options, Profile } from '../components/Profile';
 import { Login, SMS } from '../components/Registration';
 import './Page.css';
-import { getData, getData1C, Store } from './Store';
+import { getData, getData1C, getOrders, Store } from './Store';
 
 import { PushNotificationSchema, PushNotifications, Token, ActionPerformed } from '@capacitor/push-notifications';
 
@@ -116,27 +116,31 @@ const Page: React.FC = () => {
     }
   }})
 
-  Store.subscribe({num: 2, type: "login", func: ()=>{
-    if (isPushNotificationsAvailable) {
+  Store.subscribe({num: 2, type: "auth", func: ()=>{
+    if( Store.getState().auth) {
+      if (isPushNotificationsAvailable) {
 
-      PushNotifications.checkPermissions().then((res) => {
-          if (res.receive !== 'granted') {
-            PushNotifications.requestPermissions().then((res) => {
-              if (res.receive === 'denied') {
-                showToast('Push Notification permission denied');
-              }
-              else {
-                showToast('Push Notification permission granted');
-                register();
-              }
-            });
-          }
-          else {
-            register();
-          }
-      });
+        PushNotifications.checkPermissions().then((res) => {
+            if (res.receive !== 'granted') {
+              PushNotifications.requestPermissions().then((res) => {
+                if (res.receive === 'denied') {
+                  showToast('Push Notification permission denied');
+                }
+                else {
+                  showToast('Push Notification permission granted');
+                  register();
+                }
+              });
+            }
+            else {
+              register();
+            }
+        });
+      }
+
+      getOrders();
+      
     }
-
 
   }})
 
@@ -161,7 +165,7 @@ const Page: React.FC = () => {
           Телефон: Store.getState().login.code
       })
       if(res !== undefined){
-        console.log(res)
+        console.log("Подтверждение")
         if(res.СМС !== undefined) {
           Store.dispatch({ type: "login", SMS: res.СМС })
           setModal( true );
@@ -198,12 +202,13 @@ const Page: React.FC = () => {
     return elem;
   }
 
-  function SMS():JSX.Element {
+  function ModalSMS():JSX.Element {
     const [tires, setTires] = useState("----")
     const [alert1, setAlert1] = useState(false)
     const [alert2, setAlert2] = useState(false)
 
     function getISO(dat) {
+      if(dat === undefined) return ""
       let st = dat.substring(0, 10);
       st = st.replace('40', '20').replace('-', '.').replace('-', '.');
       return st
@@ -305,7 +310,7 @@ const Page: React.FC = () => {
       </IonHeader>
       <Main name = { name }/>
       <IonModal isOpen = { modal }>
-        <SMS />
+        <ModalSMS />
       </IonModal>
     </IonPage>
   );

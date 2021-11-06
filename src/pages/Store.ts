@@ -282,8 +282,8 @@ async function exec(){
    // localStorage.setItem("marketAs.login", "+79142227300");
     let phone = localStorage.getItem("marketAs.login")
     console.log(phone)
-    if((phone !== undefined) && (phone !== null)) 
-        getProfile(phone)
+    //if((phone !== undefined) && (phone !== null)) 
+    //    getProfile(phone)
 
     console.log("exec")
     res = await getData("method", {method: "Категории"})
