@@ -4,11 +4,13 @@ import { getData, Store } from "../pages/Store"
 import QRCode from "react-qr-code";
 import { arrowBackOutline, bicycleOutline, giftOutline, readerOutline, syncCircleOutline } from "ionicons/icons";
 import './Orders.css'
-import { convertMaskToPlaceholder } from "../mask/src/utilities";
 
 export function Orders(props):JSX.Element{
     const [info, setInfo] = useState<any>([])
     const [load, setLoad] = useState(false)
+
+
+    let elem = <></>
 
     async function getOrders(){
         setLoad(true);
@@ -23,11 +25,16 @@ export function Orders(props):JSX.Element{
         setLoad(false);
     }
 
+    Store.subscribe({num: 71, type: "orders", func: ()=>{
+        setInfo(Store.getState().orders);    
+    }})
+
     useEffect(()=>{
-        getOrders()
+        //getOrders()
+        setInfo(Store.getState().orders);
+        return Store.unSubscribe(71)
     }, [])
 
-    let elem = <></>
 
     for(let i = 0;i < info.length;i++){
         elem = <>

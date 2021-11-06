@@ -16,8 +16,8 @@ export const i_state = {
     basket:                                         [],
     order:                                          "",
     market:                                         {
-        name:     "АсМаркет",
-        address:    "ул. Полины Осипенко, 8/1, Якутск, Респ. Саха (Якутия), 677001",
+        name:               "АсМаркет",
+        address:            "ул. Полины Осипенко, 8/1, Якутск, Респ. Саха (Якутия), 677001",
         sum:                                       250,
         tabs:                                       [
             {sum: 0,        del: 150},
@@ -33,7 +33,7 @@ export const i_state = {
     gcard:                                          "",
     actions:                                        [],
     action:                                         "",
-
+    param:                                          "",
 }
 
 
@@ -122,6 +122,14 @@ function                create_Store(reducer, initialState) {
             }else{
                 listeners = [...listeners, listen]
             }
+        },
+        unSubscribe(index) {
+            var ind = listeners.findIndex(function(b) { 
+                return b.num === index; 
+            });
+            if(ind >= 0){
+                listeners.splice(ind, 1)
+            }        
         }
     };
 }
@@ -137,12 +145,13 @@ const                   rootReducer = combineReducers({
     order:                  reducers[6],  
     market:                 reducers[7],
     search:                 reducers[8],
-    orders:                 reducers[9],  
+    orders:                 orReducer, //reducers[9],  
     category:               reducers[10],  
     sub:                    reducers[11],  
     gcard:                  reducers[12],
     actions:                reducers[13],
     action:                 reducers[14],
+    param:                  reducers[15],             
 })
 
 
@@ -150,6 +159,15 @@ function                gdReducer(state:any = i_state.goods, action){
     switch(action.type) {
         case "goods": {    
             return [...state, ...action.goods]
+        }
+        default: return state
+    }
+}
+
+function                orReducer(state:any = i_state.orders, action){
+    switch(action.type) {
+        case "orders": {    
+            return action.orders
         }
         default: return state
     }
@@ -207,15 +225,53 @@ export async function getProfile(phone){
             method: "Профиль",
             phone:  Phone(phone),
         })
-    console.log(res)
     let login = res[0];login.type = "login"
     Store.dispatch( login )
-    console.log(res[0])
+
+    getOrders()
+
 }
+let timerId;
+
+
+export async function getOrders(){
+    Orders();
+    timerId = setInterval(() => {
+        Orders()        
+    }, 5000);
+  
+}
+
+async function Orders(){
+    let res = await getData("method", {
+        method: "Заказы",
+        phone: Store.getState().login.code
+    })   
+    if(Array.isArray(res))
+        Store.dispatch({type: "orders", orders: res})
+    else 
+        Store.dispatch({type: "orders", orders: []})
+}
+
+export function stopOrders(){
+
+      setTimeout(() => { clearInterval(timerId) });
+
+}
+
+
 
 async function exec(){
     let res: any
 
+    res = await getData("method", {method: "Настройки"}) 
+    let market = res[0]
+    console.log(market);
+    market.tabs = JSON.parse(market.tabs)
+    console.log(market);
+
+    Store.dispatch({type: "market", market: res})
+    console.log(res);
 
     res = await getData("method", {method: "Акции"})
     Store.dispatch({type: "actions", actions: res.map((e) => {

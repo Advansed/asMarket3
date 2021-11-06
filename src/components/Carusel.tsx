@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { ReactText, useEffect, useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -23,7 +23,31 @@ export function Carusel():JSX.Element {
         setInfo(Store.getState().actions)
     }})
 
+    function Slide(e):JSX.Element {
+        let elem = <>
+            <div key = { e.Код } 
+                className="slides"
+                onClick = {()=>{
+                    if(e.URL !== "") {
+                        Store.dispatch({type: "action", action: e})
+                        Store.dispatch({type: "route", route: "/page/action"})
+                    }
+                }}                
+            >
+                <img src={ e.Картинка } alt ="" className = "sl-img"
+            />
+            </div>
+
+        </>
+
+        return elem
+    }
+
     function Slides():JSX.Element {
+        // let items : any = []
+        // for( let i = 0; i < info.length;i++){
+        //     items = [...items, <Slide e = { info[i] }/>]
+        // }
         let elem = <>
             <div className="box">
                 <Carousel
@@ -32,23 +56,24 @@ export function Carusel():JSX.Element {
                     interval = { 3000 }
                     showThumbs = { false }
 
-                >
-                        { info.map((e, ind) =>{ 
-                            return <>
-                                <div key = { e.Код } 
-                                    className="slides"
-                                    onClick = {()=>{
-                                        if(e.URL !== "") {
-                                            Store.dispatch({type: "action", action: e})
-                                            Store.dispatch({type: "route", route: "/page/action"})
-                                        }
-                                    }}                
-                                >
-                                    <img src={ e.Картинка } alt ="" className = "sl-img"
-                                />
-                                </div>
+                >   
+                    {/* { items } */}
+                    { info.map((e, ind) =>{ 
+                        return <>
+                            <div key = { e.Код } 
+                                className="slides"
+                                onClick = {()=>{
+                                    if(e.URL !== "") {
+                                        Store.dispatch({type: "action", action: e})
+                                        Store.dispatch({type: "route", route: "/page/action"})
+                                    }
+                                }}                
+                            >
+                                <img src={ e.Картинка } alt ="" className = "sl-img"
+                            />
+                            </div>
 
-                            </>
+                        </>
                         })}
                 </Carousel>
             </div>

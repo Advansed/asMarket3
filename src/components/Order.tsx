@@ -16,7 +16,7 @@ declare type Dictionary = {
 
 const info = {
   StatusId:         0,
-  Order_No:           "",
+  Order_No:         "",
   Phone:            "",
   Address:          "",
   CustomerName :    "",

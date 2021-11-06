@@ -1,7 +1,6 @@
-import { IonButtons, IonHeader, IonMenuButton, IonPage, IonSearchbar, IonToolbar } from '@ionic/react';
+import { IonAlert, IonButtons, IonHeader, IonInput, IonMenuButton, IonModal, IonPage, IonSearchbar, IonToolbar } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router';
-import { Action1 } from '../components/Actions';
 import { Basket, BasketIcon } from '../components/Basket';
 import { Action } from '../components/Carusel';
 import { GCard } from '../components/GCard';
@@ -12,15 +11,17 @@ import { OHistory, Orders } from '../components/Orders';
 import { Options, Profile } from '../components/Profile';
 import { Login, SMS } from '../components/Registration';
 import './Page.css';
-import { setToken, Store } from './Store';
+import { getData, getData1C, Store } from './Store';
 
 import { PushNotificationSchema, PushNotifications, Token, ActionPerformed } from '@capacitor/push-notifications';
 
 import { Toast } from "@capacitor/toast";
 import { Capacitor } from '@capacitor/core';
+import { convertMaskToPlaceholder } from '../mask/src/utilities';
 
 const Page: React.FC = () => {
-
+  const [modal, setModal] = useState(false)
+  const [order, setOrder] = useState<any>()
   const { name } = useParams<{ name: string; }>();
 
   let hust = useHistory();
@@ -31,24 +32,9 @@ const Page: React.FC = () => {
   const isPushNotificationsAvailable = Capacitor.isPluginAvailable('PushNotifications');
 
   useEffect(()=>{
-    if (isPushNotificationsAvailable) {
-
-      PushNotifications.checkPermissions().then((res) => {
-          if (res.receive !== 'granted') {
-            PushNotifications.requestPermissions().then((res) => {
-              if (res.receive === 'denied') {
-                showToast('Push Notification permission denied');
-              }
-              else {
-                showToast('Push Notification permission granted');
-                register();
-              }
-            });
-          }
-          else {
-            register();
-          }
-      });
+    return ()=>{
+      Store.unSubscribe(1)
+      Store.unSubscribe(2)
     }
   },[])
 
@@ -65,8 +51,17 @@ const Page: React.FC = () => {
       // On success, we should be able to receive notifications
       PushNotifications.addListener('registration',
           (token: Token) => {
-              setToken(token)
-              showToast('Успешно зарегистрован');
+//              setToken(token)
+            let auth = Store.getState().auth;
+            if( auth ) {
+                getData("method", {
+                    method:     "Токен",
+                    phone:      Store.getState().login.code,
+                    token:      token.value,
+                })
+              showToast(token.value);
+            }
+              
           }
       );
 
@@ -80,6 +75,7 @@ const Page: React.FC = () => {
       // Show us the notification payload if the app is open on our device
       PushNotifications.addListener('pushNotificationReceived',
           (notification: PushNotificationSchema) => {
+            //console.log(notification)
               setnotifications(notifications => [...notifications, { id: notification.id, title: notification.title, body: notification.body, type: 'foreground' }])
           }
       );
@@ -104,23 +100,74 @@ const Page: React.FC = () => {
     });
   });
 
-
   Store.subscribe({num: 1, type: "route", func: ()=>{ 
-  let route = Store.getState().route;
-  switch( route ) {
-    case "back": {
-        console.log(hust.location.pathname)
-        if(hust.location.pathname === "/page/options"){
-          Store.dispatch({type: "route", route: "/page/root"})
-        } else 
-          hust.goBack(); 
-
-      }; break
-    case "forward": hust.goForward(); break;
-    default: hust.push( route );
-  }
+    let route = Store.getState().route;
+    switch( route ) {
+      case "back": {
+          console.log(hust.location.pathname)
+          if(hust.location.pathname === "/page/options"){
+            Store.dispatch({type: "route", route: "/page/root"})
+          } else 
+            hust.goBack(); 
+  
+        }; break
+      case "forward": hust.goForward(); break;
+      default: hust.push( route );
+    }
   }})
 
+  Store.subscribe({num: 2, type: "login", func: ()=>{
+    if (isPushNotificationsAvailable) {
+
+      PushNotifications.checkPermissions().then((res) => {
+          if (res.receive !== 'granted') {
+            PushNotifications.requestPermissions().then((res) => {
+              if (res.receive === 'denied') {
+                showToast('Push Notification permission denied');
+              }
+              else {
+                showToast('Push Notification permission granted');
+                register();
+              }
+            });
+          }
+          else {
+            register();
+          }
+      });
+    }
+
+
+  }})
+
+  Store.subscribe({num: 3, type: "orders", func: ()=>{
+    let orders = Store.getState().orders;
+    console.log("orders--")
+
+      var ind = orders.findIndex(function(b) { 
+          return b.Статус === 0; 
+      });
+      if(ind >= 0){
+        if( !modal ){
+          setOrder(orders[ind])
+          getSMS()
+        }
+      }
+      
+  }})
+
+  async function getSMS(){
+      let res = await getData1C("ПолучитьСМС", {
+          Телефон: Store.getState().login.code
+      })
+      if(res !== undefined){
+        console.log(res)
+        if(res.СМС !== undefined) {
+          Store.dispatch({ type: "login", SMS: res.СМС })
+          setModal( true );
+      }
+      }
+  }
   function Main(props):JSX.Element {
     let elem = <></>
 
@@ -151,6 +198,98 @@ const Page: React.FC = () => {
     return elem;
   }
 
+  function SMS():JSX.Element {
+    const [tires, setTires] = useState("----")
+    const [alert1, setAlert1] = useState(false)
+    const [alert2, setAlert2] = useState(false)
+
+    function getISO(dat) {
+      let st = dat.substring(0, 10);
+      st = st.replace('40', '20').replace('-', '.').replace('-', '.');
+      return st
+  }
+
+    let elem = <>
+          <div>
+            <h1 className="a-center">Подтвердите заказ</h1>
+            <h4 className="a-center"> { "Заказ " + order?.Номер + " от " + getISO(order?.Дата) }</h4>
+            <h4 className="a-center"> { order?.Адрес }</h4>
+            <h4 className="a-center"> { "Сумма " + order?.СуммаДокумента + " руб" }</h4>
+          </div>
+          {/* <div className="r-circle3"><div className="r-circle2"></div></div> */}
+          <div className="r-content">
+          <div className="lg-sms-box">
+                <div className="lg-div-1">
+                    <span></span>
+                    { tires }
+                </div>
+
+                <IonInput
+                    className   = "lg-sms-input"
+                    type        = "text"
+                    inputMode   = "numeric"
+                    maxlength   = { 4 }
+                    onIonChange = {(e)=>{
+                        let val = e.detail.value;
+                        switch (val?.length) {
+                            case 0:     setTires("----");break;       
+                            case 1:     setTires("---");break;       
+                            case 2:     setTires("--");break;       
+                            case 3:     setTires("-");break;       
+                            case 4:     setTires("");break;       
+                            default:    setTires("----");break;       
+                        }
+                        if(val?.length === 4) {
+                            let SMS = Store.getState().login.SMS
+                            console.log(Store.getState().login)
+                            if(SMS === val) {
+                                getData("method",{method: "ПодтвердитьЗаказ", docNum: order?.Номер })
+                                setAlert1(true)    
+                                setModal(false)
+                            } else 
+                                setAlert2(true)
+                        }
+                        
+                    }}
+                    />
+            </div>
+            <IonToolbar class="i-content">
+              <div className="btn-r">
+                    <button
+                      slot="end"
+                      onClick={()=>{
+                          //getSMS(phone)
+                          setModal(false)
+                      }}  className="orange-clr-bg"
+                    >
+                      Отменить
+                    </button>
+              </div>
+            </IonToolbar>
+            </div>
+
+        <IonAlert
+          isOpen={ alert1 }
+          onDidDismiss={() => setAlert1(false)}
+          cssClass='my-custom-class'
+          header={'Успех'}
+          message={'Заказ подтвержден'}
+          buttons={['Ок']}
+        />
+        <IonAlert
+          isOpen={ alert2 }
+          onDidDismiss={() => setAlert2(false)}
+          cssClass='my-custom-class'
+          header={'Ошибка'}
+          message={'Неверный код'}
+          buttons={['Ок']}
+        />
+
+ 
+    </>
+
+    return elem;
+  }
   return (
     <IonPage>      
       <IonHeader >
@@ -165,6 +304,9 @@ const Page: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <Main name = { name }/>
+      <IonModal isOpen = { modal }>
+        <SMS />
+      </IonModal>
     </IonPage>
   );
 };

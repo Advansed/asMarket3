@@ -56,6 +56,11 @@ export function Categories(props):JSX.Element {
     useEffect(()=>{ 
         console.log("useEffect")
         Load()
+
+        return ()=>{
+            // Store.unSubscribe(11)
+            // Store.unSubscribe(12)
+        }
     }, [])
 
     function onClick(inf, num) {

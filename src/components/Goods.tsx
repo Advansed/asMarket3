@@ -32,6 +32,10 @@ export function Goods():JSX.Element {
 
     useEffect(()=>{
         setSub(Store.getState().sub)
+        return ()=>{
+            Store.unSubscribe(21);
+            Store.unSubscribe(22);
+        }
     }, [])
 
     let elem = <></>
