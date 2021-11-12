@@ -131,3 +131,19 @@ a{
     height: calc(18px + (40 - 18) * ((100vw - 270px) / (1200 - 270))) !important;
     font-size: calc(12px + (26 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
 }
+
+.b-panel {
+    display: flex;
+    padding: 1em;
+    background-color: #FF8C00;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    color: white;
+
+}
+
+.bs-icon-1 {
+    width: 2em;
+    height: 2em;
+}

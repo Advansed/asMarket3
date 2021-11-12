@@ -1,6 +1,6 @@
 {
 	"appId": "anr.asMarket",
-	"appName": "asMarket3",
+	"appName": "asMarket",
 	"webDir": "build",
 	"bundledWebRuntime": false
 }

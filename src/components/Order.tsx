@@ -1,12 +1,12 @@
-import { IonAlert, IonCardContent, IonCardHeader, IonCardSubtitle, IonCol
-  , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText } from "@ionic/react";
+import { IonAlert, IonCardContent, IonCardHeader, IonCardSubtitle, IonCol, IonInput
+  , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonCard, IonToolbar } from "@ionic/react";
 import { setErrorHandler } from "ionicons/dist/types/stencil-public-runtime";
 import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline } from "ionicons/icons";
 import { setUncaughtExceptionCaptureCallback } from "process";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
 import MaskedInput from "../mask/reactTextMask";
-import { getData1C, Store } from "../pages/Store";
+import { getData1C, getData, Store } from "../pages/Store";
 import './Order.css'
 import { IPAY, ipayCheckout } from './sber'
 import { v4 as uuidv4 } from 'uuid';
@@ -28,6 +28,9 @@ const info = {
   PaymentStatus:    0,
   Total:            0,
   DelivSum:         0,
+  promokod:         "",
+  promo_percent:    0,
+  promo_sum:        0, 
   OrderDetails:     []
 }
 
@@ -38,6 +41,8 @@ export function   Order( props ):JSX.Element {
     const [upd,       setUpd]     = useState(0)
     const [deliv,     setDeliv]   = useState(0)
     const [choice,    setChoice]  = useState(false)
+    const [promo,     setPromo]   = useState<any>()
+    const [modal,     setModal] = useState(false)
 
 
     useEffect(()=>{
@@ -207,16 +212,42 @@ export function   Order( props ):JSX.Element {
               <IonLabel slot="end" class="a-right">{ 
                   new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total) } </IonLabel>
             </IonItem>
+            <IonItem class={ promo === undefined ? "hidden" : "ml-1"} lines="none">
+              <IonCardSubtitle>Промокод </IonCardSubtitle>
+              <IonLabel slot="end" class="a-right">
+                  { promo?.Промокод }
+              </IonLabel>
+            </IonItem>
+            <IonItem class={ promo === undefined ? "hidden" : "ml-1"} lines="none">
+              <IonCardSubtitle>Скидка по промокоду </IonCardSubtitle>
+              <IonLabel slot="end" class="a-right"> -
+                { 
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.promo_sum)
+                }
+              </IonLabel>
+            </IonItem>
+            
             <IonItem class="ml-1" lines="none">
               <IonCardSubtitle>Итого </IonCardSubtitle>
               <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum)
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum - info?.promo_sum)
               } </IonLabel>
             </IonItem>
           </IonList>
           <div className="footer-order">
          
-         <div className="btn">
+          <div className="or-btn">
+            <button
+              className = { "orange-clr-bg"}
+              slot="end"
+              onClick={()=>{
+                setModal(true)
+              }}  
+            >
+              Промокод
+            </button>         
+          </div>
+         <div className="or-btn">
                <button
                   className = { mp ? "hidden" : "orange-clr-bg"}
                  slot="end"
@@ -235,19 +266,19 @@ export function   Order( props ):JSX.Element {
             </button>
           </div>
      
-     </div>
+        </div>
         </IonCardContent>
         
-      <IonAlert
-            isOpen={ message !== "" }
-            onDidDismiss={() => setMessage("")}
-            cssClass='my-custom-class'
-            header={'Ошибка'}
-            message={ message }
-            buttons={['OK']}
-          />
-  
-      </>
+        <IonAlert
+              isOpen={ message !== "" }
+              onDidDismiss={() => setMessage("")}
+              cssClass='my-custom-class'
+              header={'Ошибка'}
+              message={ message }
+              buttons={['OK']}
+            />
+    
+        </>
       return elem
     }
 
@@ -381,7 +412,6 @@ export function   Order( props ):JSX.Element {
       return elem
     }
 
-
     function Proov(){
       console.log(info)
       Store.dispatch({type: "order", order: info})
@@ -419,6 +449,93 @@ export function   Order( props ):JSX.Element {
       }
     }
 
+    function ModalPromo():JSX.Element {
+      const [alert1, setAlert1] = useState(false)
+      const [alert2, setAlert2] = useState(false)
+  
+      async function Promokod(Код){
+        let res = await getData("method", {
+            method: "Промокод",
+            code: Код
+        })
+        console.log(res)
+        if(res.length > 0) {
+          info.promokod       = res[0].Промокод
+          info.promo_sum      = (res[0].Процент * info.Total / 100) > res[0].Сумма ? (res[0].Процент * info.Total / 100) : res[0].Сумма
+          if(info.promo_sum > (info.Total + info.DelivSum)) info.promo_sum = info.Total + info.DelivSum
+          setModal(false)
+          setPromo(res[0])
+        } else setAlert2(true)
+      }
+  
+      function getISO(dat) {
+        if(dat === undefined) return ""
+        let st = dat.substring(0, 10);
+        st = st.replace('40', '20').replace('-', '.').replace('-', '.');
+        return st
+    }
+  
+      let elem = <>
+            <div>
+              <h1 className="a-center">Введите промокод</h1>
+              <h4 className="a-center"> { "Заказ на сумму " + (info?.Total + info?.DelivSum).toString() + " руб." }</h4>
+            </div>
+            {/* <div className="r-circle3"><div className="r-circle2"></div></div> */}
+            <div className="r-content">
+            <div className="lg-promo-box">
+  
+                  <IonInput
+                      className   = "lg-promo-input"
+                      type        = "text"
+                      inputMode   = "numeric"
+                      maxlength   = { 9 }
+                      onIonChange = {(e)=>{
+                          let val = e.detail.value;
+                          if(val?.length === 9) {
+                            Promokod(val)                              
+                          }
+                          
+                      }}
+                      />
+              </div>
+              <IonToolbar class="i-content">
+                <div className="btn-r">
+                      <button
+                        slot="end"
+                        onClick={()=>{
+                            //getSMS(phone)
+                            setModal(false)
+                        }}  className="orange-clr-bg"
+                      >
+                        Отменить
+                      </button>
+                </div>
+              </IonToolbar>
+              </div>
+  
+          <IonAlert
+            isOpen={ alert1 }
+            onDidDismiss={() => setAlert1(false)}
+            cssClass='my-custom-class'
+            header={'Успех'}
+            message={'Промокод активирован'}
+            buttons={['Ок']}
+          />
+          <IonAlert
+            isOpen={ alert2 }
+            onDidDismiss={() => setAlert2(false)}
+            cssClass='my-custom-class'
+            header={'Ошибка'}
+            message={'Неверный код'}
+            buttons={['Ок']}
+          />
+  
+   
+      </>
+  
+      return elem;
+    }
+  
   
     let elem = <></>
 
@@ -463,6 +580,12 @@ export function   Order( props ):JSX.Element {
             }
           ]}
         />
+
+        <IonModal isOpen = { modal }
+          cssClass = "o-modal"
+        >
+          <ModalPromo />
+        </IonModal> 
     </>;
   }
   

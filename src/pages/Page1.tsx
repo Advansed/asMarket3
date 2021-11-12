@@ -1,17 +1,9 @@
 import { IonPage } from '@ionic/react';
 import { useParams, useHistory } from 'react-router';
-import { Action1 } from '../components/Actions';
 import { Basket } from '../components/Basket';
-import { Action } from '../components/Carusel';
 import { GCard } from '../components/GCard';
-import { InfoPage1, InfoPage2 } from '../components/Infopage';
-import { General } from '../components/Main';
 import { Order } from '../components/Order';
-import { OHistory, Orders } from '../components/Orders';
-import { Options, Profile } from '../components/Profile';
-import { Login, SMS } from '../components/Registration';
 import './Page.css';
-import { Store } from './Store';
 
 const Page1: React.FC = () => {
 
@@ -28,6 +20,8 @@ const Page1: React.FC = () => {
       </>
     } else    
     switch (props.name) {
+      case "basket":        elem = <Basket />; break;
+      case "order" :        elem = <Order />; break;
       default :             elem = <></> 
     }
 

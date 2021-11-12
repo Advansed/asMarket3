@@ -16,13 +16,23 @@
     justify-content: center;
     
 }
+.or-btn{
+    background-color: white;
+    margin-top: 0 auto;
+    margin-bottom: 1em;
+    width: 100%;
+    bottom: 1em;
+
+}
 .footer-order{
     position: relative;
     width: 100%;
     height: 20%;
-    margin-top: calc(80px + (300 - 100) * ((100vw - 270px) / (1200 - 270))) ;
+    /* margin-top: calc(80px + (300 - 100) * ((100vw - 270px) / (1200 - 270))) ; */
     background-color: white;
-    margin-left:calc(-3px + (10 + 3) * ((100vw - 270px) / (1200 - 270))) ;
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-left:calc(-3px + (10 + 3) * ((100vw - 270px) / (1200 - 270))) ; */
 }
 .order-box{
     background-color: rgb(255, 255, 255);
@@ -51,6 +61,18 @@ img{
     object-fit: cover;
     width: 100%;
     height: 100%;
+}
+
+.o-modal {
+    background-color: rgb(117, 190, 218);
+}
+
+.om-card {
+    width: 75%;
+    height: 50%;
+    margin: auto;
+    opacity: 1;
+    background-color: white;
 }
 
 @media screen and (max-width: 2900px) {

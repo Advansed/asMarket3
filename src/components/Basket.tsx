@@ -1,10 +1,10 @@
 import { IonButton, IonCol, IonGrid, IonIcon, IonLabel, IonRow, IonText} from '@ionic/react';
-import { arrowBackOutline, closeOutline, infiniteOutline } from 'ionicons/icons';
+import { arrowBackOutline, cartOutline, closeOutline, infiniteOutline, trashBinOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import { Store } from '../pages/Store';
 import './Basket.css';
 
-export function BasketIcon():JSX.Element {
+export function   BasketIcon():JSX.Element {
     const [info, setInfo] = useState(0)
 
     Store.subscribe({num: 31, type: "basket", func: ()=>{
@@ -30,9 +30,7 @@ export function BasketIcon():JSX.Element {
     return elem
 }
 
-
-
-function  delBasket(Код){
+function          delBasket(Код){
     let basket = Store.getState().basket;
   
     if(basket === undefined) basket = [];
@@ -44,10 +42,9 @@ function  delBasket(Код){
       basket.splice(commentIndex, 1)
       Store.dispatch({type:"basket", basket: basket})
     }
-  }
-  
+} 
     
-  export function   addBasket( good, amount ){
+export function   addBasket( good, amount ){
     let basket = Store.getState().basket;
     if(basket === undefined) basket = [];
     var commentIndex = basket.findIndex(function(b) { 
@@ -86,9 +83,9 @@ function  delBasket(Код){
   
       Store.dispatch({type: "basket", basket: basket})
     }
-  }
+}
   
-  export function   Basket(props):JSX.Element {
+export function   Basket(props):JSX.Element {
       const [upd, setUpd] = useState(0)
       const [basket,  setBasket] = useState<any>(Store.getState().basket)
     
@@ -169,36 +166,40 @@ function  delBasket(Код){
                 </IonRow>    
                 <IonRow //className="mt-1"
                 >
-                  <button  className="white-bg text-align orange-clr-fnt mr-2"> 
-                    { new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info.Цена * Количество)  }
-                  </button>
-                  <IonButton className="bs-size-btn left" color="new" 
-                    onClick = {(e)=>{
-                      
-                      if(info.Количество > 0){
-                        updBasket( info.Код, -1 )
-                        info.Количество = info.Количество - 1
-                        setInfo( info )
-                        setUpd1( upd1 + 1 );
-                      } else {
-                        delBasket(info.Код)
-                        setUpd(upd + 1);
-                      }
-                    }}
-                  >-
-                  </IonButton>
-                  <button  className="white-bg text-align "> 
-                    <h5 className="bs-quan">{ Количество.toFixed() + " шт."} </h5>
-                  </button>
-                  <IonButton className="bs-size-btn " color="new" 
-                    onClick = {(e)=>{
-                        updBasket( info.Код, 1 )
-                        info.Количество = info.Количество + 1;
-                        setInfo(info);
-                        setUpd1( upd1 + 1 );
-                    }}
-                  >+
-                  </IonButton>
+                  <IonCol size="5">
+                    <button  className="white-bg text-align orange-clr-fnt mr-2"> 
+                      { new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info.Цена * Количество)  }
+                    </button>
+                  </IonCol>
+                  <IonCol size="7">
+                    <IonButton className="bs-size-btn left" color="new" 
+                      onClick = {(e)=>{
+                        
+                        if(info.Количество > 0){
+                          updBasket( info.Код, -1 )
+                          info.Количество = info.Количество - 1
+                          setInfo( info )
+                          setUpd1( upd1 + 1 );
+                        } else {
+                          delBasket(info.Код)
+                          setUpd(upd + 1);
+                        }
+                      }}
+                    >-
+                    </IonButton>
+                    <button  className="white-bg text-align "> 
+                      <h5 className="bs-quan">{ Количество.toFixed() + " шт."} </h5>
+                    </button>
+                    <IonButton className="bs-size-btn " color="new" 
+                      onClick = {(e)=>{
+                          updBasket( info.Код, 1 )
+                          info.Количество = info.Количество + 1;
+                          setInfo(info);
+                          setUpd1( upd1 + 1 );
+                      }}
+                    >+
+                    </IonButton>
+                  </IonCol>
                 </IonRow>
               </IonCol>
             </IonRow>
@@ -295,7 +296,7 @@ function  delBasket(Код){
                   <button
                     slot="end"
                     onClick={()=>{
-                      Store.dispatch({type: "route", route: "/page/order"})
+                      Store.dispatch({type: "route", route: "/page1/order"})
                     }}  className="orange-clr-bg"
                   >
                     Оформить заказ
@@ -305,9 +306,9 @@ function  delBasket(Код){
           </div>
         
        </>
-  }
+}
 
-  export function   count(info){
+export function   count(info){
     if(info === undefined) return 0;
     let basket = Store.getState().basket;
     var commentIndex = basket.findIndex(function(b) { 
@@ -317,9 +318,9 @@ function  delBasket(Код){
       return basket[commentIndex].Количество
     else 
       return 0
-  }
+}
   
-  export function   total(info){
+export function   total(info){
     let basket = Store.getState().basket;
     var commentIndex = basket.findIndex(function(b) { 
       return b.Код === info.Код; 
@@ -328,5 +329,51 @@ function  delBasket(Код){
       return basket[commentIndex].Сумма
     else 
       return 0
-  }
+}
   
+export function   BasketPanel():JSX.Element {
+  const [amount,  setAmount]  = useState(0);
+  const [sum,     setSum]     = useState(0);
+
+  Store.subscribe({num: 32, type: "basket", func: ()=>{
+    let basket = Store.getState().basket;
+    let sum = 0; let total = 0;
+    for(let i = 0;i < basket.length;i++) {
+      sum = sum + basket[i].Количество;
+      total = total + basket[i].Сумма;
+    }
+    setAmount(sum);setSum(total);
+}})
+
+  let elem = <>
+    <div className = { "b-panel" + ( sum === 0 ? " hidden" : "")}>
+      <div className= "w-10"
+        onClick= {()=>{
+          Store.dispatch({type: "route", route: "/page1/basket"})
+        }}
+      >
+        <IonIcon className = "bs-icon-1" icon = { cartOutline }/>
+      </div>
+      <div className= "w-80"
+        onClick= {()=>{
+          Store.dispatch({type: "route", route: "/page1/basket"})
+        }}
+      >
+        <div className= "ml-1">
+          Количество товаров - { amount } шт
+        </div>
+        <div className= "ml-1">
+          На сумму - { new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format( sum ) } 
+        </div>
+      </div>
+      <div className= "w-10"
+        onClick = {()=>{
+          Store.dispatch({type: "basket", basket: []})
+        }}
+      >
+        <IonIcon className = "bs-icon-1" icon = { trashBinOutline }/>
+      </div>
+    </div>
+  </>
+  return elem
+}

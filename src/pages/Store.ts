@@ -79,6 +79,7 @@ export async function   getData(method : string, params){
 
 }
 
+
 export async function   getData1C(method : string, params){
 
     let res = await axios.post(
@@ -291,8 +292,7 @@ async function exec(){
     Store.dispatch({type: "categories", categories: res.map((e) => {
         e.Категории = JSON.parse(e.Категории)
         return e
-    })})
-
+    })})  
     load( "", 1)
 
 }

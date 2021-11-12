@@ -1,7 +1,7 @@
 import { IonAlert, IonButtons, IonHeader, IonInput, IonMenuButton, IonModal, IonPage, IonSearchbar, IonToolbar } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router';
-import { Basket, BasketIcon } from '../components/Basket';
+import { Basket, BasketIcon, BasketPanel } from '../components/Basket';
 import { Action } from '../components/Carusel';
 import { GCard } from '../components/GCard';
 import { InfoPage1, InfoPage2 } from '../components/Infopage';
@@ -183,13 +183,10 @@ const Page: React.FC = () => {
       </>
     } else    switch (props.name) {
       case "root" :         elem = <General />; break;
-      case "basket" :       elem = <Basket />; break;
-      case "order" :        elem = <Order />; break;
       case "login":         elem = <Login />; break
       case "SMS":           elem = <SMS />; break
       case "options":       elem = <Options />; break
       case "profile":       elem = <Profile />; break
-      case "orders":        elem = <Orders />; break
       case "contacts":      elem = <InfoPage1 />; break
       case "info":          elem = <InfoPage2 />; break
       case "action":        elem = <Action />; break
@@ -303,12 +300,10 @@ const Page: React.FC = () => {
             <IonMenuButton />
           </IonButtons>
           <IonSearchbar />
-          <div slot="end">
-            <BasketIcon />
-          </div>
         </IonToolbar>
       </IonHeader>
       <Main name = { name }/>
+      <BasketPanel />
       <IonModal isOpen = { modal }>
         <ModalSMS />
       </IonModal>

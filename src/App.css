@@ -97,6 +97,10 @@
     display: none;
 }
 
+.block {
+    display: block;
+}
+
 .blue {
     color:blue;
 }

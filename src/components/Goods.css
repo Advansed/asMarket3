@@ -7,6 +7,16 @@
     --ion-color-new-tint: #de9d4e;
   }
 
+.g-ediv {
+    background: #e6e6e6;
+    height: 4em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-right: 1em;
+    display: block;
+    text-align: right;
+}
+
 @media screen and (max-width: 2900px) {
     .g-content {
         display: flex;

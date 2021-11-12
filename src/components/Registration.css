@@ -14,7 +14,34 @@
     border: 1px solid #FF8C00;
     height: 70px !important;
 }
+.lg-promo-input {
+    width: 85% !important;
+    display: flex;
+    margin-left: 1em;
+    
+    padding-top: 0.8em;
+    padding-bottom: 0.5em;
+    padding-left: 0.5em;
+    border-radius: 15px;
+    font-family: monospace;
+    font: bold 24px Helvetica !important;
+    letter-spacing: 0.3em;
+    /* border: 1px solid #FF8C00; */
+    height: 70px !important;
+}
 .lg-sms-box {
+
+    display: flex;
+    width: 15em;
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 1em;
+    border: 1px solid #FF8C00;
+    border-radius: 15px ;
+    height:60px;
+    
+}
+.lg-promo-box {
 
     display: flex;
     width: 15em;

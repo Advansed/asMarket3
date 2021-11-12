@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Store } from "../pages/Store"
-import { IonCard, IonImg, IonIcon, IonChip, IonText, IonButton, IonCardSubtitle, IonCardTitle} from '@ionic/react';
+import { IonCard, IonImg, IonIcon, IonChip, IonText, IonButton, IonCardSubtitle, IonToolbar} from '@ionic/react';
 
 import './Goods.css'
 import { useHistory } from "react-router";
@@ -51,6 +51,11 @@ export function Goods():JSX.Element {
     <div className="catalogue">
         <div className="g-content">
             { elem }
+        </div>
+        <div className="g-ediv">
+            <IonText class="a-right">  
+                All rights reserved asMarket
+            </IonText>
         </div>
     </div>
     </> 
