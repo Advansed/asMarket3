@@ -27,7 +27,6 @@ const Page: React.FC = () => {
   let hust = useHistory();
 
   const nullEntry: any[] = []
-  const [notifications, setnotifications] = useState(nullEntry);
 
   const isPushNotificationsAvailable = Capacitor.isPluginAvailable('PushNotifications');
 
@@ -76,14 +75,14 @@ const Page: React.FC = () => {
       PushNotifications.addListener('pushNotificationReceived',
           (notification: PushNotificationSchema) => {
             //console.log(notification)
-              setnotifications(notifications => [...notifications, { id: notification.id, title: notification.title, body: notification.body, type: 'foreground' }])
+            //  setnotifications(notifications => [...notifications, { id: notification.id, title: notification.title, body: notification.body, type: 'foreground' }])
           }
       );
 
       // Method called when tapping on a notification
       PushNotifications.addListener('pushNotificationActionPerformed',
           (notification: ActionPerformed) => {
-              setnotifications(notifications => [...notifications, { id: notification.notification.data.id, title: notification.notification.data.title, body: notification.notification.data.body, type: 'action' }])
+            //  setnotifications(notifications => [...notifications, { id: notification.notification.data.id, title: notification.notification.data.title, body: notification.notification.data.body, type: 'action' }])
           }
       );
     
@@ -105,7 +104,7 @@ const Page: React.FC = () => {
     switch( route ) {
       case "back": {
           console.log(hust.location.pathname)
-          if(hust.location.pathname === "/page/options"){
+          if(hust.location.pathname === "/page1/options"){
             Store.dispatch({type: "route", route: "/page/root"})
           } else 
             hust.goBack(); 
@@ -172,6 +171,7 @@ const Page: React.FC = () => {
       }
       }
   }
+
   function Main(props):JSX.Element {
     let elem = <></>
 
@@ -183,16 +183,9 @@ const Page: React.FC = () => {
       </>
     } else    switch (props.name) {
       case "root" :         elem = <General />; break;
-      case "login":         elem = <Login />; break
-      case "SMS":           elem = <SMS />; break
-      case "options":       elem = <Options />; break
-      case "profile":       elem = <Profile />; break
       case "contacts":      elem = <InfoPage1 />; break
       case "info":          elem = <InfoPage2 />; break
       case "action":        elem = <Action />; break
-      case "login":         elem = <Login />; break
-      case "orders":        elem = <Orders />; break
-      case "history":       elem = <OHistory />; break
       default :             elem = <></> 
     }
 
@@ -245,11 +238,12 @@ const Page: React.FC = () => {
                             let SMS = Store.getState().login.SMS
                             console.log(Store.getState().login)
                             if(SMS === val) {
-                                getData("method",{method: "ПодтвердитьЗаказ", docNum: order?.Номер })
+                                getData("method",{ method: "ПодтвердитьЗаказ", docNum: order?.Номер })
                                 setAlert1(true)    
                                 setModal(false)
-                            } else 
+                            } else {
                                 setAlert2(true)
+                            }
                         }
                         
                     }}
@@ -261,6 +255,8 @@ const Page: React.FC = () => {
                       slot="end"
                       onClick={()=>{
                           //getSMS(phone)
+                          console.log("Отменить")
+                          getData1C("ОтменитьЗаказ", { Номер: order?.Номер })
                           setModal(false)
                       }}  className="orange-clr-bg"
                     >
@@ -292,6 +288,7 @@ const Page: React.FC = () => {
 
     return elem;
   }
+
   return (
     <IonPage>      
       <IonHeader >
@@ -299,7 +296,12 @@ const Page: React.FC = () => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonSearchbar />
+          <IonSearchbar 
+            debounce = { 1000 }
+            onIonChange = {(e) => {
+              Store.dispatch({type: "search", search: e.detail.value  as string});
+            }}
+          />
         </IonToolbar>
       </IonHeader>
       <Main name = { name }/>

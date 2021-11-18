@@ -36,25 +36,25 @@ const appPages: AppPage[] = [
   },
   {
     title: 'Заказы',
-    url: '/page/orders',
+    url: '/page1/orders',
     iosIcon: paperPlaneOutline,
     mdIcon: paperPlaneSharp
   },
   {
     title: 'История заказов',
-    url: '/page/history',
+    url: '/page1/history',
     iosIcon: bookmarksOutline,
     mdIcon: heartSharp
   },
   {
     title: 'Условия работы',
-    url: '',
+    url: '/page1/info',
     iosIcon: checkboxOutline,
     mdIcon: trashSharp
   },
   {
     title: 'О нас',
-    url: '/page/contacts',
+    url: '/page1/contacts',
     iosIcon: happyOutline,
     mdIcon: archiveSharp
   },
@@ -89,9 +89,9 @@ const Menu: React.FC = () => {
                      className="m-btn m-sizetext"
                       onClick = {()=>{
                         if(Store.getState().auth)
-                          Store.dispatch({type: "route", route: "/page/options"})
+                          Store.dispatch({type: "route", route: "/page1/options"})
                         else
-                          Store.dispatch({type: "route", route: "/page/login"})
+                          Store.dispatch({type: "route", route: "/page1/login"})
                       }}
                     > 
                     { Store.getState().auth ? "Профиль" : "Вход" }

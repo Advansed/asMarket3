@@ -1,7 +1,7 @@
 import { IonButton, IonCol, IonGrid, IonIcon, IonLabel, IonRow, IonText} from '@ionic/react';
-import { arrowBackOutline, cartOutline, closeOutline, infiniteOutline, trashBinOutline } from 'ionicons/icons';
+import { arrowBackOutline, cartOutline, checkmarkOutline, closeCircleOutline, closeOutline, infiniteOutline, trashBinOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
-import { Store } from '../pages/Store';
+import { getData, Store } from '../pages/Store';
 import './Basket.css';
 
 export function   BasketIcon():JSX.Element {
@@ -45,22 +45,26 @@ function          delBasket(Код){
 } 
     
 export function   addBasket( good, amount ){
+
     let basket = Store.getState().basket;
     if(basket === undefined) basket = [];
     var commentIndex = basket.findIndex(function(b) { 
         return b.Код === good.Код; 
     });
     if(commentIndex >= 0){
-  
       let sum   = basket[commentIndex].Количество + amount;
       if(sum < 0) sum = 0
+      if(sum > good.Количество ) sum = good.Количество
+      console.log(sum)
       let total = basket[commentIndex].Цена * sum;
+
+      let СуммаСкидки = ((good.СтараяЦена === 0 ? good.Цена : good.СтараяЦена) - good.Цена) * sum;
   
       if(sum === 0) delBasket(good.Код)
       else {
         let bask = basket.map(todo => {
           if (todo.Код === good.Код) {
-            return { ...todo, Количество: sum, Сумма: total}
+            return { ...todo, Количество: sum, Сумма: total, СуммаСкидки: СуммаСкидки}
           } else {
             return todo
           }
@@ -70,16 +74,20 @@ export function   addBasket( good, amount ){
       }
   
     } else {
-      basket = [...basket, {
-        Код:            good.Код,
-        Наименование:   good.Наименование,
-        Цена:           good.Цена,
-        Количество:     amount,
-        Сумма:          amount * good.Цена,
-        Упаковка:       good.Уп,
-        Картинка:       good.Картинка
-        
-    }]
+      if(good.Количество > 0){
+        basket = [...basket, {
+          Код:            good.Код,
+          Наименование:   good.Наименование,
+          Цена:           good.Цена,
+          СтараяЦена:     good.СтараяЦена,
+          Максимум:       good.Количество,  
+          Количество:     amount,
+          Сумма:          amount * good.Цена,
+          СуммаСкидки:    amount * ((good.СтараяЦена === 0 ? good.Цена : good.СтараяЦена)  - good.Цена),
+          Упаковка:       good.Уп,
+          Картинка:       good.Картинка
+        }]
+      }
   
       Store.dispatch({type: "basket", basket: basket})
     }
@@ -88,10 +96,7 @@ export function   addBasket( good, amount ){
 export function   Basket(props):JSX.Element {
       const [upd, setUpd] = useState(0)
       const [basket,  setBasket] = useState<any>(Store.getState().basket)
-    
-      // Store.subscribe({num: 41, type: "basket", func: ()=>{
-      //   setBasket(Store.getState().basket)
-      // }})
+
     
       useEffect(()=>{
     
@@ -110,18 +115,18 @@ export function   Basket(props):JSX.Element {
           });
           if(commentIndex >= 0){
             let b_amount = basket[commentIndex].Количество
-            console.log(" Количество = " + b_amount.toString())
             let sum = b_amount + amount;
-            console.log(" Количество  + 1 = " + sum.toString())
             let total = basket[commentIndex].Цена * sum;
+            let СуммаСкидки = ((basket[commentIndex].СтараяЦена === 0 ? basket[commentIndex].Цена : basket[commentIndex].СтараяЦена) - basket[commentIndex].Цена) * sum;
   
+
             if(sum < 0) sum = 0
       
             if(sum === 0) delBasket(Код)
             else {
               let bask = basket.map(todo => {
                 if (todo.Код === Код) {
-                  return { ...todo, Количество: sum, Сумма: total}
+                  return { ...todo, Количество: sum, Сумма: total, СуммаСкидки: СуммаСкидки}
                 } else {
                   return todo
                 }
@@ -147,13 +152,13 @@ export function   Basket(props):JSX.Element {
             
             <IonRow class="r-underline ">
               <IonCol size="1">
-                    
+                  <div>  
                     <IonIcon icon={ closeOutline } className="b-size-btnx" 
                         onClick={()=>{
                           delBasket(info.Код); setUpd(upd + 1);
                         }} 
                     />
-              
+                  </div>
               </IonCol>
               <IonCol size="2">
                 <div className="basketimg">
@@ -166,7 +171,7 @@ export function   Basket(props):JSX.Element {
                 </IonRow>    
                 <IonRow //className="mt-1"
                 >
-                  <IonCol size="5">
+                  <IonCol size="4">
                     <button  className="white-bg text-align orange-clr-fnt mr-2"> 
                       { new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info.Цена * Количество)  }
                     </button>
@@ -188,7 +193,7 @@ export function   Basket(props):JSX.Element {
                     >-
                     </IonButton>
                     <button  className="white-bg text-align "> 
-                      <h5 className="bs-quan">{ Количество.toFixed() + " шт."} </h5>
+                      <h5 className="bs-quan">{ Количество.toFixed() + " шт."} </h5> 
                     </button>
                     <IonButton className="bs-size-btn " color="new" 
                       onClick = {(e)=>{
@@ -199,6 +204,17 @@ export function   Basket(props):JSX.Element {
                       }}
                     >+
                     </IonButton>
+                  </IonCol>
+                  <IonCol size="1">
+                    <div>
+                      <IonIcon 
+                          icon={ info.Количество <= info.Максимум ? checkmarkOutline : closeCircleOutline } 
+                          color = { info.Количество <= info.Максимум ? "success" : "danger" }
+                          className="b-size-btnx" 
+                          onClick={()=>{
+                          }} 
+                      />
+                    </div>
                   </IonCol>
                 </IonRow>
               </IonCol>
@@ -226,15 +242,6 @@ export function   Basket(props):JSX.Element {
         </>
       }
       
-      let delivery=0;
-      if(sum>=0 && sum<=999){
-        delivery=150;
-      }else if(sum>=1000 && sum<=1499) delivery=100
-      else if (sum>=1500 && sum<=1999) delivery=50
-      else delivery=0
-      let sumtotal=0;
-      sumtotal=sum+delivery;
-
       return <>
         <div>
           <IonGrid className="w-100 header">
@@ -273,22 +280,7 @@ export function   Basket(props):JSX.Element {
           </div>
           <div className="footer">
             <div className="footer2 ">
-            <IonRow>
-              <IonCol size="6">
-                <div className="left">
-                  <IonText class="basketnameofgood ml-1">
-                    <b>Итого </b>
-                  </IonText>
-                </div>
-              </IonCol>
-              <IonCol size="6">
-                <div className="right orange-clr-fnt">
-                <IonText class="basketnameofgood ml-1">
-                 <b>{ new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(sum)  }</b>
-                 </IonText>
-                </div>
-              </IonCol>
-            </IonRow>
+              <Summary />
             </div>
             
             <IonRow>
@@ -296,7 +288,7 @@ export function   Basket(props):JSX.Element {
                   <button
                     slot="end"
                     onClick={()=>{
-                      Store.dispatch({type: "route", route: "/page1/order"})
+                      Proov()                
                     }}  className="orange-clr-bg"
                   >
                     Оформить заказ
@@ -306,6 +298,12 @@ export function   Basket(props):JSX.Element {
           </div>
         
        </>
+}
+
+function    Proov(){
+
+  Store.dispatch({type: "route", route: "/page1/order"})
+
 }
 
 export function   count(info){
@@ -329,6 +327,81 @@ export function   total(info){
       return basket[commentIndex].Сумма
     else 
       return 0
+}
+
+function Summary() :JSX.Element{
+  const [sum,   setSum]   = useState(0);
+  const [sum1,  setSum1]  = useState(0);
+
+  Store.subscribe({num: 33, type: "basket", func: ()=>{
+    let jarr = Store.getState().basket;
+    let sum = 0;let sum1 = 0;
+    console.log(jarr)
+    jarr.forEach(el => {
+      sum   = sum   + el.Сумма 
+      sum1  = sum1  + el.СуммаСкидки
+    });
+    
+    setSum(sum); setSum1(sum1);
+  }})
+
+  useEffect(()=>{
+    let jarr = Store.getState().basket;
+    let sum = 0;let sum1 = 0;
+    console.log(jarr)
+    jarr.forEach(el => {
+      sum   = sum   + el.Сумма 
+      sum1  = sum1  + el.СуммаСкидки
+    });
+    
+    setSum(sum); setSum1(sum1);
+
+  },[])
+  let elem = <>
+    <div 
+      // className = { sum1 === 0 ? "hidden" : "" }
+    >
+      <IonRow>
+        <IonCol>
+          <div className="left">
+            <IonText class="basketnameofgood ml-1">
+              <b>Сумма скидок </b>
+            </IonText>
+          </div>
+        </IonCol>
+        <IonCol>
+          <div className="right orange-clr-fnt">
+            <IonText class="basketnameofgood ml-1">
+              <b>{ 
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format( sum1 )  
+              }</b>
+            </IonText>
+          </div>
+        </IonCol>
+      </IonRow>
+    </div>
+    <div>
+      <IonRow>
+        <IonCol>
+          <div className="left">
+            <IonText class="basketnameofgood ml-1">
+              <b>Итого </b>
+            </IonText>
+          </div>
+        </IonCol>
+        <IonCol>
+          <div className="right orange-clr-fnt">
+            <IonText class="basketnameofgood ml-1">
+              <b>{ 
+                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format( sum )  
+              }</b>
+            </IonText>
+          </div>
+        </IonCol>
+      </IonRow>
+    </div>
+  </>
+  return elem
 }
   
 export function   BasketPanel():JSX.Element {

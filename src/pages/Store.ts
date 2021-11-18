@@ -232,6 +232,13 @@ export async function getProfile(phone){
     getOrders()
 
 }
+
+export async function Check(good){
+    let res = await getData("method", {method: "Товар", Код: good.Код})
+    if(res.length > 0)  return res[0]
+    else return {"Код": good.Код, "Количество": 0 }
+}
+
 let timerId;
 
 

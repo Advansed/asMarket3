@@ -20,8 +20,16 @@
     background-color: white;
     margin-top: 0 auto;
     margin-bottom: 1em;
-    width: 100%;
+    width: 40%;
     bottom: 1em;
+
+}
+.or-orange-clr-bg{
+    color: white;
+    background-color: #FF8C00;
+    width: 95%;
+    height: 3rem;
+    border-radius: 15px 15px 15px 15px;
 
 }
 .footer-order{
@@ -48,8 +56,9 @@
 }
 .order-content{
     position: relative;
-    height:15px;
     width: 100%;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 .order-image{
 

@@ -23,12 +23,14 @@ a{
 }
 .b-size-btnx{
     font-size: calc(14px + (36 - 14) * ((100vw - 270px) / (1200 - 270)));
+    width: 1.5em;
+    height: 1.5em;
 }
 .footer{
     position:fixed;
    background-color: #f0f0f0;
    bottom:0px;
-   height: calc(100px + (200 - 100) * ((100vw - 270px) / (1200 - 270))) !important;
+   height: 20% !important;
    width:100%;
    border-radius: 15px 15px 0 0;
    

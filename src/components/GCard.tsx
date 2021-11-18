@@ -82,7 +82,7 @@ export function   GCard(props):JSX.Element {
                   <div className="mb-1 ml-05 mt-3">
                 <IonChip color="success" outline>
                   <IonIcon icon = { checkmarkCircleOutline }/>
-                  <IonText class="f-12"> { good.Количество > 0 ? "В Наличии" : "Под заказ" } </IonText>
+                  <IonText class="f-12"> { good.Количество > 0 ? ("В Наличии " + good.Количество.toString()) : "Нет в наличии" } </IonText>
                 </IonChip>
                 </div>
               </IonCardTitle>
@@ -119,6 +119,7 @@ export function   GCard(props):JSX.Element {
             <IonChip outline color="gc-btn" className="gc-btn"
                     onClick = {()=>{
                       info.Количество = info.Количество + 1 
+                      if(info.Количество > good.Количество) info.Количество = good.Количество
                       info.Сумма = info.Количество * info.Цена;
                       setInfo(info);setUpd(upd + 1);
                       addBasket(good, 1)

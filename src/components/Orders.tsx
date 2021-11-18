@@ -154,15 +154,7 @@ export function Orders(props):JSX.Element{
     <IonLoading isOpen = { load } message = "Подождите..." />
     <div>
         <IonRow>
-            <IonCol size="2">
-                <IonIcon icon = { arrowBackOutline } 
-                    class= "back ml-1 mt-1 pr-btn2"
-                    onClick = {()=>{
-                    Store.dispatch({type: "route", route: "back"})
-                    }}
-                /> 
-            </IonCol>
-            <IonCol size="8">
+            <IonCol size="10">
                 <div className="pr-header">
                     <IonText><h3><b>Мои заказы</b></h3></IonText>
                     </div>
@@ -226,7 +218,7 @@ export function OHistory(props):JSX.Element{
             <IonCard class="о-card">
                 <IonCardHeader>
                     <div className="os-right">
-                    <ul className="os-ul1">
+                    <ul className={info[i].Статус === 3 ? "os-ul1" : "hidden"}>
                         <li className="os-li1">
                             <div>
                                 <div>
@@ -307,6 +299,58 @@ export function OHistory(props):JSX.Element{
                             </div>
                         </li>
                     </ul>
+                    <ul className={info[i].Статус === 4 ? "os-ul1" : "hidden"}>
+                        <li className="os-li1">
+                            <div>
+                                <div>
+                                    <IonIcon className= "os-icon" icon= { readerOutline }
+                                        color = "medium"
+                                    ></IonIcon>
+                                </div>
+                                <div>
+                                    <IonText
+                                        color = "medium"
+                                    >
+                                        {
+                                            "Отменен"
+                                        }
+                                    </IonText>
+                                </div>
+                            </div>                         
+                        </li>
+                        <li className="os-li1">
+                            <div>
+                                <div>
+                                    <IonIcon className= "os-icon" icon= { giftOutline }
+                                        color = "medium"
+                                    > </IonIcon>
+                                </div>
+                                <div>
+                                    <IonText
+                                        color = "medium"                          
+                                    >
+                                        { "Сборка" }
+                                    </IonText>
+                                </div>
+                            </div>
+                        </li>
+                        <li className={ info[i].Статус === 4 ? "os-li1" : "hidden" }>
+                            <div>
+                                <div>
+                                    <IonIcon className= "os-icon" icon= { bicycleOutline }
+                                        color = "medium"
+                                    > </IonIcon>
+                                </div>
+                                <div>
+                                    <IonText
+                                        color = "medium"
+                                    >
+                                        { "Курьер" }
+                                    </IonText>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                     </div>
                 </IonCardHeader>
                 <IonCardContent>
@@ -336,17 +380,9 @@ export function OHistory(props):JSX.Element{
     <IonLoading isOpen = { load } message = "Подождите..." />
     <div>
         <IonRow>
-            <IonCol size="3">
-                <IonIcon icon = { arrowBackOutline } 
-                    class= "back ml-1 mt-1 pr-btn2"
-                    onClick = {()=>{
-                    Store.dispatch({type: "route", route: "back"})
-                    }}
-                /> 
-            </IonCol>
             <IonCol size="7">
                 <div className="pr-header">
-                    <IonText><h3><b>Мои заказы</b></h3></IonText>
+                    <IonText><h3><b> История </b></h3></IonText>
                     </div>
             </IonCol>
             </IonRow> 

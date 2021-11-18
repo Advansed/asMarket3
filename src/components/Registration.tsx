@@ -26,7 +26,7 @@ async function getSMS1(phone) {
         console.log(res)
         if(res.СМС !== undefined) {
             Store.dispatch({type: "login", SMS: res.СМС })
-            Store.dispatch({type: "route", route: "/page/SMS"})
+            Store.dispatch({type: "route", route: "/page1/SMS"})
         }
     
     }
@@ -117,7 +117,7 @@ export function SMS(props):JSX.Element {
                             if(SMS === val) {
                                 setAlert1(true)    
                                 Store.dispatch({type: "auth", auth: true})
-                                Store.dispatch({type: "route", route: "/page/options"})
+                                Store.dispatch({type: "route", route: "/page1/options"})
                                 localStorage.setItem("marketAs.login", phone)
                             } else 
                                 setAlert2(true)

@@ -1,8 +1,7 @@
 import { IonAlert, IonCardContent, IonCardHeader, IonCardSubtitle, IonCol, IonInput
-  , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonCard, IonToolbar } from "@ionic/react";
+  , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonCard, IonToolbar, IonTextarea, IonFooter, IonHeader, IonContent, IonRow, IonButton } from "@ionic/react";
 import { setErrorHandler } from "ionicons/dist/types/stencil-public-runtime";
-import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline } from "ionicons/icons";
-import { setUncaughtExceptionCaptureCallback } from "process";
+import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline, timeOutline, readerOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
 import MaskedInput from "../mask/reactTextMask";
@@ -38,6 +37,7 @@ export function   Order( props ):JSX.Element {
     const [message,   setMessage] = useState("")
     const [mp,        setMP]      = useState(true)
     const [dost,      setDost]    = useState(info.DeliveryMethod === "Доставка")
+    const [cash,      setCash]    = useState( false )
     const [upd,       setUpd]     = useState(0)
     const [deliv,     setDeliv]   = useState(0)
     const [choice,    setChoice]  = useState(false)
@@ -102,35 +102,26 @@ export function   Order( props ):JSX.Element {
       
       let elem = <>
       
-      <IonCardHeader>
-          <div className="row">
-            
-          <IonCol size="1" >
-          <button 
-            onClick={()=>{
-              Store.dispatch({type: "route", route: "back"})
-            }} className="btn2 left-align"
-          >
-            <IonIcon icon = { arrowBackOutline }  />
-          </button>
-          </IonCol>
-          
-          <IonCol size="9">
-            <div className="header-name"> 
-           <b>Оформление заказа </b> 
-           </div>
-            </IonCol>
-            </div>
-        </IonCardHeader >
-        <IonCardContent className="order-content">
+        <IonContent>
+          <IonItem lines="none">
+              <IonIcon slot = "start" icon = { arrowBackOutline }  
+                onClick = { () =>{
+                  Store.dispatch({type: "route", route: "back"})
+                }}
+              />
+              <h4><b>Оформление заказа </b></h4>
+          </IonItem>
           {/* Оплата */}
-          <IonItem> 
+          <IonItem lines="none"> 
             <IonIcon slot="start" icon={ cardOutline } />
             <IonLabel position="stacked">Оплата</IonLabel>
             <IonSelect value={ info.PaymentMethodId } okText="Да" cancelText="Нет" onIonChange={e => {
                 info.PaymentMethodId = e.detail.value
+                console.log(info.PaymentMethodId)
                 if(info.PaymentMethodId === "Эквайринг") setMP(true)
                 else setMP(false)
+                if(info.PaymentMethodId === "наличными") { setCash(true); console.log("кэш") }
+                else setCash(false)
             }}>
               <IonSelectOption value="Эквайринг">Эквайринг</IonSelectOption>
               <IonSelectOption value="наличными">Наличными</IonSelectOption>
@@ -139,7 +130,7 @@ export function   Order( props ):JSX.Element {
             </IonSelect>
           </IonItem>
           {/* Телефон */}
-          <IonItem>
+          <IonItem lines="none">
             <IonIcon slot= "start" icon={ phonePortrait }/>
             <IonLabel position="stacked">Телефон</IonLabel>
             <div className="o-phone">
@@ -163,7 +154,7 @@ export function   Order( props ):JSX.Element {
             </div>
           </IonItem>
           {/* Доставка */}
-          <IonItem>
+          <IonItem lines="none">
             <IonIcon slot="start" icon={ bicycleOutline } />
             <IonLabel position="stacked">Доставка</IonLabel>
             <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" onIonChange={e => {
@@ -186,6 +177,22 @@ export function   Order( props ):JSX.Element {
             </IonSelect>
           </IonItem>
           <div className = { dost ? "" : "hidden"}>
+            <IonItem>
+              <IonIcon slot= "start" icon={ timeOutline }/>
+              <IonLabel position="stacked">Удобное время для доставки</IonLabel>
+              <MaskedInput
+                mask={[/[1-9]/, /\d/, ':', /\d/, /\d/, ' ', '-', ' ', /\d/, /\d/, ':', /\d/, /\d/,]}
+                className="m-input"
+                autoComplete="off"
+                placeholder="12:00 - 21:00"
+                id='2'
+                type='text'
+                value = { info.DeliveryTime }
+                onChange={(e: any) => {
+                    info.DeliveryTime = (e.target.value as string);
+                  }}
+              />
+            </IonItem> 
             <div className="ml-2 mt-4"><IonLabel>Адрес</IonLabel></div>
             
               <AddressSuggestions
@@ -199,76 +206,86 @@ export function   Order( props ):JSX.Element {
                 }}
               /> 
           </div>
-        <IonCardHeader className="header-name "><b> Итоги по заказу</b> </IonCardHeader>   
-          <IonList class="f-14">
-            <IonItem class="ml-1" lines="none">
-              <IonCardSubtitle>Доставка </IonCardSubtitle>
-              <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format( info?.DelivSum )
-              } </IonLabel>
-            </IonItem>
-            <IonItem class="ml-1" lines="none">
-              <IonCardSubtitle>Сумма товаров </IonCardSubtitle>
-              <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total) } </IonLabel>
-            </IonItem>
-            <IonItem class={ promo === undefined ? "hidden" : "ml-1"} lines="none">
-              <IonCardSubtitle>Промокод </IonCardSubtitle>
-              <IonLabel slot="end" class="a-right">
-                  { promo?.Промокод }
-              </IonLabel>
-            </IonItem>
-            <IonItem class={ promo === undefined ? "hidden" : "ml-1"} lines="none">
-              <IonCardSubtitle>Скидка по промокоду </IonCardSubtitle>
-              <IonLabel slot="end" class="a-right"> -
-                { 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.promo_sum)
-                }
-              </IonLabel>
-            </IonItem>
-            
-            <IonItem class="ml-1" lines="none">
-              <IonCardSubtitle>Итого </IonCardSubtitle>
-              <IonLabel slot="end" class="a-right">{ 
-                  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum - info?.promo_sum)
-              } </IonLabel>
-            </IonItem>
-          </IonList>
-          <div className="footer-order">
-         
-          <div className="or-btn">
+          <IonItem lines="none">
+              <IonIcon slot= "start" icon={ readerOutline }/>
+              <IonLabel position="stacked"> Комментарий </IonLabel>
+              <IonTextarea
+                value = { info.CustomerComment }
+                onChange={(e: any) => {
+                    info.CustomerComment = (e.target.value as string);
+                  }}
+              />
+          </IonItem> 
+
+          <h4 className="ml-1 mr-1 pb-1"><b> Итоги по заказу</b> </h4>   
+            <IonList class="f-14">
+              <IonItem class="ml-1" lines="none">
+                <IonCardSubtitle>Доставка </IonCardSubtitle>
+                <IonLabel slot="end" class="a-right">{ 
+                    new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format( info?.DelivSum )
+                } </IonLabel>
+              </IonItem>
+              <IonItem class="ml-1" lines="none">
+                <IonCardSubtitle>Сумма товаров </IonCardSubtitle>
+                <IonLabel slot="end" class="a-right">{ 
+                    new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total) } </IonLabel>
+              </IonItem>
+              <IonItem class={ promo === undefined ? "hidden" : "ml-1"} lines="none">
+                <IonCardSubtitle>Промокод </IonCardSubtitle>
+                <IonLabel slot="end" class="a-right">
+                    { promo?.Промокод }
+                </IonLabel>
+              </IonItem>
+              <IonItem class={ promo === undefined ? "hidden" : "ml-1"} lines="none">
+                <IonCardSubtitle>Скидка по промокоду </IonCardSubtitle>
+                <IonLabel slot="end" class="a-right"> -
+                  { 
+                    new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.promo_sum)
+                  }
+                </IonLabel>
+              </IonItem>
+              
+              <IonItem class="ml-1" lines="none">
+                <IonCardSubtitle>Итого </IonCardSubtitle>
+                <IonLabel slot="end" class="a-right">{ 
+                    new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum - info?.promo_sum)
+                } </IonLabel>
+              </IonItem>
+              <IonItem class={ cash ? "ml-1" : "hidden"} lines="none">
+                <IonIcon slot="start" icon={ cashOutline } />
+                <IonLabel position="stacked">Сдача с суммы</IonLabel>
+                <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" onIonChange={e => {
+
+                }}>
+                  <IonSelectOption value="-">без сдачи</IonSelectOption>
+                  <IonSelectOption value="500">500 руб</IonSelectOption>
+                  <IonSelectOption value="1000">1000 руб</IonSelectOption>
+                  <IonSelectOption value="2000">2000 руб</IonSelectOption>
+                  <IonSelectOption value="5000">5000 руб</IonSelectOption>
+                </IonSelect>
+              </IonItem>
+            </IonList>
+        </IonContent>
+        <IonRow>
+          <IonCol size="6">
             <button
-              className = { "orange-clr-bg"}
-              slot="end"
               onClick={()=>{
                 setModal(true)
-              }}  
+              }}  className="or-orange-clr-bg"
             >
               Промокод
-            </button>         
-          </div>
-         <div className="or-btn">
-               <button
-                  className = { mp ? "hidden" : "orange-clr-bg"}
-                 slot="end"
-                 onClick={()=>{
-                   Proov();
-                 }}  
-               >
-                  Заказать
-               </button>
-               <button slot="end" 
-                  className = { mp ? "orange-clr-bg" : "hidden"}
-                onClick={()=>{
-                  Proov();
-                }}>
-              Оплатить
             </button>
-          </div>
-     
-        </div>
-        </IonCardContent>
-        
+          </IonCol>
+          <IonCol size="6">        
+            <button
+              onClick={()=>{
+                Proov()
+              }}  className="or-orange-clr-bg"
+            >
+              { mp ? "Оплатить" : "Заказать"}
+            </button>
+          </IonCol>            
+        </IonRow>        
         <IonAlert
               isOpen={ message !== "" }
               onDidDismiss={() => setMessage("")}
@@ -431,11 +448,16 @@ export function   Order( props ):JSX.Element {
       console.log(res)
       if(res.Код === 100 ) {
         info.Order_No   = res.НомерЗаказа
+        if(info.Total + info.DelivSum - info.promo_sum === 0){
+          Store.dispatch({type: "basket", basket: []})
+          setDeliv(1)  
+        } 
+        else 
         if( info.PaymentMethodId === "Эквайринг" ) {
           console.log("equaring")
           IPAY({api_token: 'YRF3C5RFICWISEWFR6GJ'});
           ipayCheckout({
-            amount:         info.Total + info.DelivSum,
+            amount:         info.Total + info.DelivSum - info.promo_sum,
             currency:       'RUB',
             order_number:   res.НомерЗаказа,
             description:    'Тестовая оплата'},

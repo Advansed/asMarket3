@@ -181,7 +181,7 @@ export function   Options():JSX.Element {
           <IonCardContent>
             <IonItem class=" mb-1" detail lines="full"
               onClick = {()=>{
-                Store.dispatch({type: "route", route: "/page/profile"})
+                Store.dispatch({type: "route", route: "/page1/profile"})
               }}
             >
               <IonItem lines="none">
@@ -212,7 +212,7 @@ export function   Options():JSX.Element {
             </IonItem>
             <IonItem class="mt-1 mb-1 op-item" lines = "none" detail
               onClick={()=>{
-                Store.dispatch({type: "route", route: "/page/orders"})
+                Store.dispatch({type: "route", route: "/page1/orders"})
               }}
             >
                 <IonThumbnail class="op-thumb" color="blue" slot="start">
@@ -232,7 +232,7 @@ export function   Options():JSX.Element {
             </IonItem>
             <IonItem class="mt-1 mb-1 op-item" lines = "none" detail
               onClick={()=>{
-                Store.dispatch({type: "route", route: "/page/info"})
+                Store.dispatch({type: "route", route: "/page1/info"})
               }}
             >
                 <IonThumbnail class="op-thumb2" color="blue" slot="start">
@@ -242,7 +242,7 @@ export function   Options():JSX.Element {
             </IonItem>
             <IonItem class="mt-1 mb-1 op-item" lines = "none" detail
                onClick={()=>{
-                Store.dispatch({type: "route", route: "/page/contacts"})
+                Store.dispatch({type: "route", route: "/page1/contacts"})
               }}             
             >
                 <IonThumbnail class="op-thumb3" color="blue" slot="start">
@@ -252,7 +252,7 @@ export function   Options():JSX.Element {
             </IonItem>
             <IonItem class="mt-1 mb-1 op-item" lines = "none" detail
                onClick={()=>{
-                Store.dispatch({type: "route", route: "/page/about"})
+                Store.dispatch({type: "route", route: "/page1/about"})
               }}             
             >
                 <IonThumbnail class="op-thumb" color="blue" slot="start">

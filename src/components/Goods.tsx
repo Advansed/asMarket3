@@ -18,6 +18,22 @@ export function Goods():JSX.Element {
     Store.subscribe({num: 22, type: "goods", func: ()=>{
         setUpd(upd + 1)
     }})
+    Store.subscribe({num: 23, type: "search", func: ()=>{
+        let src = Store.getState().search
+        let goods = Store.getState().goods;
+        let jarr: any = [];
+        if(src !== "") {
+            goods.forEach((e)=>{
+
+                if(e.Наименование.toUpperCase().includes(src.toUpperCase())){
+                    jarr = [...jarr, e]
+                }
+            })
+            setInfo(jarr)
+        } else {
+            setUpd(upd + 1)
+        }
+    }})
 
     useEffect(()=>{
         if(sub !== "") {

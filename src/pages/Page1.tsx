@@ -1,9 +1,15 @@
-import { IonPage } from '@ionic/react';
+import { IonButtons, IonHeader, IonIcon, IonPage, IonToolbar } from '@ionic/react';
+import { arrowBackOutline, backspaceOutline } from 'ionicons/icons';
 import { useParams, useHistory } from 'react-router';
 import { Basket } from '../components/Basket';
 import { GCard } from '../components/GCard';
+import { InfoPage1, InfoPage2 } from '../components/Infopage';
 import { Order } from '../components/Order';
+import { OHistory, Orders } from '../components/Orders';
+import { Options, Profile } from '../components/Profile';
+import { Login, SMS } from '../components/Registration';
 import './Page.css';
+import { Store } from './Store';
 
 const Page1: React.FC = () => {
 
@@ -20,8 +26,16 @@ const Page1: React.FC = () => {
       </>
     } else    
     switch (props.name) {
-      case "basket":        elem = <Basket />; break;
-      case "order" :        elem = <Order />; break;
+      case "basket":        elem = <Basket />;  break;
+      case "SMS":           elem = <SMS />; break
+      case "order" :        elem = <Order />;   break;
+      case "options":       elem = <Options />; break
+      case "profile":       elem = <Profile />; break
+      case "login":         elem = <Login />; break
+      case "orders":        elem = <Orders />; break
+      case "history":       elem = <OHistory />; break
+      case "contacts":      elem = <InfoPage1 />; break
+      case "info":          elem = <InfoPage2 />; break
       default :             elem = <></> 
     }
 
@@ -30,6 +44,18 @@ const Page1: React.FC = () => {
 
   return (
     <IonPage>
+      <IonHeader >
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonIcon icon={  arrowBackOutline } className="ml-05 w-2 h-2" 
+              onClick = {() =>{
+                Store.dispatch({type: "route", route: "back"})
+              }}
+            />
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+
       <Main name = { name }/>
     </IonPage>
   );

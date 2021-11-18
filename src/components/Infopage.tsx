@@ -5,21 +5,6 @@ import './Infopage.css'
 
 export function InfoPage1(props):JSX.Element {
     let elem = <>
-            <IonRow>
-            <IonCol size="3">
-                <IonIcon icon = { arrowBackOutline } 
-                    class= "back ml-1 mt-1 pr-btn2"
-                    onClick = {()=>{
-                    Store.dispatch({type: "route", route: "back"})
-                    }}
-                /> 
-            </IonCol>
-            <IonCol size="7">
-                <div className="pr-header">
-                    <IonText><h3><b>Контакты</b></h3></IonText>
-                    </div>
-            </IonCol>
-            </IonRow> 
             
             <div className="info-content">
                 <p>
@@ -40,21 +25,6 @@ export function InfoPage1(props):JSX.Element {
 
 export function InfoPage2(props):JSX.Element {
     let elem = <>
-            <IonRow>
-            <IonCol size="3">
-                <IonIcon icon = { arrowBackOutline } 
-                    class= "back ml-1 mt-1 pr-btn2"
-                    onClick = {()=>{
-                    Store.dispatch({type: "route", route: "back"})
-                    }}
-                /> 
-            </IonCol>
-            <IonCol size="7">
-                <div className="pr-header">
-                    <IonText><h3><b>Помощь</b></h3></IonText>
-                    </div>
-            </IonCol>
-            </IonRow>
             <details>
                 <summary>График работы</summary>
                 <div className="info-content2">
