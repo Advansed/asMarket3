@@ -183,8 +183,6 @@ const Page: React.FC = () => {
       </>
     } else    switch (props.name) {
       case "root" :         elem = <General />; break;
-      case "contacts":      elem = <InfoPage1 />; break
-      case "info":          elem = <InfoPage2 />; break
       case "action":        elem = <Action />; break
       default :             elem = <></> 
     }

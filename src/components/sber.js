@@ -128,8 +128,8 @@
         iframeStyle.overflowY = 'scroll';
         iframeStyle.zIndex = '10000';
         iframe.id = options.api_token;
-        iframe.src = 'https://3dsec.sberbank.ru/payment/docsite/payform-1.html?token=' + options.api_token + '&modal=true&order=' + encodeURIComponent(orderStr);
-  
+//        iframe.src = 'https://3dsec.sberbank.ru/payment/docsite/payform-1.html?token=' + options.api_token + '&modal=true&order=' + encodeURIComponent(orderStr);
+        iframe.src = 'https://securepayments.sberbank.ru/payment/docsite/payform-1.html?token=' + options.api_token + '&modal=true&order=' + encodeURIComponent(orderStr);
         iframe.setAttribute('allowfullscreen', ''); // РЅР° Р±СѓРґСѓС‰РµРµ, СЂР°Р·СЂРµС€РµРЅРёРµ РїРѕР»РЅРѕСЌРєСЂР°РЅРЅРѕРіРѕ СЂРµР¶РёРјР° Р°Р№С„СЂРµР№РјР°
         iframe.setAttribute('data-offset', scrollTop);
   
