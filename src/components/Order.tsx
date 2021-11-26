@@ -455,7 +455,7 @@ export function   Order( props ):JSX.Element {
         else 
         if( info.PaymentMethodId === "Эквайринг" ) {
           console.log("equaring")
-          IPAY({api_token: 'YRF3C5RFICWISEWFR6GJ'});
+          IPAY({api_token: 'jhd5kld3rc36oib1508stfk26f'});
           ipayCheckout({
             amount:         info.Total + info.DelivSum - info.promo_sum,
             currency:       'RUB',
