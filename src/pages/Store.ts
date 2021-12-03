@@ -14,7 +14,28 @@ export const i_state = {
     categories:                                     [],
     goods:                                          [],
     basket:                                         [],
-    order:                                          "",
+    order:                                          {
+            type:             "order",
+            StatusId:         "",
+            Order_No:         "",
+            Phone:            "",
+            Address:          "",
+            entrance:          0, 
+            CustomerName :    "",
+            DeliveryMethod:   "Доставка",
+            DeliveryTime:     "",
+            PaymentMethodId:  "Эквайринг",
+            CustomerComment:  "",
+            PaymentStatus:    0,
+            Total:            0,
+            DelivSum:         0,
+            Change:           "",   
+            promokod:         "",
+            promo_percent:    0,
+            promo_sum:        0, 
+            OrderDetails:     []
+
+    },
     market:                                         {
         name:               "АсМаркет",
         address:            "ул. Полины Осипенко, 8/1, Якутск, Респ. Саха (Якутия), 677001",
@@ -186,7 +207,7 @@ export async function   getDatas(){
 
 async function load( categ, page = 1 ){
     let res = await getData("method", {
-        method: "Р_Продукты",
+        method: "Р_Продукты",    
         CategoryId: categ,
         page: page,
     })  
@@ -282,16 +303,13 @@ async function exec(){
     console.log(res);
 
     res = await getData("method", {method: "Акции"})
-    Store.dispatch({type: "actions", actions: res.map((e) => {
-        e.Товары = JSON.parse(e.Товары)
-        return e
-    })})  
+    Store.dispatch({type: "actions", actions: res})  
 
    // localStorage.setItem("marketAs.login", "+79142227300");
     let phone = localStorage.getItem("marketAs.login")
     console.log(phone)
-    //if((phone !== undefined) && (phone !== null)) 
-    //    getProfile(phone)
+    if((phone !== undefined) && (phone !== null)) 
+        getProfile(phone)
 
     console.log("exec")
     res = await getData("method", {method: "Категории"})

@@ -28,3 +28,9 @@
     width: 2em;
     height: 2em;
 }
+
+.os-content {
+    height: 80%;
+    width: auto;
+    overflow-y: scroll;
+}

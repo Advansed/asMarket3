@@ -2,7 +2,7 @@ import { IonCard, IonCardContent, IonCardHeader, IonCol, IonIcon, IonLoading, Io
 import { useEffect, useState } from "react"
 import { getData, Store } from "../pages/Store"
 import QRCode from "react-qr-code";
-import { arrowBackOutline, bicycleOutline, giftOutline, readerOutline, syncCircleOutline } from "ionicons/icons";
+import { bicycleOutline, giftOutline, readerOutline, syncCircleOutline } from "ionicons/icons";
 import './Orders.css'
 
 export function Orders(props):JSX.Element{
@@ -152,7 +152,7 @@ export function Orders(props):JSX.Element{
     }
     return <>
     <IonLoading isOpen = { load } message = "Подождите..." />
-    <div>
+    <div className="h-100">
         <IonRow>
             <IonCol size="10">
                 <div className="pr-header">
@@ -168,7 +168,7 @@ export function Orders(props):JSX.Element{
                 /> 
             </IonCol>
             </IonRow> 
-        <div>
+        <div className="os-content">
             <IonLoading message = "Подождите" isOpen = { load } />
             { elem }
         </div>
@@ -181,6 +181,7 @@ function getISO(dat) {
     st = st.replace('40', '20').replace('-', '.').replace('-', '.');
     return st
 }
+
 function getNum(num) {
     let st = num
     while(st[0] === '0') {
@@ -386,7 +387,7 @@ export function OHistory(props):JSX.Element{
                     </div>
             </IonCol>
             </IonRow> 
-        <div>
+        <div className="os-content">
             { elem }
         </div>
     </div>

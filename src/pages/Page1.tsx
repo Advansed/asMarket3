@@ -3,9 +3,10 @@ import { arrowBackOutline, backspaceOutline } from 'ionicons/icons';
 import { useParams, useHistory } from 'react-router';
 import { Basket } from '../components/Basket';
 import { GCard } from '../components/GCard';
-import { InfoPage1, InfoPage2 } from '../components/Infopage';
+import { InfoPage1, InfoPage2, InfoPage3 } from '../components/Infopage';
 import { Order } from '../components/Order';
 import { OHistory, Orders } from '../components/Orders';
+import { Payment } from '../components/Payment';
 import { Options, Profile } from '../components/Profile';
 import { Login, SMS } from '../components/Registration';
 import './Page.css';
@@ -33,9 +34,11 @@ const Page1: React.FC = () => {
       case "profile":       elem = <Profile />; break
       case "login":         elem = <Login />; break
       case "orders":        elem = <Orders />; break
+      case "payment":       elem = <Payment />; break
       case "history":       elem = <OHistory />; break
       case "contacts":      elem = <InfoPage1 />; break
       case "info":          elem = <InfoPage2 />; break
+      case "policy":        elem = <InfoPage3 />; break
       default :             elem = <></> 
     }
 

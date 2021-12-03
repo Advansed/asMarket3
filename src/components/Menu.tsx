@@ -53,6 +53,12 @@ const appPages: AppPage[] = [
     mdIcon: trashSharp
   },
   {
+    title: 'Политика конфиденциальности',
+    url: '/page1/policy',
+    iosIcon: checkboxOutline,
+    mdIcon: trashSharp
+  },
+  {
     title: 'О нас',
     url: '/page1/contacts',
     iosIcon: happyOutline,

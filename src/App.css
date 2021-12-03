@@ -180,6 +180,7 @@
     padding:0 !important;
     border: 0px none black;
     z-index:2;
+    margin-left: 3em;
 
     /* border-radius:var(--border-radius); */
     padding-left:var(--padding-start);
