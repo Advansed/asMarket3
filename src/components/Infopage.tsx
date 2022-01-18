@@ -11,7 +11,7 @@ export function InfoPage1(props):JSX.Element {
                     Вопросы, пожелания или жалобы Вы можете адресовать нам по следующим контактным данным:						
                 </p>
                 <div className="mt-1">
-                    <b>Телефон:</b> +7(777)777-77-77	
+                    <b>Телефон:</b> +7 (962) 733-77-88	
                 </div>
                 <div  className="mt-1">
                     <b>E-mail:</b> asmrkt@mail.ru
@@ -25,7 +25,7 @@ export function InfoPage1(props):JSX.Element {
 
 export function InfoPage2(props):JSX.Element {
     let elem = <>
-        <div className="i-content">
+        <div className="info-content-scroll">
             <details>
                 <summary>График работы</summary>
                 <div className="info-content2">

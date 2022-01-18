@@ -15,25 +15,27 @@ export const i_state = {
     goods:                                          [],
     basket:                                         [],
     order:                                          {
-            type:             "order",
-            StatusId:         "",
-            Order_No:         "",
-            Phone:            "",
-            Address:          "",
-            entrance:          0, 
-            CustomerName :    "",
-            DeliveryMethod:   "Доставка",
-            DeliveryTime:     "",
-            PaymentMethodId:  "Эквайринг",
-            CustomerComment:  "",
-            PaymentStatus:    0,
-            Total:            0,
-            DelivSum:         0,
-            Change:           "",   
-            promokod:         "",
-            promo_percent:    0,
-            promo_sum:        0, 
-            OrderDetails:     []
+            type:                   "order",
+            StatusId:               "",
+            Order_No:               "",
+            Phone:                  "",
+            Address:                "",
+            entrance:               0, 
+            CustomerName :          "",
+            DeliveryMethod:         "Доставка",
+            DeliveryTime:           "",
+            PaymentMethodId:        "Эквайринг",
+            CustomerComment:        "",
+            PaymentStatus:          0,
+            Total:                  0,
+            DelivSum:               0,
+            lat:                    "",
+            lng:                    "",       
+            Change:                 "",   
+            promokod:               "",
+            promo_percent:          0,
+            promo_sum:              0, 
+            OrderDetails:           []
 
     },
     market:                                         {
@@ -195,11 +197,11 @@ function                orReducer(state:any = i_state.orders, action){
     }
 }
 
-export const Store   =  create_Store(rootReducer, i_state)
+export const Store      =  create_Store(rootReducer, i_state)
 
-export const URL1C = "https://marketac.ru/ut/hs/API/V1/"
+export const URL1C      = "https://marketac.ru:49002/ut/hs/API/V1/"
 
-export const URL = "https://marketac.ru/node/"
+export const URL        = "https://marketac.ru:49002/node/"
 
 export async function   getDatas(){
 }
@@ -318,6 +320,7 @@ async function exec(){
         e.Категории = JSON.parse(e.Категории)
         return e
     })})  
+    
     load( "", 1)
 
 }

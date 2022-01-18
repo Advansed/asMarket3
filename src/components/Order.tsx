@@ -67,12 +67,12 @@ export function   Order( props ):JSX.Element {
     let item : Dictionary = {"city": "Якутск"};
     let dict : Dictionary[] = []; dict.push(item);
 
-    function phone(st){
+  function phone(st){
       if(st !== undefined) {
         if(st.length > 2)
           return st.substring(2)
       } else return ""
-    }
+  }
 
 
   function Page1():JSX.Element {
@@ -292,7 +292,7 @@ export function   Order( props ):JSX.Element {
     }
   
       let elem = <>
-            <div>
+            <div className="m_t_4">
               <h1 className="a-center">Введите адрес</h1>
             </div>
             {/* <div className="r-circle3"><div className="r-circle2"></div></div> */}
@@ -306,8 +306,11 @@ export function   Order( props ):JSX.Element {
                   defaultQuery = { info?.Address }
                   value = { info?.Address }
                   onChange={(e)=>{
+                    console.log(e)
                     if(e !== undefined)
                       info.Address = e.value
+                      info.lat = e?.data.geo_lat
+                      info.lng = e?.data.geo_lon
                       Store.dispatch(info)
                   }}
                 /> 
@@ -361,7 +364,7 @@ export function   Order( props ):JSX.Element {
           cssClass = "o-modal"
         >
           <ModalAddress />
-        </IonModal> 
+      </IonModal> 
     </>;
   }
   
