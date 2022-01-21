@@ -62,6 +62,7 @@ export function Payment():JSX.Element {
   
     function Page1():JSX.Element {
         const [info, setInfo] = useState<any>(Store.getState().order)
+        const [upd, setUpd] = useState(0)
   
         useEffect(()=>{
           setInfo(Store.getState().order)
@@ -70,6 +71,7 @@ export function Payment():JSX.Element {
 
         Store.subscribe({num: 81, type: "info", func: ()=>{
             setInfo(Store.getState().order)
+            console.log("subs")
           }})
     
         let elem = <>
@@ -80,6 +82,8 @@ export function Payment():JSX.Element {
               <IonSelect value={ info.PaymentMethodId } okText="Да" cancelText="Нет" onIonChange={e => {
                   info.PaymentMethodId = e.detail.value
                   Store.dispatch(info);
+                  setInfo(info );
+                  setUpd(upd + 1)
 
                 //   if(info.PaymentMethodId === "Эквайринг") setMP(true)
                 //   else setMP(false)
@@ -127,10 +131,12 @@ export function Payment():JSX.Element {
                       new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum - info?.promo_sum)
                   } </IonLabel>
                 </IonItem>
-                <IonItem class={ info.PaymentMethodId === "наличными" ? "ml-1" : "hidden"} lines="none">
+                <IonItem class={ "ml-1" } lines="none">
                   <IonIcon slot="start" icon={ cashOutline } />
                   <IonLabel position="stacked">Сдача с суммы</IonLabel>
-                  <IonSelect value={ info?.Change  } okText="Да" cancelText="Нет" onIonChange={e => {
+                  <IonSelect 
+                      disabled = { info.PaymentMethodId !== "наличными" }
+                      value={ info?.Change  } okText="Да" cancelText="Нет" onIonChange={e => {
                         info.Change = e.detail.value
                         Store.dispatch(info);
                   }}>

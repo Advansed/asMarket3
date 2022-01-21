@@ -1,6 +1,8 @@
 import { combineReducers  } from 'redux'
 import axios from 'axios'
 import { Reducer } from 'react';
+import { constructSharp } from 'ionicons/icons';
+import localForage from "localforage";
 
 var reducers: Array<Reducer<any, any>>;reducers = []
 
@@ -57,6 +59,7 @@ export const i_state = {
     actions:                                        [],
     action:                                         "",
     param:                                          "",
+
 }
 
 
@@ -160,16 +163,16 @@ function                create_Store(reducer, initialState) {
 
 const                   rootReducer = combineReducers({
 
-    auth:                   reducers[0],
-    route:                  reducers[1],
-    login:                  reducers[2],
-    categories:             reducers[3],
-    goods:                  gdReducer, //reducers[4],
-    basket:                 reducers[5],  
-    order:                  reducers[6],  
-    market:                 reducers[7],
-    search:                 reducers[8],
-    orders:                 orReducer, //reducers[9],  
+    auth:                    reducers[0],
+    route:                   reducers[1],
+    login:                   reducers[2],
+    categories:              reducers[3],
+    goods:                     gdReducer, //reducers[4],
+    basket:                  reducers[5],  
+    order:                   reducers[6],  
+    market:                  reducers[7],
+    search:                  reducers[8],
+    orders:                    orReducer, //reducers[9],  
     category:               reducers[10],  
     sub:                    reducers[11],  
     gcard:                  reducers[12],
@@ -182,7 +185,18 @@ const                   rootReducer = combineReducers({
 function                gdReducer(state:any = i_state.goods, action){
     switch(action.type) {
         case "goods": {    
-            return [...state, ...action.goods]
+            let jarr: any = []
+                action.goods.forEach(elem => {
+                    var Ind = state.findIndex(function(b) { 
+                        return b.Код === elem.Код; 
+                    });
+                    if( Ind >= 0)
+                        state[ Ind ] = elem
+                    else 
+                        jarr = [...jarr, elem]
+                });
+            return [...state, ...jarr]
+            //return [...state, ...action.goods1]
         }
         default: return state
     }
@@ -206,18 +220,17 @@ export const URL        = "https://marketac.ru:49002/node/"
 export async function   getDatas(){
 }
 
-
-async function load( categ, page = 1 ){
+async function load( page ){
     let res = await getData("method", {
         method: "Р_Продукты",    
-        CategoryId: categ,
         page: page,
     })  
+    console.log(res)
     if(res.length > 0){
         Store.dispatch({ type: "goods", goods: res })
-  //      if( categ === Store.getState().category.Код )
-        load( categ, page + 1 )
-    } 
+        localForage.setItem("goods" + page.toString(), JSON.stringify(res) )
+        load( page + 1 )
+    }
 
 }
 
@@ -293,35 +306,82 @@ export function stopOrders(){
 
 
 async function exec(){
+
+    localForage.config({
+        driver      : localForage.WEBSQL, // Force WebSQL; same as using setDriver()
+        name        : 'asrmrkt',
+        version     : 1.0,
+        size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
+        storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+        description : 'some description'
+    });
+
+    console.log("exec")
+    let sav = localStorage.getItem("asmrkt.market");
+    if(sav !== undefined && sav !== null) {
+        sav = JSON.parse(sav);
+        Store.dispatch({type: "market", market: sav})
+        console.log("Настройки")
+        console.log(sav)
+    }
+
+    sav = localStorage.getItem("asmrkt.actions");
+    if(sav !== undefined && sav !== null) {
+        sav = JSON.parse(sav);
+        Store.dispatch({type: "actions", actions: sav})
+        console.log("Акции")
+        console.log(sav)
+    }
+
+    sav = localStorage.getItem("asrmkt.categories");
+    if(sav !== undefined && sav !== null) {
+        sav = JSON.parse(sav);
+        Store.dispatch({type: "categories", categories: sav })
+        console.log("Категории")
+        console.log(sav)
+    }
+
+    let ok = true;let page = 0;
+    while( ok ) { 
+        page = page + 1;
+        sav = await localForage.getItem("goods" + page.toString());
+        if(sav !== undefined && sav !== null) {
+            sav = JSON.parse(sav);
+            Store.dispatch({type: "goods", goods: sav })
+            console.log(sav)
+        } else ok = false
+        console.log(page)
+    }
+
+
+
+    console.log("--------------------------")
     let res: any
 
     res = await getData("method", {method: "Настройки"}) 
     let market = res[0]
-    console.log(market);
     market.tabs = JSON.parse(market.tabs)
-    console.log(market);
 
+    localStorage.setItem("asmrkt.market", JSON.stringify(res))
     Store.dispatch({type: "market", market: res})
-    console.log(res);
+    console.log(res)
 
     res = await getData("method", {method: "Акции"})
+    localStorage.setItem("asmrkt.actions", JSON.stringify(res))
     Store.dispatch({type: "actions", actions: res})  
 
-   // localStorage.setItem("marketAs.login", "+79142227300");
-    let phone = localStorage.getItem("marketAs.login")
-    console.log(phone)
-    if((phone !== undefined) && (phone !== null)) 
-        getProfile(phone)
-
-    console.log("exec")
     res = await getData("method", {method: "Категории"})
-
-    Store.dispatch({type: "categories", categories: res.map((e) => {
-        e.Категории = JSON.parse(e.Категории)
-        return e
-    })})  
     
-    load( "", 1)
+    let cats1 = res.map((e) => {e.Категории = JSON.parse(e.Категории); return e })
+    localStorage.setItem("asrmkt.categories", JSON.stringify(cats1))
+    Store.dispatch({type: "categories", categories: cats1})  
+    
+    load( 1 )
+
+ let phone = localStorage.getItem("marketAs.login")
+ console.log(phone)
+ //if((phone !== undefined) && (phone !== null)) 
+    // getProfile(phone)
 
 }
 

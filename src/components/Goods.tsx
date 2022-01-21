@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Store } from "../pages/Store"
-import { IonCard, IonImg, IonIcon, IonChip, IonText, IonButton, IonCardSubtitle, IonToolbar} from '@ionic/react';
+import { IonCard, IonImg, IonIcon, IonChip, IonText, IonButton, IonCardSubtitle, IonToolbar, IonLoading} from '@ionic/react';
 
 import './Goods.css'
 import { useHistory } from "react-router";
@@ -11,12 +11,14 @@ export function Goods():JSX.Element {
     const [info, setInfo]   = useState<any>([])
     const [sub, setSub]     = useState<any>()
     const [upd, setUpd]     = useState(0)
+    const [load, setLoad]   = useState(true)
 
     Store.subscribe({num: 21, type: "sub", func: ()=>{
         setSub(Store.getState().sub)
     }})
     Store.subscribe({num: 22, type: "goods", func: ()=>{
         setUpd(upd + 1)
+        setLoad(false);
     }})
     Store.subscribe({num: 23, type: "search", func: ()=>{
         let src = Store.getState().search
@@ -43,6 +45,7 @@ export function Goods():JSX.Element {
                 if(elem.СубКатегория === sub?.Код) jarr = [...jarr, elem]
             });
             setInfo(jarr)
+            setLoad(false);
         }
     }, [sub, upd])
 
@@ -64,14 +67,19 @@ export function Goods():JSX.Element {
 
     return <>
 
-    <div className="catalogue">
-        <div className="g-content">
-            { elem }
-        </div>
-        <div className="g-ediv">
-            <IonText class="a-right">  
-                All rights reserved asMarket
-            </IonText>
+    <div>
+        <IonLoading 
+                isOpen = { load } 
+                message = "Подождите..." />
+        <div className="catalogue">
+            <div className="g-content">
+                { elem }
+            </div>
+            <div className="g-ediv">
+                <IonText class="a-right">  
+                    All rights reserved asMarket
+                </IonText>
+            </div>
         </div>
     </div>
     </> 
