@@ -35,6 +35,9 @@ export function Payment():JSX.Element {
         let info = Store.getState().order;
         let res = await getData1C("Заказ", info);
         console.log(res)
+        let phone = localStorage.getItem("marketAs.login")
+        if(phone === null || phone === undefined) 
+          localStorage.setItem("marketAs.login", info.Phone)
         if(res.Код === 100 ) {
           info.Order_No   = res.НомерЗаказа
           if(info.Total + info.DelivSum - info.promo_sum === 0){

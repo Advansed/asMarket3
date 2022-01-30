@@ -152,8 +152,11 @@ const Page: React.FC = () => {
       });
       if(ind >= 0){
         if( !modal ){
-          setOrder(orders[ind])
-          getSMS()
+          if(orders[ind].SMS === "False") {
+            orders[ind].SMS = "True";
+            setOrder(orders[ind])
+            getSMS()
+          }
         }
       }
       
@@ -236,6 +239,7 @@ const Page: React.FC = () => {
                             let SMS = Store.getState().login.SMS
                             console.log(Store.getState().login)
                             if(SMS === val) {
+                              //localStorage.setItem("marketAs.login", )
                                 getData("method",{ method: "ПодтвердитьЗаказ", docNum: order?.Номер })
                                 setAlert1(true)    
                                 setModal(false)

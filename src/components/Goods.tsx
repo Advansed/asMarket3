@@ -20,7 +20,11 @@ export function Goods():JSX.Element {
         setUpd(upd + 1)
         setLoad(false);
     }})
-    Store.subscribe({num: 23, type: "search", func: ()=>{
+    Store.subscribe({num: 23, type: "sav_goods", func: ()=>{
+        setUpd(upd + 1)
+        setLoad(false);
+    }})
+    Store.subscribe({num: 24, type: "search", func: ()=>{
         let src = Store.getState().search
         let goods = Store.getState().goods;
         let jarr: any = [];

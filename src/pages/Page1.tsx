@@ -21,7 +21,7 @@ const Page1: React.FC = () => {
 
     if(name.substr(0, 1) === "_"){
       elem = <>
-        <div className="ml-05 mr-05">
+        <div className="ml-05 mr-05 h-100">
           <GCard info = { name.substr(1) }/>
         </div>
       </>

@@ -1,7 +1,8 @@
 import { IonAlert, IonCardContent, IonCardHeader, IonCardSubtitle, IonCol, IonInput
-  , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonCard, IonToolbar, IonTextarea, IonFooter, IonHeader, IonContent, IonRow, IonButton } from "@ionic/react";
-import { setErrorHandler } from "ionicons/dist/types/stencil-public-runtime";
-import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline, timeOutline, readerOutline, informationOutline } from "ionicons/icons";
+  , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonCard, IonToolbar
+  , IonTextarea, IonFooter, IonHeader, IonContent, IonRow, IonButton } from "@ionic/react";
+import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline
+        , timeOutline, readerOutline, informationOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
 import MaskedInput from "../mask/reactTextMask";
@@ -60,6 +61,15 @@ export function   Order( props ):JSX.Element {
               Price:      e.Цена, 
               Total:      e.Сумма}
         })
+        
+        let orders = Store.getState().orders;
+        if(orders.length > 0){
+            let old = orders[0];
+            info.Address  = old.Адрес
+            info.lat      = old.lat
+            info.lng      = old.lng
+        }
+
         Store.dispatch(info)
         setUpd(upd + 1)
     },[])
@@ -279,8 +289,13 @@ export function   Order( props ):JSX.Element {
 
 
   function ModalAddress():JSX.Element {
-      const [alert1, setAlert1] = useState(false)
-      const [alert2, setAlert2] = useState(false)
+      const [alert1,  setAlert1] = useState(false)
+      const [alert2,  setAlert2] = useState(false)
+      const [value,   setValue]  = useState("")
+      const [addr,    setAddr]   = useState<any>({
+          city: "", street: "", house: "", flat: ""
+      })  
+      const [upd, setUpd] = useState( 0 )
 
       let info = Store.getState().order
 
@@ -292,42 +307,61 @@ export function   Order( props ):JSX.Element {
     }
   
       let elem = <>
-            <div className="m_t_4">
+            <div className="mt-3">
               <h1 className="a-center">Введите адрес</h1>
             </div>
             {/* <div className="r-circle3"><div className="r-circle2"></div></div> */}
             <div className="r-content">
-            <div>
-  
+            <div> 
               <AddressSuggestions
                   token="23de02cd2b41dbb9951f8991a41b808f4398ec6e"
                   filterLocations ={ dict }
                   hintText = { "г. Якутск" }
-                  defaultQuery = { info?.Address }
+                  defaultQuery = { value }
                   value = { info?.Address }
+                  
                   onChange={(e)=>{
                     console.log(e)
                     if(e !== undefined)
                       info.Address = e.value
                       info.lat = e?.data.geo_lat
                       info.lng = e?.data.geo_lon
+
                       Store.dispatch(info)
+
+                      addr.city = e?.data.city
+                      addr.street = e?.data.street
+                      addr.house = e?.data.house
+                      addr.flat = e?.data.flat
+
+                      setAddr(addr); setUpd(upd + 1);
                   }}
                 /> 
-
               </div>
-              <IonToolbar class="i-content">
-                <div className="btn-r">
-                      <button
-                        slot="end"
-                        onClick={()=>{
-                            setModal(false)
-                        }}  className="orange-clr-bg"
-                      >
-                        Закрыть
-                      </button>
-                </div>
-              </IonToolbar>
+              <div className = "o-addr-item">
+                { 'Город: ' + addr.city }
+              </div>
+              <div className = "o-addr-item">
+                { 'Улица: ' + addr.street }
+              </div>
+              <div className = "o-addr-item">
+                { 'Дом: ' + (addr.house === null ? "  -  " : addr.house) }
+              </div>
+              <div className = "o-addr-item">
+                { 'Квартира: ' + (addr.flat === null ? "  -  " : addr.flat) }
+              </div>
+              <div>
+                  <div className="btn-r">
+                        <button
+                          slot="end"
+                          onClick={()=>{
+                              setModal(false)
+                          }}  className="orange-clr-bg"
+                        >
+                          Закрыть
+                        </button>
+                  </div>
+              </div>
               </div>
   
           <IonAlert

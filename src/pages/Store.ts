@@ -1,7 +1,7 @@
 import { combineReducers  } from 'redux'
 import axios from 'axios'
 import { Reducer } from 'react';
-import { constructSharp } from 'ionicons/icons';
+import { constructSharp, contrastOutline } from 'ionicons/icons';
 import localForage from "localforage";
 
 var reducers: Array<Reducer<any, any>>;reducers = []
@@ -59,6 +59,7 @@ export const i_state = {
     actions:                                        [],
     action:                                         "",
     param:                                          "",
+    load:                                           false,      
 
 }
 
@@ -178,7 +179,8 @@ const                   rootReducer = combineReducers({
     gcard:                  reducers[12],
     actions:                reducers[13],
     action:                 reducers[14],
-    param:                  reducers[15],             
+    param:                  reducers[15], 
+    load:                   reducers[16],            
 })
 
 
@@ -197,6 +199,35 @@ function                gdReducer(state:any = i_state.goods, action){
                 });
             return [...state, ...jarr]
             //return [...state, ...action.goods1]
+        }
+        case "sav_goods": {    
+            let jarr: any = []
+                action.goods.forEach(elem => {
+                    var Ind = state.findIndex(function(b) { 
+                        return b.Код === elem.Код; 
+                    });
+                    if( Ind >= 0)
+                        state[ Ind ] = elem
+                    else 
+                        jarr = [...jarr, elem]
+                });
+            return [...state, ...jarr]
+            //return [...state, ...action.goods1]
+        }
+        case "price": {
+                action.goods.forEach(elem => {
+                    var Ind = state.findIndex(function(b) { 
+                        return b.Код === elem.Код; 
+                    });
+                    if( Ind >= 0) {
+                        state[ Ind ].Количество     = elem.Количество
+                        state[ Ind ].Цена           = elem.Цена
+                        state[ Ind ].СтараяЦена     = elem.СтараяЦена
+                    }
+                });
+
+            return state
+ 
         }
         default: return state
     }
@@ -220,16 +251,64 @@ export const URL        = "https://marketac.ru:49002/node/"
 export async function   getDatas(){
 }
 
-async function load( page ){
+Store.subscribe({num: 10001, type: "goods", func: ()=>{
+    let goods = Store.getState().goods;  
+    let ind = 0;
+    let jarr = goods.slice(ind * 100, (ind + 1) * 100);
+    while(jarr.length > 0){ ind = ind + 1
+        console.log("goods" + ind.toString())
+        localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
+        jarr = goods.slice(ind * 100, (ind + 1) * 100);
+    }
+
+    deleteSav( ind + 1 )
+
+}})
+
+Store.subscribe({num: 10002, type: "price", func: ()=>{
+    let goods = Store.getState().goods;  
+    let ind = 0;
+    let jarr = goods.slice(ind * 100, (ind + 1) * 100);
+    while(jarr.length > 0){ ind = ind + 1
+        console.log("goods" + ind.toString())
+        localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
+        jarr = goods.slice(ind * 100, (ind + 1) * 100);
+    }
+
+    deleteSav( ind + 1 )
+
+}})
+
+async function deleteSav( ind ){
+    
+    let sav = await localForage.getItem("goods" + ind.toString());
+    if(sav !== undefined && sav !== null) {
+        console.log("deleted goods" + ind.toString())
+        localForage.setItem("goods" + ind.toString(), '[]');
+        deleteSav( ind + 1 )
+    } 
+}
+
+export async function download( page, _dat ){
+
     let res = await getData("method", {
-        method: "Р_Продукты",    
-        page: page,
+        method:     "Р_Продукты",    
+        page:       page,
+        _date:      _dat
     })  
     console.log(res)
     if(res.length > 0){
         Store.dispatch({ type: "goods", goods: res })
-        localForage.setItem("goods" + page.toString(), JSON.stringify(res) )
-        load( page + 1 )
+        download( page + 1, _dat )
+    } else {
+        res = await getData("method", {
+            method:     "Прайс",
+            _date:      _dat,    
+        })
+        console.log("Прайс")
+        if(res.length > 0) Store.dispatch({type: "price", goods: res})
+        localStorage.setItem("asmrkt.timestamp",  Store.getState().load);
+        Store.dispatch({type: "load", load: ""})
     }
 
 }
@@ -264,9 +343,8 @@ export async function getProfile(phone){
         })
     let login = res[0];login.type = "login"
     Store.dispatch( login )
-
-    getOrders()
-
+    console.log(login)
+    console.log( Store.getState().auth )
 }
 
 export async function Check(good){
@@ -281,20 +359,26 @@ let timerId;
 export async function getOrders(){
     Orders();
     timerId = setInterval(() => {
-        Orders()        
-    }, 5000);
+        if(Store.getState().load === "")  Orders()        
+    }, 15000);
   
 }
 
+
 async function Orders(){
-    let res = await getData("method", {
-        method: "Заказы",
-        phone: Store.getState().login.code
-    })   
-    if(Array.isArray(res))
-        Store.dispatch({type: "orders", orders: res})
-    else 
-        Store.dispatch({type: "orders", orders: []})
+    let login = Store.getState().login
+    
+    if(login.code !== "") {
+        let res = await getData("method", {
+            method: "Заказы",
+            phone: Store.getState().login.code
+        })   
+        console.log(res)
+        if(Array.isArray(res))
+            Store.dispatch({type: "orders", orders: res})
+        else 
+            Store.dispatch({type: "orders", orders: []})
+    }
 }
 
 export function stopOrders(){
@@ -306,6 +390,28 @@ export function stopOrders(){
 
 
 async function exec(){
+     
+    console.log( new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19))
+
+    let res: any
+
+    console.log("---------")
+
+    let _dat = localStorage.getItem("asmrkt.timestamp") as string
+    console.log(_dat)
+    if( _dat === null || _dat === undefined )
+        _dat = "2021-01-01 00:00:00";
+    Store.dispatch({
+        type: "load", 
+        load: new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
+    })
+
+
+    let phone = localStorage.getItem("marketAs.login")
+    console.log(phone)
+    if((phone !== undefined) && (phone !== null)) 
+        getProfile(phone)
+
 
     localForage.config({
         driver      : localForage.WEBSQL, // Force WebSQL; same as using setDriver()
@@ -322,7 +428,6 @@ async function exec(){
         sav = JSON.parse(sav);
         Store.dispatch({type: "market", market: sav})
         console.log("Настройки")
-        console.log(sav)
     }
 
     sav = localStorage.getItem("asmrkt.actions");
@@ -330,7 +435,6 @@ async function exec(){
         sav = JSON.parse(sav);
         Store.dispatch({type: "actions", actions: sav})
         console.log("Акции")
-        console.log(sav)
     }
 
     sav = localStorage.getItem("asrmkt.categories");
@@ -338,7 +442,6 @@ async function exec(){
         sav = JSON.parse(sav);
         Store.dispatch({type: "categories", categories: sav })
         console.log("Категории")
-        console.log(sav)
     }
 
     let ok = true;let page = 0;
@@ -347,16 +450,14 @@ async function exec(){
         sav = await localForage.getItem("goods" + page.toString());
         if(sav !== undefined && sav !== null) {
             sav = JSON.parse(sav);
-            Store.dispatch({type: "goods", goods: sav })
-            console.log(sav)
+            Store.dispatch({type: "sav_goods", goods: sav })
         } else ok = false
         console.log(page)
     }
 
-
+    let goods = Store.getState().goods
 
     console.log("--------------------------")
-    let res: any
 
     res = await getData("method", {method: "Настройки"}) 
     let market = res[0]
@@ -364,7 +465,6 @@ async function exec(){
 
     localStorage.setItem("asmrkt.market", JSON.stringify(res))
     Store.dispatch({type: "market", market: res})
-    console.log(res)
 
     res = await getData("method", {method: "Акции"})
     localStorage.setItem("asmrkt.actions", JSON.stringify(res))
@@ -376,12 +476,10 @@ async function exec(){
     localStorage.setItem("asrmkt.categories", JSON.stringify(cats1))
     Store.dispatch({type: "categories", categories: cats1})  
     
-    load( 1 )
+    download( 1, _dat )
 
- let phone = localStorage.getItem("marketAs.login")
- console.log(phone)
- //if((phone !== undefined) && (phone !== null)) 
-    // getProfile(phone)
+    getOrders();
+
 
 }
 

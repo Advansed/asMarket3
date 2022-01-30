@@ -50,21 +50,11 @@ export function   GCard(props):JSX.Element {
   }
 
   let elem = <>
-            <div className="gc-card"></div>
-              <div className="ml-025 ">
-              <IonButton color="light"
-                onClick = {()=>{
-                  Store.dispatch({ type: "route", route: "back" })
-                }}
-              >
-                <IonIcon icon = { arrowBackOutline } />
-              </IonButton>
-              </div>
-              <div className="f-card">
-                <img className="" src={  good.Картинка } alt="" />
-                </div>
-              
-            
+    <div className="gc-content">
+      <div className="f-card mt-3">
+        <img className="" src={  good.Картинка } alt="" />
+      </div>
+                     
             <div className="f-content">
             <IonRow>
               <IonCardHeader>
@@ -135,24 +125,25 @@ export function   GCard(props):JSX.Element {
             
               </IonRow>
 
-          <IonRow>
+          <div>
             <IonCardHeader ><b>Описание</b></IonCardHeader>
             <IonText class="gc-text-2">
               { good.Описание }
             </IonText>
-            </IonRow>
-            <IonRow>
+          </div>
+          <div>
             <IonCardHeader ><b>Производитель</b></IonCardHeader>
             <IonText class="gc-text-2">
               { good.Производитель }
             </IonText>
-            </IonRow>
+          </div>
           
           
               
           
           </div>
-    </>
+    </div>                
+  </>
     
     
     return elem

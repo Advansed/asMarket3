@@ -44,10 +44,6 @@ export function Carusel():JSX.Element {
     }
 
     function Slides():JSX.Element {
-        // let items : any = []
-        // for( let i = 0; i < info.length;i++){
-        //     items = [...items, <Slide e = { info[i] }/>]
-        // }
         let elem = <>
             <div className="box">
                 <Carousel
@@ -57,7 +53,6 @@ export function Carusel():JSX.Element {
                     showThumbs = { false }
 
                 >   
-                    {/* { items } */}
                     { info.map((e, ind) =>{ 
                         return <>
                             <div key = { e.Код } 

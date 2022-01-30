@@ -19,6 +19,7 @@ import { useLocation } from 'react-router-dom';
 import { archiveOutline, archiveSharp, bookmarkOutline, bookmarksOutline, checkboxOutline, contractOutline, happyOutline, heartOutline, heartSharp, homeOutline, logInOutline, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, personCircleOutline, personOutline, personSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
 import { Store } from '../pages/Store';
+import { useState } from 'react';
 
 interface AppPage {
   url: string;
@@ -70,8 +71,12 @@ const appPages: AppPage[] = [
 const labels = ['Акции', 'Скидки', 'Бренды'];
 
 const Menu: React.FC = () => {
+  const [upd, setUpd] = useState(0);
   const location = useLocation();
 
+  Store.subscribe({num: 81, type: "auth", func: ()=>{
+    setUpd( upd + 1);
+  }})
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent>
