@@ -59,7 +59,8 @@ export const i_state = {
     actions:                                        [],
     action:                                         "",
     param:                                          "",
-    load:                                           false,      
+    load:                                           false,    
+    progress:                                        0,      
 
 }
 
@@ -180,7 +181,8 @@ const                   rootReducer = combineReducers({
     actions:                reducers[13],
     action:                 reducers[14],
     param:                  reducers[15], 
-    load:                   reducers[16],            
+    load:                   reducers[16],   
+    progress:               reducers[17],
 })
 
 
@@ -405,12 +407,16 @@ async function exec(){
         type: "load", 
         load: new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
     })
+    Store.dispatch({type: "progress", progress: 0})
+
 
 
     let phone = localStorage.getItem("marketAs.login")
     console.log(phone)
     if((phone !== undefined) && (phone !== null)) 
         getProfile(phone)
+
+    Store.dispatch({type: "progress", progress: 0.1})
 
 
     localForage.config({
@@ -429,6 +435,7 @@ async function exec(){
         Store.dispatch({type: "market", market: sav})
         console.log("Настройки")
     }
+    Store.dispatch({type: "progress", progress: 0.2})
 
     sav = localStorage.getItem("asmrkt.actions");
     if(sav !== undefined && sav !== null) {
@@ -437,12 +444,16 @@ async function exec(){
         console.log("Акции")
     }
 
+    Store.dispatch({type: "progress", progress: 0.4})
+
     sav = localStorage.getItem("asrmkt.categories");
     if(sav !== undefined && sav !== null) {
         sav = JSON.parse(sav);
         Store.dispatch({type: "categories", categories: sav })
         console.log("Категории")
     }
+
+    Store.dispatch({type: "progress", progress: 0.6})
 
     let ok = true;let page = 0;
     while( ok ) { 
@@ -457,6 +468,8 @@ async function exec(){
 
     let goods = Store.getState().goods
 
+    Store.dispatch({type: "progress", progress: 0.8})
+   
     console.log("--------------------------")
 
     res = await getData("method", {method: "Настройки"}) 

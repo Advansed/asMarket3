@@ -1,28 +1,27 @@
 import { useEffect, useState } from "react"
 import { Store } from "../pages/Store"
-import { IonCard, IonImg, IonIcon, IonChip, IonText, IonButton, IonCardSubtitle, IonToolbar, IonLoading} from '@ionic/react';
+import { IonCard, IonImg, IonIcon, IonChip, IonText, IonButton, IonCardSubtitle, IonToolbar, IonLoading, IonProgressBar} from '@ionic/react';
 
 import './Goods.css'
 import { useHistory } from "react-router";
 import { addBasket } from "./Basket";
 
 
-export function Goods():JSX.Element {
+export function     Goods():JSX.Element {
     const [info, setInfo]   = useState<any>([])
     const [sub, setSub]     = useState<any>()
     const [upd, setUpd]     = useState(0)
     const [load, setLoad]   = useState(true)
+    const [value, setValue] = useState(0)
 
     Store.subscribe({num: 21, type: "sub", func: ()=>{
         setSub(Store.getState().sub)
     }})
     Store.subscribe({num: 22, type: "goods", func: ()=>{
         setUpd(upd + 1)
-        setLoad(false);
     }})
     Store.subscribe({num: 23, type: "sav_goods", func: ()=>{
         setUpd(upd + 1)
-        setLoad(false);
     }})
     Store.subscribe({num: 24, type: "search", func: ()=>{
         let src = Store.getState().search
@@ -40,6 +39,13 @@ export function Goods():JSX.Element {
             setUpd(upd + 1)
         }
     }})
+    Store.subscribe({num: 25, type: "load", func: ()=>{
+        setLoad(Store.getState().load !== "");
+    }})
+    Store.subscribe({num: 26, type: "progress", func: ()=>{
+        setValue( Store.getState().progress );
+        console.log( Store.getState().progress )
+    }})
 
     useEffect(()=>{
         if(sub !== "") {
@@ -49,11 +55,11 @@ export function Goods():JSX.Element {
                 if(elem.СубКатегория === sub?.Код) jarr = [...jarr, elem]
             });
             setInfo(jarr)
-            setLoad(false);
         }
     }, [sub, upd])
 
     useEffect(()=>{
+        setLoad(Store.getState().load !== "");
         setSub(Store.getState().sub)
         return ()=>{
             Store.unSubscribe(21);
@@ -72,10 +78,13 @@ export function Goods():JSX.Element {
     return <>
 
     <div>
-        <IonLoading 
-                isOpen = { load } 
-                message = "Подождите..." />
         <div className="catalogue">
+            <div className = { load ? "" : "hidden" }>
+                <IonProgressBar 
+                    // value = { value } buffer = { value + 0.2 } 
+                    type = "indeterminate"
+                />
+            </div>
             <div className="g-content">
                 { elem }
             </div>
@@ -89,7 +98,7 @@ export function Goods():JSX.Element {
     </> 
 }
 
-export function   Good(props):JSX.Element {
+export function     Good(props):JSX.Element {
   let info = props.info
 
   let elem = <></>
