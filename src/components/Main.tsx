@@ -1,9 +1,11 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonSearchbar, IonToolbar } from "@ionic/react"
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonProgressBar, IonSearchbar, IonToolbar } from "@ionic/react"
 import { useEffect, useState } from "react"
+import { Store } from "../pages/Store"
 import { BasketIcon } from "./Basket"
 import { Carusel } from "./Carusel"
 import { Categories } from "./Categories"
 import { Goods } from "./Goods"
+import "./Main.css"
 
 export function General(props):JSX.Element {
     return <>
@@ -17,4 +19,29 @@ export function General(props):JSX.Element {
       </IonContent>
 
     </>
+}
+
+export function LoadPage():JSX.Element {
+  const [info, setInfo] = useState<any>([])
+
+  Store.subscribe({num: 2001, type: "logs", func: ()=>{
+    setInfo(Store.getState().logs);
+  }})
+
+  let elem = <>
+    <div className = "load-div ml-1 mr-1">
+      <img src = "assets/asMarket.jpg" />
+      <div>
+        <h4>
+          Подождите
+        </h4>
+      </div>
+      <div>
+        <IonProgressBar type="indeterminate"/>
+        <span>идет начальная загрузка данных</span>
+        <IonProgressBar type="indeterminate" reversed />
+      </div>
+    </div>
+  </>
+  return elem
 }

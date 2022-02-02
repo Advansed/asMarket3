@@ -5,7 +5,7 @@ import { Basket, BasketIcon, BasketPanel } from '../components/Basket';
 import { Action } from '../components/Carusel';
 import { GCard } from '../components/GCard';
 import { InfoPage1, InfoPage2 } from '../components/Infopage';
-import { General } from '../components/Main';
+import { General, LoadPage } from '../components/Main';
 import { Order } from '../components/Order';
 import { OHistory, Orders } from '../components/Orders';
 import { Options, Profile } from '../components/Profile';
@@ -176,8 +176,19 @@ const Page: React.FC = () => {
   }
 
   function Main(props):JSX.Element {
+    const [load, setLoad] = useState(false)
     let elem = <></>
 
+    Store.subscribe({num: 3301, type: "load", func: ()=>{
+      setLoad( Store.getState().load !== "" );
+      console.log( "subs load")
+    }})
+    
+      useEffect(()=>{
+      console.log( "effect load")
+      setLoad( Store.getState().load !== "" );
+    },[])
+    if( load ) return <LoadPage />
     if(name.substr(0, 1) === "_"){
       elem = <>
         <div className="ml-05 mr-05">

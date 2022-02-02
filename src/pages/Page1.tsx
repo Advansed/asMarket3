@@ -1,9 +1,11 @@
 import { IonButtons, IonHeader, IonIcon, IonPage, IonToolbar } from '@ionic/react';
 import { arrowBackOutline, backspaceOutline } from 'ionicons/icons';
+import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { Basket } from '../components/Basket';
 import { GCard } from '../components/GCard';
 import { InfoPage1, InfoPage2, InfoPage3 } from '../components/Infopage';
+import { LoadPage } from '../components/Main';
 import { Order } from '../components/Order';
 import { OHistory, Orders } from '../components/Orders';
 import { Payment } from '../components/Payment';
@@ -13,8 +15,10 @@ import './Page.css';
 import { Store } from './Store';
 
 const Page1: React.FC = () => {
-
+  
   const { name } = useParams<{ name: string; }>();
+
+
 
   function Main(props):JSX.Element {
     let elem = <></>

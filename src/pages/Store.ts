@@ -60,7 +60,8 @@ export const i_state = {
     action:                                         "",
     param:                                          "",
     load:                                           false,    
-    progress:                                        0,      
+    progress:                                        0,    
+    logs:                                           [],          
 
 }
 
@@ -183,6 +184,7 @@ const                   rootReducer = combineReducers({
     param:                  reducers[15], 
     load:                   reducers[16],   
     progress:               reducers[17],
+    logs:                   reducers[18],
 })
 
 
@@ -389,15 +391,18 @@ export function stopOrders(){
 
 }
 
+// function logs(st: string){
 
+//     let logs = Store.getState().logs;
+//     Store.dispatch({type: "logs", logs: [...logs, st]})
+//     console.log(st);
+// }
 
 async function exec(){
      
     console.log( new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19))
 
     let res: any
-
-    console.log("---------")
 
     let _dat = localStorage.getItem("asmrkt.timestamp") as string
     console.log(_dat)
@@ -409,8 +414,6 @@ async function exec(){
     })
     Store.dispatch({type: "progress", progress: 0})
 
-
-
     let phone = localStorage.getItem("marketAs.login")
     console.log(phone)
     if((phone !== undefined) && (phone !== null)) 
@@ -419,16 +422,20 @@ async function exec(){
     Store.dispatch({type: "progress", progress: 0.1})
 
 
-    localForage.config({
-        driver      : localForage.WEBSQL, // Force WebSQL; same as using setDriver()
-        name        : 'asrmrkt',
-        version     : 1.0,
-        size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
-        storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
-        description : 'some description'
-    });
+    try {
+        localForage.config({
+            driver      : localForage.INDEXEDDB, // Force WebSQL; same as using setDriver()
+            name        : 'asrmrkt',
+            version     : 1.0,
+            size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
+            storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+            description : 'some description'
+        });
+            
+    } catch (error) {
+        console.log( error )        
+    }
 
-    console.log("exec")
     let sav = localStorage.getItem("asmrkt.market");
     if(sav !== undefined && sav !== null) {
         sav = JSON.parse(sav);
@@ -441,7 +448,6 @@ async function exec(){
     if(sav !== undefined && sav !== null) {
         sav = JSON.parse(sav);
         Store.dispatch({type: "actions", actions: sav})
-        console.log("Акции")
     }
 
     Store.dispatch({type: "progress", progress: 0.4})
@@ -450,7 +456,6 @@ async function exec(){
     if(sav !== undefined && sav !== null) {
         sav = JSON.parse(sav);
         Store.dispatch({type: "categories", categories: sav })
-        console.log("Категории")
     }
 
     Store.dispatch({type: "progress", progress: 0.6})
@@ -470,8 +475,6 @@ async function exec(){
 
     Store.dispatch({type: "progress", progress: 0.8})
    
-    console.log("--------------------------")
-
     res = await getData("method", {method: "Настройки"}) 
     let market = res[0]
     market.tabs = JSON.parse(market.tabs)
