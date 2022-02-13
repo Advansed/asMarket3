@@ -37,7 +37,7 @@ export const i_state = {
             promokod:               "",
             promo_percent:          0,
             promo_sum:              0, 
-            OrderDetails:           []
+            OrderDetails:           [],
 
     },
     market:                                         {
@@ -61,7 +61,9 @@ export const i_state = {
     param:                                          "",
     load:                                           false,    
     progress:                                        0,    
-    logs:                                           [],          
+    logs:                                           [],    
+    error:                                          "",
+    lstore:                                         true,
 
 }
 
@@ -185,6 +187,8 @@ const                   rootReducer = combineReducers({
     load:                   reducers[16],   
     progress:               reducers[17],
     logs:                   reducers[18],
+    error:                  reducers[19],
+    lstore:                 reducers[20]
 })
 
 
@@ -252,34 +256,42 @@ export const URL1C      = "https://marketac.ru:49002/ut/hs/API/V1/"
 
 export const URL        = "https://marketac.ru:49002/node/"
 
+//export const URL1C      = "https://46.48.133.250:49002/marketac/hs/API/V1/"
+
+//export const URL        = "https://46.48.133.250:49002/node/"
+
 export async function   getDatas(){
 }
 
 Store.subscribe({num: 10001, type: "goods", func: ()=>{
-    let goods = Store.getState().goods;  
-    let ind = 0;
-    let jarr = goods.slice(ind * 100, (ind + 1) * 100);
-    while(jarr.length > 0){ ind = ind + 1
-        console.log("goods" + ind.toString())
-        localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
-        jarr = goods.slice(ind * 100, (ind + 1) * 100);
-    }
+    if(Store.getState().lstore) {
+        let goods = Store.getState().goods;  
+        let ind = 0;
+        let jarr = goods.slice(ind * 100, (ind + 1) * 100);
+        while(jarr.length > 0){ ind = ind + 1
+            console.log("goods" + ind.toString())
+            localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
+            jarr = goods.slice(ind * 100, (ind + 1) * 100);
+        }
 
-    deleteSav( ind + 1 )
+        deleteSav( ind + 1 )
+    }
 
 }})
 
 Store.subscribe({num: 10002, type: "price", func: ()=>{
-    let goods = Store.getState().goods;  
-    let ind = 0;
-    let jarr = goods.slice(ind * 100, (ind + 1) * 100);
-    while(jarr.length > 0){ ind = ind + 1
-        console.log("goods" + ind.toString())
-        localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
-        jarr = goods.slice(ind * 100, (ind + 1) * 100);
-    }
+    if(Store.getState().lstore) {
+        let goods = Store.getState().goods;  
+        let ind = 0;
+        let jarr = goods.slice(ind * 100, (ind + 1) * 100);
+        while(jarr.length > 0){ ind = ind + 1
+            console.log("goods" + ind.toString())
+            localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
+            jarr = goods.slice(ind * 100, (ind + 1) * 100);
+        }
 
-    deleteSav( ind + 1 )
+        deleteSav( ind + 1 )
+    }
 
 }})
 
@@ -403,26 +415,33 @@ async function exec(){
     console.log( new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19))
 
     let res: any
-
-    let _dat = localStorage.getItem("asmrkt.timestamp") as string
-    console.log(_dat)
-    if( _dat === null || _dat === undefined )
-        _dat = "2021-01-01 00:00:00";
-    Store.dispatch({
-        type: "load", 
-        load: new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
-    })
-    Store.dispatch({type: "progress", progress: 0})
-
-    let phone = localStorage.getItem("marketAs.login")
-    console.log(phone)
-    if((phone !== undefined) && (phone !== null)) 
-        getProfile(phone)
-
-    Store.dispatch({type: "progress", progress: 0.1})
-
+    let _dat : string = ""
+    try {
+        _dat = localStorage.getItem("asmrkt.timestamp") as string
+        console.log(_dat)
+        if( _dat === null || _dat === undefined )
+            _dat = "2021-01-01 00:00:00";
+        Store.dispatch({
+            type: "load", 
+            load: new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
+        })
+        Store.dispatch({type: "progress", progress: 0})
+    
+        let phone = localStorage.getItem("marketAs.login")
+        console.log(phone)
+        if((phone !== undefined) && (phone !== null)) 
+            getProfile(phone)
+    
+        Store.dispatch({type: "progress", progress: 0.1})
+            
+    } catch (error) {
+        console.log( error )        
+        Store.dispatch({type: "error", error: "Ошибка локального хранилища { local }"})
+        
+    }
 
     try {
+
         localForage.config({
             driver      : localForage.INDEXEDDB, // Force WebSQL; same as using setDriver()
             name        : 'asrmrkt',
@@ -431,9 +450,24 @@ async function exec(){
             storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
             description : 'some description'
         });
+        
             
     } catch (error) {
-        console.log( error )        
+        try {
+            localForage.config({
+                driver      : localForage.LOCALSTORAGE, // Force WebSQL; same as using setDriver()
+                name        : 'asrmrkt',
+                version     : 1.0,
+                size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
+                storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+                description : 'some description'
+            });
+    
+        } catch (error) {
+            Store.dispatch({type : "lstore", lstore : false})
+            console.log( error )        
+            Store.dispatch({type: "error", error: "Ошибка локального хранилища { INDEXEDDB }"})                
+        }
     }
 
     let sav = localStorage.getItem("asmrkt.market");
@@ -461,7 +495,8 @@ async function exec(){
     Store.dispatch({type: "progress", progress: 0.6})
 
     let ok = true;let page = 0;
-    while( ok ) { 
+    let lf = Store.getState().lstore;
+    while( ok && lf ) { 
         page = page + 1;
         sav = await localForage.getItem("goods" + page.toString());
         if(sav !== undefined && sav !== null) {
@@ -476,6 +511,7 @@ async function exec(){
     Store.dispatch({type: "progress", progress: 0.8})
    
     res = await getData("method", {method: "Настройки"}) 
+    console.log(res)
     let market = res[0]
     market.tabs = JSON.parse(market.tabs)
 
@@ -487,7 +523,7 @@ async function exec(){
     Store.dispatch({type: "actions", actions: res})  
 
     res = await getData("method", {method: "Категории"})
-    
+    console.log(res)
     let cats1 = res.map((e) => {e.Категории = JSON.parse(e.Категории); return e })
     localStorage.setItem("asrmkt.categories", JSON.stringify(cats1))
     Store.dispatch({type: "categories", categories: cats1})  

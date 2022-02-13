@@ -16,10 +16,11 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, bookmarksOutline, checkboxOutline, contractOutline, happyOutline, heartOutline, heartSharp, homeOutline, logInOutline, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, personCircleOutline, personOutline, personSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveOutline, archiveSharp, bookmarkOutline, bookmarksOutline, checkboxOutline, cloudDownloadOutline, cloudDownloadSharp, contractOutline, happyOutline, heartOutline, heartSharp, homeOutline, logInOutline, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, personCircleOutline, personOutline, personSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
 import './Menu.css';
-import { Store } from '../pages/Store';
+import { download, Store } from '../pages/Store';
 import { useState } from 'react';
+import localforage from 'localforage';
 
 interface AppPage {
   url: string;
@@ -64,6 +65,12 @@ const appPages: AppPage[] = [
     url: '/page1/contacts',
     iosIcon: happyOutline,
     mdIcon: archiveSharp
+  },
+  {
+    title: 'Обновить данные',
+    url: '',
+    iosIcon: cloudDownloadOutline,
+    mdIcon: cloudDownloadSharp
   },
  
 ];
@@ -123,6 +130,12 @@ const Menu: React.FC = () => {
                       Store.dispatch({type: "category", category: "01-00000100"})
                       console.log("menu")
                     }
+                    if(appPage.title === "Обновить данные"){
+                      console.log("download")
+                      localStorage.setItem("asmrkt.timestamp",  "2022-01-01");
+                      localforage.clear();
+                      Store.dispatch({type: "load", load: "2022-01-01"})
+                       download(1, "2022-01-01");                    }
                   }} 
                 >
                   <IonIcon  className="m-mr2" ios={appPage.iosIcon}  />

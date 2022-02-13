@@ -7,6 +7,7 @@ import { IonAvatar, IonButton, IonCardContent, IonCol, IonGrid, IonIcon, IonInpu
 import { arrowBackOutline, bagHandleOutline, cameraOutline, cloudDownloadOutline, exitOutline, headsetOutline, informationCircleOutline, mailUnreadOutline
   , personCircleOutline, shieldCheckmarkOutline } from "ionicons/icons";
 import './Profile.css'
+import localforage from "localforage";
 
 defineCustomElements(window)
 
@@ -263,6 +264,8 @@ export function   Options():JSX.Element {
             <IonItem class="mt-1 mb-1 op-item" lines = "none" detail
                onClick={()=>{
                  console.log("download")
+                 localStorage.setItem("asmrkt.timestamp",  "2022-01-01");
+                 localforage.clear();
                  Store.dispatch({type: "load", load: "2022-01-01"})
                   download(1, "2022-01-01");
               }}             

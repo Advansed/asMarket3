@@ -1,4 +1,4 @@
-import { IonAlert, IonButtons, IonHeader, IonInput, IonMenuButton, IonModal, IonPage, IonSearchbar, IonToolbar } from '@ionic/react';
+import { IonAlert, IonButtons, IonHeader, IonInput, IonMenuButton, IonModal, IonPage, IonSearchbar, IonToast, IonToolbar } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { Basket, BasketIcon, BasketPanel } from '../components/Basket';
@@ -22,6 +22,7 @@ import { convertMaskToPlaceholder } from '../mask/src/utilities';
 const Page: React.FC = () => {
   const [modal, setModal] = useState(false)
   const [order, setOrder] = useState<any>()
+  const [error, setError] = useState("")
   const { name } = useParams<{ name: string; }>();
 
   let hust = useHistory();
@@ -161,6 +162,25 @@ const Page: React.FC = () => {
       }
       
   }})
+
+  Store.subscribe({num: 4, type: "error", func:()=>{
+    let err = Store.getState().error
+    console.log(err)
+    if(err !== "") {
+      setError( err )
+      Store.dispatch({type: "error", error: ""})
+    }
+  }})
+
+  useEffect(()=>{
+    let err = Store.getState().error
+    console.log(err)
+    if(err !== "") {
+      setError( err )
+      Store.dispatch({type: "error", error: ""})
+    }
+
+  },[])
 
   async function getSMS(){
       let res = await getData1C("ПолучитьСМС", {
@@ -322,6 +342,15 @@ const Page: React.FC = () => {
       <IonModal isOpen = { modal }>
         <ModalSMS />
       </IonModal>
+
+      <IonAlert
+          isOpen={ error !== "" }
+          onDidDismiss={() => setError("")}
+          cssClass='my-custom-class'
+          header={'Ошибка'}
+          message={ error }
+          buttons={['OK']}
+        />
     </IonPage>
   );
 };
