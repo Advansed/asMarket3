@@ -59,13 +59,6 @@ export function   Profile():JSX.Element {
   
     let elem = <>
       
-        <IonRow>
-          <IonCol size="7">
-            <div className="pr-header">
-                <IonText><h3><b>Профиль</b></h3></IonText>
-                </div>
-          </IonCol>
-         </IonRow>        
         <IonLoading isOpen = { load } message = "Подождите" />
         <IonCardContent>
           <div className="pr-container">

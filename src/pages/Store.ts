@@ -378,7 +378,7 @@ export async function getOrders(){
     Orders();
     timerId = setInterval(() => {
         if(Store.getState().load === "")  Orders()        
-    }, 15000);
+    }, 60000);
   
 }
 

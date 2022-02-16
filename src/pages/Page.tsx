@@ -1,15 +1,10 @@
-import { IonAlert, IonButtons, IonHeader, IonInput, IonMenuButton, IonModal, IonPage, IonSearchbar, IonToast, IonToolbar } from '@ionic/react';
+import { IonAlert, IonButtons, IonHeader, IonInput, IonMenuButton, IonModal, IonPage, IonSearchbar, IonToolbar } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router';
-import { Basket, BasketIcon, BasketPanel } from '../components/Basket';
+import { BasketPanel } from '../components/Basket';
 import { Action } from '../components/Carusel';
 import { GCard } from '../components/GCard';
-import { InfoPage1, InfoPage2 } from '../components/Infopage';
 import { General, LoadPage } from '../components/Main';
-import { Order } from '../components/Order';
-import { OHistory, Orders } from '../components/Orders';
-import { Options, Profile } from '../components/Profile';
-import { Login, SMS } from '../components/Registration';
 import './Page.css';
 import { getData, getData1C, getOrders, Store } from './Store';
 
@@ -17,7 +12,6 @@ import { PushNotificationSchema, PushNotifications, Token, ActionPerformed } fro
 
 import { Toast } from "@capacitor/toast";
 import { Capacitor } from '@capacitor/core';
-import { convertMaskToPlaceholder } from '../mask/src/utilities';
 
 const Page: React.FC = () => {
   const [modal, setModal] = useState(false)
@@ -26,8 +20,6 @@ const Page: React.FC = () => {
   const { name } = useParams<{ name: string; }>();
 
   let hust = useHistory();
-
-  const nullEntry: any[] = []
 
   const isPushNotificationsAvailable = Capacitor.isPluginAvailable('PushNotifications');
 
@@ -204,18 +196,20 @@ const Page: React.FC = () => {
       console.log( "subs load")
     }})
     
-      useEffect(()=>{
-      console.log( "effect load")
+    useEffect(()=>{
       setLoad( Store.getState().load !== "" );
     },[])
+
     if( load ) return <LoadPage />
+
     if(name.substr(0, 1) === "_"){
       elem = <>
         <div className="ml-05 mr-05">
           <GCard info = { name.substr(1) }/>
         </div>
       </>
-    } else    switch (props.name) {
+    } else    
+    switch (props.name) {
       case "root" :         elem = <General />; break;
       case "action":        elem = <Action />; break
       default :             elem = <></> 

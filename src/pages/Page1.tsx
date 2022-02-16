@@ -1,11 +1,9 @@
 import { IonButtons, IonHeader, IonIcon, IonPage, IonToolbar } from '@ionic/react';
-import { arrowBackOutline, backspaceOutline } from 'ionicons/icons';
-import { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router';
+import { chevronBackSharp } from 'ionicons/icons';
+import { useParams } from 'react-router';
 import { Basket } from '../components/Basket';
 import { GCard } from '../components/GCard';
 import { InfoPage1, InfoPage2, InfoPage3 } from '../components/Infopage';
-import { LoadPage } from '../components/Main';
 import { Order } from '../components/Order';
 import { OHistory, Orders } from '../components/Orders';
 import { Payment } from '../components/Payment';
@@ -54,12 +52,35 @@ const Page1: React.FC = () => {
       <IonHeader >
         <IonToolbar>
           <IonButtons slot="start">
-            <IonIcon icon={  arrowBackOutline } className="ml-05 w-2 h-2" 
+            <IonIcon icon={  chevronBackSharp } className="ml-1 w-1 h-1" 
               onClick = {() =>{
                 Store.dispatch({type: "route", route: "back"})
               }}
             />
           </IonButtons>
+          <h4 className="ml-1"> {
+            name === "order" 
+              ? "Оформление заказа" 
+              : name === "payment"
+              ? "Оплата заказа"
+              : name === "basket"
+              ? "Корзина"
+              : name === "options"
+              ? "Личный кабинет"
+              : name === "profile"
+              ? "Профиль"
+              : name === "orders"
+              ? "Мои заказы"
+              : name === "history"
+              ? "История"
+              : name === "info"
+              ? "Условия работы"
+              : name === "policy"
+              ? ""
+              : name === "contacts"
+              ? "О нас"
+              : ""
+          }</h4>
         </IonToolbar>
       </IonHeader>
 

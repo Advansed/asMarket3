@@ -1,8 +1,5 @@
-import { IonAlert, IonCol 
-  , IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonText, IonModal
-  , IonTextarea, IonContent, IonRow, IonButton } from "@ionic/react";
-import { bicycleOutline, homeOutline, phonePortrait
-        , timeOutline, readerOutline } from "ionicons/icons";
+import { IonAlert, IonIcon, IonSelect, IonSelectOption, IonModal, IonContent, IonInput } from "@ionic/react";
+import { phonePortraitSharp, bicycleSharp, timeSharp, readerSharp } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
 import MaskedInput from "../mask/reactTextMask";
@@ -87,124 +84,268 @@ export function   Order( props ):JSX.Element {
   function Page1():JSX.Element {
       const [info, setInfo] = useState(Store.getState().order)
       const [upd, setUpd] = useState(0)
+      const [ all, setAll]          = useState( false )
 
       useEffect(()=>{
         setInfo(Store.getState().order)
+        All()
       }, [])
 
-      // Store.subscribe({num: 71, type: "order", func: ()=>{
-      //   setInfo(Store.getState().order)
-      //   setUpd(upd + 1)
-      // }})
+      function All(){
+        let ok = true;
+        if(info.deliveryMethod === "Доставка" && info.Address === "") ok = false
+        if(info.deliveryMethod === "Доставка" && info.DeliveryTime === "") ok = false
+        if(info.Phone === "" || info.Phone.indexOf('_') > -1) ok = false
+
+        setAll(ok)
+      }
+
+      function Phone():JSX.Element {
+        const [edit, setEdit] = useState(false)
+
+        let elem = <>
+            <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
+              <div>+7</div>
+              <MaskedInput
+                    mask={[ ' ','(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-',/\d/, /\d/]}
+                    className="m-input"
+                    autoComplete="off"
+                    placeholder="(___) ___-__-__"
+                    id='1'
+                    type='text'
+                    value = { phone(info?.Phone) }
+                    onChange={(e: any) => {
+                      let st = e.target.value;
+                      info.Phone = "+7" + st;
+                    }}
+                    onKeyDown={(e)=>{
+                      if(e.key === "Enter") setEdit(!edit)
+                      All()
+                    }}
+                  />
+            </div>
+          <div className="borders mt-1 ml-1 mr-1">
+            <div className = "flex"
+              onClick = {()=>{
+                setEdit(!edit)
+              }}
+            >
+              <div>
+                <IonIcon icon={ phonePortraitSharp } className="w-2 h-2"/>
+              </div>         
+              <div className = "ml-2">
+                 <div className="fs-07">Телефон</div>
+                 <div>
+                    <span>{ info.Phone }</span>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </>
+        return elem
+      }
       
+      function Delivery():JSX.Element {
+        const [edit, setEdit] = useState(false)
+        let elem = <>
+            <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
+              <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" onIonChange={e => {
+                  info.DeliveryMethod = e.detail.value
+                  if(info?.DeliveryMethod === "Доставка") {
+                    info.DelivSum = info.Total  < 1000 ? Store.getState().market.sum : 0
+                  } else {
+                    info.Address = "";
+                    info.DelivSum = 0;
+                  }
+                  setUpd(upd + 1)
+                  All()
+              }}>
+                <IonSelectOption value="Доставка">Доставка до адреса</IonSelectOption>
+                <IonSelectOption value="Самовывоз">Самовывоз</IonSelectOption>
+              </IonSelect> 
+            </div>
+          <div className="borders mt-1 ml-1 mr-1">
+            <div className = "flex"
+              onClick = {()=>{
+                setEdit(!edit)
+              }}
+            >
+              <div>
+                <IonIcon icon={ bicycleSharp } className="w-2 h-2"/>
+              </div>         
+              <div className = "ml-2">
+                 <div className="fs-07 mb-1">Метод доставки</div>
+                 <div>
+                    <span>{ info.DeliveryMethod }</span>
+                 </div>
+              </div>
+            </div>
+          </div>
+
+        </>
+        return elem
+      }
+
+      function Address():JSX.Element {
+        const [edit, setEdit] = useState(false)
+        let elem = <>
+            <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom " : "hidden"}>
+              <AddressSuggestions
+                  token="23de02cd2b41dbb9951f8991a41b808f4398ec6e"
+                  filterLocations ={ dict }
+                  hintText = { "г. Якутск" }
+                  defaultQuery = { info.Address }
+                  value = { info?.Address }
+                  
+                  onChange={(e)=>{
+                    if(e !== undefined)
+                      info.Address = e.value
+                      info.lat = e?.data.geo_lat
+                      info.lng = e?.data.geo_lon
+                      setUpd(upd + 1);
+                      All()
+                  }}
+                /> 
+            </div>
+          <div className="borders mt-1 ml-1 mr-1">
+            <div className = "flex"
+              onClick = {()=>{
+                setEdit(!edit)
+              }}
+            >
+              <div>
+                <IonIcon icon={ bicycleSharp } className="w-2 h-2"/>
+              </div>         
+              <div className = "ml-2">
+                 <div className="fs-07 mb-1">Адрес</div>
+                 <div>
+                    <span>{ info.Address }</span>
+                 </div>
+              </div>
+            </div>
+          </div>
+
+        </>
+        return elem
+      }
+
+      function DelTime():JSX.Element {
+        const [edit, setEdit] = useState(false)
+
+        let elem = <>
+          <div className="borders mt-1 ml-1 mr-1">
+            <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
+              <IonSelect value={ info?.DeliveryTime } okText="Да" cancelText="Нет" onIonChange={e => {
+                  info.DeliveryTime = e.detail.value
+                  setUpd(upd + 1)
+                  setEdit(!edit)
+                  All()
+              }}>
+                  <IonSelectOption value="10:00-12:00">11:00 - 13:00</IonSelectOption>
+                  <IonSelectOption value="12:00-14:00">13:00 - 15:00</IonSelectOption>
+                  <IonSelectOption value="14:00-16:00">15:00 - 17:00</IonSelectOption>
+                  <IonSelectOption value="16:00-18:00">17:00 - 19:00</IonSelectOption>
+                  <IonSelectOption value="18:00-20:00">19:00 - 21:00</IonSelectOption>
+              </IonSelect>
+            </div>
+            <div className = {!edit ? "flex" : "hidden"}
+              onClick = {()=>{
+                setEdit(!edit)
+              }}
+            >
+              <div>
+                <IonIcon icon={ timeSharp } className="w-2 h-2"/>
+              </div>         
+              <div className = "ml-2">
+                 <div className="fs-07 mb-1">Удобное время доставки</div>
+                 <div>
+                    <span>{ info.DeliveryTime }</span>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </>
+        return elem
+      }
+
+      function Comment():JSX.Element {
+        const [edit, setEdit] = useState(false)
+
+        let elem = <>
+            <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
+              <IonInput
+                  value = { info?.CustomerComment }
+                  placeholder = "Комментарий"
+                  onIonChange={(e: any) => {
+                      info.CustomerComment = (e.target.value as string);
+                    }}
+                  onKeyDown = {(e)=>{
+                    if(e.key === "Enter") setEdit(!edit)
+                  }}
+                />
+            </div>
+          <div className="borders mt-1 ml-1 mr-1">
+            <div className = { "flex" }
+              onClick = {()=>{
+                setEdit(!edit)
+              }}
+            >
+              <div>
+                <IonIcon icon={ readerSharp } className="w-2 h-2"/>
+              </div>         
+              <div className = "ml-2">
+                 <div className="fs-07 mb-1">Комментарий</div>
+                 <div>
+                    <span>{ info.CustomerComment }</span>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </>
+        return elem
+      }
+
+      function Buttons():JSX.Element {
+        let elem = <>
+          <div className="mt-3 ml-1 mr-1">
+            <div className="flex fl-space">
+              <button
+                onClick={()=>{
+                  Store.dispatch({type: "route", route: "back"})
+                }}  className="or-orange-clr-bg"
+              >
+                Назад
+              </button>
+              <button
+                onClick={()=>{
+                  Proov( info )
+                }}  className={ all ? "or-orange-clr-bg ml-1" : "hidden"}
+              >
+                Далее
+              </button>
+            </div>
+          </div>
+        </>
+
+        return elem
+      }
+
       let elem = <>
       
         <IonContent>
-          <IonItem lines="none">
+          {/* <IonItem lines="none">
               <h4><b>Оформление заказа </b></h4>
-          </IonItem>
+          </IonItem> */}
           {/* Телефон */}
-          <IonItem lines="none">
-            <IonIcon slot= "start" icon={ phonePortrait }/>
-            <IonLabel position="stacked">Телефон</IonLabel>
-            <div className="o-phone">
-              <div>+7</div>
-              <div>
-                <MaskedInput
-                  mask={[ ' ','(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-',/\d/, /\d/]}
-                  className="m-input"
-                  autoComplete="off"
-                  placeholder="(___) ___-__-__"
-                  id='1'
-                  type='text'
-                  value = { phone(info?.Phone) }
-                  onChange={(e: any) => {
-                    let st = e.target.value;
-                    info.Phone = "+7" + st;
-                  }}
-                />
-              </div>
-            </div>
-          </IonItem>
+          <Phone />
           {/* Доставка */}
-          <IonItem lines="none">
-            <IonIcon slot="start" icon={ bicycleOutline } />
-            <IonLabel position="stacked">Доставка</IonLabel>
-            <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" onIonChange={e => {
-                info.DeliveryMethod = e.detail.value
-                if(info?.DeliveryMethod === "Доставка") {
-                  info.DelivSum = info.Total  < 1000 ? Store.getState().market.sum : 0
-                } else {
-                  info.Address = "";
-                  info.DelivSum = 0;
-                }
-                setUpd(upd + 1)
-            }}>
-              <IonSelectOption value="Доставка">Доставка до адреса</IonSelectOption>
-              <IonSelectOption value="Самовывоз">Самовывоз</IonSelectOption>
-            </IonSelect>
-          </IonItem>
-          <div className = { info?.DeliveryMethod === "Доставка" ? "" : "hidden"}>
-            <IonItem>
-              <IonIcon slot= "start" icon={ timeOutline }/>
-              <IonLabel position="stacked">Удобное время для доставки</IonLabel>
-              <MaskedInput
-                mask={[/[1-9]/, /\d/, ':', /\d/, /\d/, ' ', '-', ' ', /\d/, /\d/, ':', /\d/, /\d/,]}
-                className="m-input"
-                autoComplete="off"
-                placeholder="12:00 - 21:00"
-                id='2'
-                type='text'
-                value = { info?.DeliveryTime }
-                onChange={(e: any) => {
-                    info.DeliveryTime = (e.target.value as string);
-                  }}
-              />
-            </IonItem> 
-            <IonItem lines="none" onClick={()=>{
-              setModal(true)
-            }}>
-              <IonIcon slot= "start" icon={ homeOutline }/>
-              <IonLabel position="stacked"> Адрес </IonLabel>
-              <IonText> { info?.Address } </IonText>
-            </IonItem>           
-            <IonItem lines="none">
-              <IonIcon slot= "start" icon={ homeOutline }/>
-              <IonLabel position="stacked"> Подъезд </IonLabel>
-              <Entrance  />
-            </IonItem>           
+          <Delivery />
+          <div className={ info.DeliveryMethod === "Доставка" ? "" : "hidden"}>
+            <DelTime />
+            <Address />
           </div>
-          <IonItem lines="none">
-              <IonIcon slot= "start" icon={ readerOutline }/>
-              <IonLabel position="stacked"> Комментарий </IonLabel>
-              <IonTextarea
-                value = { info?.CustomerComment }
-                onIonChange={(e: any) => {
-                    info.CustomerComment = (e.target.value as string);
-                  }}
-              />
-          </IonItem> 
-          <IonRow>
-          <IonCol size="6">
-            <button
-              onClick={()=>{
-                Store.dispatch({type: "route", route: "back"})
-              }}  className="or-orange-clr-bg"
-            >
-              Назад
-            </button>
-          </IonCol>
-          <IonCol size="6">        
-            <button
-              onClick={()=>{
-                Proov( info )
-              }}  className="or-orange-clr-bg"
-            >
-              Далее
-            </button>
-          </IonCol>            
-        </IonRow>        
-
+          <Comment/>
+          <Buttons />
         </IonContent>
         <IonAlert
               isOpen={ message !== "" }
@@ -233,45 +374,45 @@ export function   Order( props ):JSX.Element {
   }
 
   
-  function Entrance(  ):JSX.Element {
-      const [value, setValue] = useState(0);
+  // function Entrance(  ):JSX.Element {
+  //     const [value, setValue] = useState(0);
 
-      useEffect(()=>{
-        setValue(Store.getState().order.entrance)
-      },[])
-      let elem = <>
-              <IonRow>
-                <IonCol size="12">
-                    <IonButton className="bs-size-btn left" color="new" 
-                      onClick = {(e)=>{
-                        let val = value - 1;
-                        if(val < 0) val = 0;
-                        setValue(val)
+  //     useEffect(()=>{
+  //       setValue(Store.getState().order.entrance)
+  //     },[])
+  //     let elem = <>
+  //             <IonRow>
+  //               <IonCol size="12">
+  //                   <IonButton className="bs-size-btn left" color="new" 
+  //                     onClick = {(e)=>{
+  //                       let val = value - 1;
+  //                       if(val < 0) val = 0;
+  //                       setValue(val)
                         
-                        Store.dispatch({type: "order", entrance: val})
+  //                       Store.dispatch({type: "order", entrance: val})
                         
-                      }}
-                    >-
-                    </IonButton>
-                    <button  className="white-bg text-align "> 
-                      <h5 className="bs-quan">{ value.toFixed() } </h5> 
-                    </button>
-                    <IonButton className="bs-size-btn " color="new" 
-                      onClick = {()=>{
-                        let val = value + 1;
-                        if(val > 9) val = 9;
-                        setValue(val)
-                        Store.dispatch({type: "order", entrance: val})
-                      }}
-                    >+
-                    </IonButton>
-                  </IonCol>
-              </IonRow>    
+  //                     }}
+  //                   >-
+  //                   </IonButton>
+  //                   <button  className="white-bg text-align "> 
+  //                     <h5 className="bs-quan">{ value.toFixed() } </h5> 
+  //                   </button>
+  //                   <IonButton className="bs-size-btn " color="new" 
+  //                     onClick = {()=>{
+  //                       let val = value + 1;
+  //                       if(val > 9) val = 9;
+  //                       setValue(val)
+  //                       Store.dispatch({type: "order", entrance: val})
+  //                     }}
+  //                   >+
+  //                   </IonButton>
+  //                 </IonCol>
+  //             </IonRow>    
         
-      </>
+  //     </>
 
-      return elem
-  }
+  //     return elem
+  // }
 
 
   function ModalAddress():JSX.Element {

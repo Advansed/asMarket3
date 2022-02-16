@@ -84,7 +84,7 @@
     --padding-end:0;
     --padding-bottom:1em;
     --padding-start:0;
-    --background:transparent;
+    --background: lightgray;
     --color:initial;
     position:relative;
     -ms-flex-align:center;
@@ -246,7 +246,19 @@
 
 .borders {
     border-radius: 0.5em;
-    border: 1px solid silver;
+    border: 1px solid #FF8C00;
     padding: 1em;
     position: relative;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+.fl-center {   justify-content: center;}
+.fl-right {   justify-content: right;}
+.fl-space {   justify-content: space-between;}
+.fl-wrap  {   flex-wrap: wrap; }
+.bottom {
+    border-bottom: 1px solid silver;
 }

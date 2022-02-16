@@ -1,6 +1,4 @@
 import {
-  IonButton,
-  IonCol,
   IonContent,
   IonIcon,
   IonImg,
@@ -10,13 +8,12 @@ import {
   IonListHeader,
   IonMenu,
   IonMenuToggle,
-  IonNote,
   IonRow,
   
 } from '@ionic/react';
 
-import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, bookmarksOutline, checkboxOutline, cloudDownloadOutline, cloudDownloadSharp, contractOutline, happyOutline, heartOutline, heartSharp, homeOutline, logInOutline, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, personCircleOutline, personOutline, personSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { archiveSharp, bookmarkOutline, bookmarksOutline, checkboxOutline, cloudDownloadOutline, cloudDownloadSharp, happyOutline
+    , heartSharp, homeOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, personOutline, trashSharp } from 'ionicons/icons';
 import './Menu.css';
 import { download, Store } from '../pages/Store';
 import { useState } from 'react';
@@ -79,7 +76,6 @@ const labels = ['Акции', 'Скидки', 'Бренды'];
 
 const Menu: React.FC = () => {
   const [upd, setUpd] = useState(0);
-  const location = useLocation();
 
   Store.subscribe({num: 81, type: "auth", func: ()=>{
     setUpd( upd + 1);

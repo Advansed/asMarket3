@@ -1,12 +1,10 @@
-import { IonButton, IonCard, IonCardHeader, IonIcon, IonItem, IonList, IonText, IonCol,IonRow } from "@ionic/react"
-import { arrowBackOutline } from "ionicons/icons"
 import { Store } from "../pages/Store"
 import './Infopage.css'
 
 export function InfoPage1(props):JSX.Element {
     let elem = <>
             
-            <div className="info-content">
+            <div className="borders mt-2 ml-1 mr-1">
                 <p>
                     Вопросы, пожелания или жалобы Вы можете адресовать нам по следующим контактным данным:						
                 </p>
@@ -14,7 +12,7 @@ export function InfoPage1(props):JSX.Element {
                     <b>Телефон:</b> +7 (962) 733-77-88	
                 </div>
                 <div  className="mt-1">
-                    <b>E-mail:</b> asmrkt@mail.ru
+                    <b>E-mail:</b> acmrkt@mail.ru
                 </div>
             </div>
     </>

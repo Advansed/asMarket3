@@ -6,8 +6,8 @@ import { bicycleOutline, giftOutline, readerOutline, syncCircleOutline } from "i
 import './Orders.css'
 
 export function Orders(props):JSX.Element{
-    const [info, setInfo] = useState<any>([])
-    const [load, setLoad] = useState(false)
+    const [info, setInfo]   = useState<any>([])
+    const [load, setLoad]   = useState(false)
 
 
     let elem = <></>
@@ -155,13 +155,10 @@ export function Orders(props):JSX.Element{
     <div className="h-100">
         <IonRow>
             <IonCol size="10">
-                <div className="pr-header">
-                    <IonText><h3><b>Мои заказы</b></h3></IonText>
-                    </div>
             </IonCol>
             <IonCol size="2">
                 <IonIcon icon = { syncCircleOutline } 
-                    class= "back ml-1 mt-1 pr-btn2"
+                    class= "back ml-1 mt-1 pr-btn2 w-2 h-2"
                     onClick = {()=>{
                         getOrders()
                     }}
@@ -380,13 +377,6 @@ export function OHistory(props):JSX.Element{
     return <>
     <IonLoading isOpen = { load } message = "Подождите..." />
     <div>
-        <IonRow>
-            <IonCol size="7">
-                <div className="pr-header">
-                    <IonText><h3><b> История </b></h3></IonText>
-                    </div>
-            </IonCol>
-            </IonRow> 
         <div className="os-content">
             { elem }
         </div>

@@ -1,19 +1,12 @@
 
-import { IonAlert, IonCardContent, IonCardHeader, IonCardSubtitle, IonCol, IonInput
-    , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonCard, IonToolbar, IonTextarea, IonFooter, IonHeader, IonContent, IonRow, IonButton } from "@ionic/react";
-  import { setErrorHandler } from "ionicons/dist/types/stencil-public-runtime";
-  import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline, timeOutline, readerOutline } from "ionicons/icons";
+import { IonAlert, IonCardSubtitle, IonCol, IonInput
+    , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonToolbar, IonRow } from "@ionic/react";
+  import { bicycleOutline, businessOutline, cashOutline, homeOutline, storefrontOutline, cardSharp, cashSharp } from "ionicons/icons";
   import { useEffect, useState } from "react";
-  import { AddressSuggestions } from "react-dadata";
-  import MaskedInput from "../mask/reactTextMask";
   import { getData1C, getData, Store } from "../pages/Store";
   import './Order.css'
   import { IPAY, ipayCheckout } from './sber'
-  import { v4 as uuidv4 } from 'uuid';
   
-  declare type Dictionary = {
-      [key: string]: any;
-    };
   
 
    
@@ -64,42 +57,106 @@ export function Payment():JSX.Element {
     }
   
     function Page1():JSX.Element {
-        const [info, setInfo] = useState<any>(Store.getState().order)
+        const [info, setInfo] = useState(Store.getState().order)
         const [upd, setUpd] = useState(0)
   
         useEffect(()=>{
           setInfo(Store.getState().order)
-          console.log(Store.getState().order)
         }, [])
 
         Store.subscribe({num: 81, type: "info", func: ()=>{
             setInfo(Store.getState().order)
             console.log("subs")
           }})
+
+          function Payment():JSX.Element {
+            const [edit, setEdit] = useState(false)
     
+            let elem = <>
+              <div className="borders mt-3 ml-1 mr-1">
+                <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
+                <IonSelect value={ info.PaymentMethodId } okText="Да" cancelText="Нет" onIonChange={e => {
+                    info.PaymentMethodId = e.detail.value
+                    setUpd(upd + 1)
+                    setEdit(!edit)
+
+                }}>
+                  <IonSelectOption value="Эквайринг">Эквайринг</IonSelectOption>
+                  <IonSelectOption value="Наличными курьеру">Наличными курьеру</IonSelectOption>
+                  <IonSelectOption value="Картой курьеру">Картой курьеру</IonSelectOption>
+                  {/* <IonSelectOption value="посчету">По счету</IonSelectOption> */}
+                </IonSelect>
+              </div>
+                <div className = {!edit ? "flex" : "hidden"}
+                  onClick = {()=>{
+                    setEdit(!edit)
+                  }}
+                >
+                  <div>
+                    <IonIcon icon={ cardSharp } className="w-2 h-2"/>
+                  </div>         
+                  <div className = "ml-2">
+                     <div className="fs-07 mb-1"> Метод оплаты</div>
+                     <div>
+                        <span>{ info.PaymentMethodId }</span>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </>
+            return elem
+          }
+          
+          function Change():JSX.Element {
+            const [edit, setEdit] = useState(false)
+    
+            let elem = <>
+              <div className="borders mt-3 ml-1 mr-1">
+                <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
+                <IonSelect 
+                      value={ info?.Change  } 
+                      okText="Да" 
+                      cancelText="Нет" 
+                      onIonChange={e => {
+                        info.Change = e.detail.value
+                        setEdit(!edit)
+                  }}>
+                    <IonSelectOption value="-">без сдачи</IonSelectOption>
+                    <IonSelectOption value="500">500 руб</IonSelectOption>
+                    <IonSelectOption value="1000">1000 руб</IonSelectOption>
+                    <IonSelectOption value="2000">2000 руб</IonSelectOption>
+                    <IonSelectOption value="5000">5000 руб</IonSelectOption>
+                  </IonSelect>
+              </div>
+                <div className = {!edit ? "flex" : "hidden"}
+                  onClick = {()=>{
+                    setEdit(!edit)
+                  }}
+                >
+                  <div>
+                    <IonIcon icon={ cashSharp } className="w-2 h-2"/>
+                  </div>         
+                  <div className = "ml-2">
+                     <div className="fs-07 mb-1"> Сдача с суммы </div>
+                     <div>
+                        <span>{ info.Change }</span>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </>
+            return elem
+          }
+          
         let elem = <>
              {/* Оплата */}
-             <IonItem lines="none"> 
-              <IonIcon slot="start" icon={ cardOutline } />
-              <IonLabel position="stacked">Оплата</IonLabel>
-              <IonSelect value={ info.PaymentMethodId } okText="Да" cancelText="Нет" onIonChange={e => {
-                  info.PaymentMethodId = e.detail.value
-                  Store.dispatch(info);
-                  setInfo(info );
-                  setUpd(upd + 1)
 
-                //   if(info.PaymentMethodId === "Эквайринг") setMP(true)
-                //   else setMP(false)
-                //   if(info.PaymentMethodId === "наличными") { setCash(true); console.log("кэш") }
-                //   else setCash(false)
+            <Payment />
 
-              }}>
-                <IonSelectOption value="Эквайринг">Эквайринг</IonSelectOption>
-                <IonSelectOption value="наличными">Наличными</IonSelectOption>
-                <IonSelectOption value="картой">Картой</IonSelectOption>
-                {/* <IonSelectOption value="посчету">По счету</IonSelectOption> */}
-              </IonSelect>
-            </IonItem>
+            <div className={ info.PaymentMethodId === "Наличными курьеру" ? "" : "hidden"}>
+              <Change/>
+            </div>
+
             <h4 className="ml-1 mr-1 pb-1"><b> Итоги по заказу</b> </h4>   
               <IonList class="f-14">
                 <IonItem class="ml-1" lines="none">
@@ -133,22 +190,6 @@ export function Payment():JSX.Element {
                   <IonLabel slot="end" class="a-right">{ 
                       new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Total + info?.DelivSum - info?.promo_sum)
                   } </IonLabel>
-                </IonItem>
-                <IonItem class={ "ml-1" } lines="none">
-                  <IonIcon slot="start" icon={ cashOutline } />
-                  <IonLabel position="stacked">Сдача с суммы</IonLabel>
-                  <IonSelect 
-                      disabled = { info.PaymentMethodId !== "наличными" }
-                      value={ info?.Change  } okText="Да" cancelText="Нет" onIonChange={e => {
-                        info.Change = e.detail.value
-                        Store.dispatch(info);
-                  }}>
-                    <IonSelectOption value="-">без сдачи</IonSelectOption>
-                    <IonSelectOption value="500">500 руб</IonSelectOption>
-                    <IonSelectOption value="1000">1000 руб</IonSelectOption>
-                    <IonSelectOption value="2000">2000 руб</IonSelectOption>
-                    <IonSelectOption value="5000">5000 руб</IonSelectOption>
-                  </IonSelect>
                 </IonItem>
               </IonList>
               <IonRow>
@@ -188,7 +229,7 @@ export function Payment():JSX.Element {
         let elem = <>
         
           <div className="order-image">
-                <img src = "assets/okimg.png" />
+                <img src = "assets/okimg.png" alt="Ок" />
           </div>
           <div className="order-clr">
             <div className="order-box">
@@ -284,7 +325,7 @@ export function Payment():JSX.Element {
         let elem = <>
         
           <div className="order-image">
-                <img src = "assets/errorimg.png" />
+                <img src = "assets/errorimg.png" alt="Ошибка"/>
           </div>
           <div className="order-clr">
             <div className="order-box">
@@ -335,12 +376,12 @@ export function Payment():JSX.Element {
           } else setAlert2(true)
         }
     
-        function getISO(dat) {
-          if(dat === undefined) return ""
-          let st = dat.substring(0, 10);
-          st = st.replace('40', '20').replace('-', '.').replace('-', '.');
-          return st
-      }
+      //   function getISO(dat) {
+      //     if(dat === undefined) return ""
+      //     let st = dat.substring(0, 10);
+      //     st = st.replace('40', '20').replace('-', '.').replace('-', '.');
+      //     return st
+      // }
     
         let elem = <>
               <div>

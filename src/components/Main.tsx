@@ -1,7 +1,6 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonProgressBar, IonSearchbar, IonToolbar } from "@ionic/react"
-import { useEffect, useState } from "react"
+import { IonContent, IonProgressBar } from "@ionic/react"
+import { useState } from "react"
 import { Store } from "../pages/Store"
-import { BasketIcon } from "./Basket"
 import { Carusel } from "./Carusel"
 import { Categories } from "./Categories"
 import { Goods } from "./Goods"
@@ -30,7 +29,7 @@ export function LoadPage():JSX.Element {
 
   let elem = <>
     <div className = "load-div ml-1 mr-1">
-      <img src = "assets/asMarket.jpg" />
+      <img src = "assets/asMarket.jpg" alt = "Логотип" />
       <div>
         <h4>
           Подождите

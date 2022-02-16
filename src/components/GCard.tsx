@@ -1,7 +1,8 @@
-import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonChip, IonCol, IonIcon, IonItem, IonLabel, IonRow, IonText, IonToolbar } from "@ionic/react";
-import { addOutline, arrowBackOutline, checkmarkCircleOutline, removeOutline } from "ionicons/icons";
+import { IonCardHeader, IonCardTitle, IonChip, IonCol, IonIcon, IonRow, IonText } from "@ionic/react";
+import { checkmarkCircleOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { Store } from "../pages/Store";
+import { BasketPanel, BasketPanel1 } from '../components/Basket';
 import { addBasket } from "./Basket";
 import './GCard.css'
 
@@ -142,6 +143,14 @@ export function   GCard(props):JSX.Element {
               
           
           </div>
+      <div className="g-ediv">
+        <IonText class="a-right">  
+          All rights reserved asMarket
+        </IonText>
+      </div>
+      <div className="h-2"></div>
+
+      <BasketPanel1 />
     </div>                
   </>
     

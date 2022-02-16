@@ -42,11 +42,7 @@ export function     Goods():JSX.Element {
     Store.subscribe({num: 25, type: "load", func: ()=>{
         setLoad(Store.getState().load !== "");
     }})
-    // Store.subscribe({num: 26, type: "progress", func: ()=>{
-    //     setValue( Store.getState().progress );
-    //     console.log( Store.getState().progress )
-    // }})
-
+    
     useEffect(()=>{
         if(sub !== "") {
             let goods = Store.getState().goods
@@ -81,7 +77,6 @@ export function     Goods():JSX.Element {
         <div className="catalogue">
             <div className = { load ? "" : "hidden" }>
                 <IonProgressBar 
-                    // value = { value } buffer = { value + 0.2 } 
                     type = "indeterminate"
                 />
             </div>
