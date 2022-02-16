@@ -1,7 +1,6 @@
 import { combineReducers  } from 'redux'
 import axios from 'axios'
 import { Reducer } from 'react';
-import { constructSharp, contrastOutline } from 'ionicons/icons';
 import localForage from "localforage";
 
 var reducers: Array<Reducer<any, any>>;reducers = []
@@ -343,7 +342,7 @@ export function setToken(token) {
 export function Phone(phone): string {
     if(phone === undefined) return ""
     if(phone === null) return ""
-    let str = "+"
+    let str = "+7"
     for(let i = 0;i < phone.length;i++){
       let ch = phone.charCodeAt(i)
       if( ch >= 48 && ch <= 57) str = str + phone.charAt(i)
@@ -355,12 +354,15 @@ export async function getProfile(phone){
     Store.dispatch({type: "auth", auth: true });
     let res = await getData("method", {
             method: "Профиль",
-            phone:  Phone(phone),
+            phone:  phone,
         })
-    let login = res[0];login.type = "login"
-    Store.dispatch( login )
-    console.log(login)
-    console.log( Store.getState().auth )
+    console.log(res)
+    if(res[0] !== undefined) {
+        let login = res[0];login.type = "login"
+        Store.dispatch( login )
+        console.log(login)
+        console.log( Store.getState().auth )
+    } 
 }
 
 export async function Check(good){

@@ -116,7 +116,9 @@ export function     Good(props):JSX.Element {
 //                    Store.dispatch({type: "route", route: "/page/#" + info.Код})
                 }}
             >
-                                 
+                <div className={ info.СтараяЦена > 0 ? "g-discount" : "hidden"}>
+                    <div className="a-center"><b>{ (100 - info.Цена * 100 / info.СтараяЦена).toFixed(0) + "%" }</b></div>
+                </div>                    
                 <IonImg src={ info.Картинка } className="g-img"/>
                 <div className="ml-1 mr-1">
                     <IonCardSubtitle className="g-text"> { info.Наименование } </IonCardSubtitle>
@@ -133,10 +135,10 @@ export function     Good(props):JSX.Element {
                     info.СтараяЦена > 0 
                         ?<>
                         <div>
-                            <div className="red f-10">
+                            <div className="f-10">
                                 <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Цена)}</b>
                             </div>
-                            <div className="t-line f-10">
+                            <div className="red f-10">
                                 <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СтараяЦена)}</b>
                             </div>
                         </div>

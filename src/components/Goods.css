@@ -17,6 +17,27 @@
     text-align: right;
 }
 
+.g-discount {
+    width: 3em;
+    height: 3em;
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    z-index: 999;
+    background-image: url("./skidka.png");
+    background-size: contain;
+    color: white;
+    font-style: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.red {
+    color: red;
+    text-decoration: line-through;
+}
+
 @media screen and (max-width: 2900px) {
     .g-content {
         display: flex;

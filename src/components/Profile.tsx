@@ -28,7 +28,7 @@ async function    takePicture() {
   
 export function   Profile():JSX.Element {
     const [load , setLoading] = useState(false)
-    const [login, setLogin] = useState<any>(Store.getState().login);
+    const [ login, setLogin ] = useState (Store.getState().login);
 
     Store.subscribe({num: 51, type: "login", func: ()=>{
       setLogin(Store.getState().login)
@@ -42,7 +42,6 @@ export function   Profile():JSX.Element {
     async function saveProfile(){
       setLoading(true)
   
-      let login = Store.getState().login;
       login.method = "СохранитьПрофиль"
       getData("method", login)
   
@@ -61,14 +60,6 @@ export function   Profile():JSX.Element {
     let elem = <>
       
         <IonRow>
-          <IonCol size="3">
-            <IonIcon icon = { arrowBackOutline } 
-                class= "back ml-1 mt-1 pr-btn2"
-                onClick = {()=>{
-                  Store.dispatch({type: "route", route: "back"})
-                }}
-              /> 
-          </IonCol>
           <IonCol size="7">
             <div className="pr-header">
                 <IonText><h3><b>Профиль</b></h3></IonText>
@@ -99,7 +90,6 @@ export function   Profile():JSX.Element {
                   onIonChange={(e)=>{
                     Store.dispatch({type: "login", name: e.detail.value as string})
                     login.name = e.detail.value as string
-                    setLogin(login)
                   }}
                   value = { login.name }
                 />
@@ -110,7 +100,6 @@ export function   Profile():JSX.Element {
                   onIonChange={(e)=>{
                     Store.dispatch({type: "login", email: e.detail.value as string})
                     login.email = e.detail.value as string
-                    setLogin(login)
                   }}          
                   value = { login.email }
                 />
@@ -121,7 +110,6 @@ export function   Profile():JSX.Element {
                   onIonChange={(e)=>{
                     Store.dispatch({type: "login", address: e.detail.value as string})
                     login.address = e.detail.value as string
-                    setLogin(login)
                   }}          
                   value = { login.address }
                 />
@@ -172,11 +160,10 @@ export function   Profile():JSX.Element {
 }
   
 export function   Options():JSX.Element {
-  // const [load,    setLoad] = useState(false)
-  const [alert,   setAlert] = useState(false)
-
+  
   function          Person():JSX.Element{
-      let login = Store.getState().login
+      const [ login ] = useState( Store.getState().login )
+
       let elem = <>
         
           <IonCardContent>

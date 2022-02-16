@@ -1,13 +1,14 @@
-import { IonAlert, IonCardContent, IonCardHeader, IonCardSubtitle, IonCol, IonInput
-  , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonCard, IonToolbar
-  , IonTextarea, IonFooter, IonHeader, IonContent, IonRow, IonButton } from "@ionic/react";
-import { arrowBackOutline, bicycleOutline, businessOutline, cardOutline, cashOutline, homeOutline, phonePortrait, storefrontOutline
-        , timeOutline, readerOutline, informationOutline } from "ionicons/icons";
+import { IonAlert, IonCol 
+  , IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonText, IonModal
+  , IonTextarea, IonContent, IonRow, IonButton } from "@ionic/react";
+import { arrowBackOutline, bicycleOutline, homeOutline, phonePortrait
+        , timeOutline, readerOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
 import MaskedInput from "../mask/reactTextMask";
 import { Store } from "../pages/Store";
 import './Order.css'
+import './react-dadata.css'
 import { v4 as uuidv4 } from 'uuid';
 
 declare type Dictionary = {
@@ -29,7 +30,7 @@ export function   Order( props ):JSX.Element {
         if(info.Phone === "")
           info.Phone =           Store.getState().login.code
         if(info.CustomerName === "")
-          info.CustomerName =    Store.getState().login.nam
+          info.CustomerName =    Store.getState().login.name
         if(info.Address === "")
           info.Address =         Store.getState().login.addres
         
@@ -86,29 +87,22 @@ export function   Order( props ):JSX.Element {
 
 
   function Page1():JSX.Element {
-      const [info, setInfo] = useState<any>(Store.getState().order)
+      const [info, setInfo] = useState(Store.getState().order)
       const [upd, setUpd] = useState(0)
 
       useEffect(()=>{
         setInfo(Store.getState().order)
-        console.log(Store.getState().order)
       }, [])
 
-      Store.subscribe({num: 71, type: "order", func: ()=>{
-        setInfo(Store.getState().order)
-        setUpd(upd + 1)
-        console.log(upd + 1)
-      }})
+      // Store.subscribe({num: 71, type: "order", func: ()=>{
+      //   setInfo(Store.getState().order)
+      //   setUpd(upd + 1)
+      // }})
       
       let elem = <>
       
         <IonContent>
           <IonItem lines="none">
-              <IonIcon slot = "start" icon = { arrowBackOutline }  
-                onClick = { () =>{
-                  Store.dispatch({type: "route", route: "back"})
-                }}
-              />
               <h4><b>Оформление заказа </b></h4>
           </IonItem>
           {/* Телефон */}
@@ -129,7 +123,6 @@ export function   Order( props ):JSX.Element {
                   onChange={(e: any) => {
                     let st = e.target.value;
                     info.Phone = "+7" + st;
-                    Store.dispatch(info);
                   }}
                 />
               </div>
@@ -143,12 +136,11 @@ export function   Order( props ):JSX.Element {
                 info.DeliveryMethod = e.detail.value
                 if(info?.DeliveryMethod === "Доставка") {
                   info.DelivSum = info.Total  < 1000 ? Store.getState().market.sum : 0
-                  Store.dispatch(info);
                 } else {
                   info.Address = "";
                   info.DelivSum = 0;
-                  Store.dispatch(info);
                 }
+                setUpd(upd + 1)
             }}>
               <IonSelectOption value="Доставка">Доставка до адреса</IonSelectOption>
               <IonSelectOption value="Самовывоз">Самовывоз</IonSelectOption>
@@ -168,7 +160,6 @@ export function   Order( props ):JSX.Element {
                 value = { info?.DeliveryTime }
                 onChange={(e: any) => {
                     info.DeliveryTime = (e.target.value as string);
-                    Store.dispatch(info);
                   }}
               />
             </IonItem> 
@@ -192,8 +183,6 @@ export function   Order( props ):JSX.Element {
                 value = { info?.CustomerComment }
                 onIonChange={(e: any) => {
                     info.CustomerComment = (e.target.value as string);
-                    Store.dispatch(info)
-                    console.log(info)
                   }}
               />
           </IonItem> 
@@ -210,8 +199,7 @@ export function   Order( props ):JSX.Element {
           <IonCol size="6">        
             <button
               onClick={()=>{
-                console.log(info)
-                Proov(info)
+                Proov( info )
               }}  className="or-orange-clr-bg"
             >
               Далее
@@ -234,7 +222,7 @@ export function   Order( props ):JSX.Element {
   }
 
 
-  function Proov(info){
+  function Proov( info ){
       
       if( info.deliveryMethod === "Доставка" && info.Address === "") 
         setMessage("Заполните адрес")
@@ -289,6 +277,7 @@ export function   Order( props ):JSX.Element {
 
 
   function ModalAddress():JSX.Element {
+      const [ info ] = useState(Store.getState().order)
       const [alert1,  setAlert1] = useState(false)
       const [alert2,  setAlert2] = useState(false)
       const [value,   setValue]  = useState("")
@@ -296,8 +285,6 @@ export function   Order( props ):JSX.Element {
           city: "", street: "", house: "", flat: ""
       })  
       const [upd, setUpd] = useState( 0 )
-
-      let info = Store.getState().order
 
       function getISO(dat) {
         if(dat === undefined) return ""
@@ -312,7 +299,8 @@ export function   Order( props ):JSX.Element {
             </div>
             {/* <div className="r-circle3"><div className="r-circle2"></div></div> */}
             <div className="r-content">
-            <div> 
+            <div className= "ml-2 mr-2 mt-2"> 
+            
               <AddressSuggestions
                   token="23de02cd2b41dbb9951f8991a41b808f4398ec6e"
                   filterLocations ={ dict }
@@ -326,8 +314,6 @@ export function   Order( props ):JSX.Element {
                       info.Address = e.value
                       info.lat = e?.data.geo_lat
                       info.lng = e?.data.geo_lon
-
-                      Store.dispatch(info)
 
                       addr.city = e?.data.city
                       addr.street = e?.data.street
