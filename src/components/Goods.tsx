@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Store } from "../pages/Store"
-import { IonCard, IonImg, IonIcon, IonChip, IonText, IonButton, IonCardSubtitle, IonToolbar, IonLoading, IonProgressBar} from '@ionic/react';
+import { IonCard, IonImg, IonText, IonButton, IonCardSubtitle, IonProgressBar} from '@ionic/react';
 
 import './Goods.css'
 import { useHistory } from "react-router";
@@ -12,7 +12,7 @@ export function     Goods():JSX.Element {
     const [sub, setSub]     = useState<any>()
     const [upd, setUpd]     = useState(0)
     const [load, setLoad]   = useState(true)
-    const [value, setValue] = useState(0)
+    // const [value, setValue] = useState(0)
 
     Store.subscribe({num: 21, type: "sub", func: ()=>{
         setSub(Store.getState().sub)
@@ -42,10 +42,10 @@ export function     Goods():JSX.Element {
     Store.subscribe({num: 25, type: "load", func: ()=>{
         setLoad(Store.getState().load !== "");
     }})
-    Store.subscribe({num: 26, type: "progress", func: ()=>{
-        setValue( Store.getState().progress );
-        console.log( Store.getState().progress )
-    }})
+    // Store.subscribe({num: 26, type: "progress", func: ()=>{
+    //     setValue( Store.getState().progress );
+    //     console.log( Store.getState().progress )
+    // }})
 
     useEffect(()=>{
         if(sub !== "") {
@@ -99,12 +99,10 @@ export function     Goods():JSX.Element {
 }
 
 export function     Good(props):JSX.Element {
-  let info = props.info
+    const [ info ]= useState( props.info )
 
   let elem = <></>
   let hist = useHistory();
-
-  let pr = 100 - info.Цена * 100 / info.СтараяЦена;
 
   if(info !== undefined)
     elem = <>

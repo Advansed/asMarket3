@@ -1,7 +1,7 @@
 import { IonAlert, IonCol 
   , IonIcon, IonItem, IonLabel, IonSelect, IonSelectOption, IonText, IonModal
   , IonTextarea, IonContent, IonRow, IonButton } from "@ionic/react";
-import { arrowBackOutline, bicycleOutline, homeOutline, phonePortrait
+import { bicycleOutline, homeOutline, phonePortrait
         , timeOutline, readerOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
@@ -44,11 +44,8 @@ export function   Order( props ):JSX.Element {
         
         if(info.DeliveryMethod === "Доставка") {
           for(let i = 0; i < tabs.length; i++){
-              console.log(sum.toString() + ' - ' + tabs[i].sum.toString())
-              console.log(tabs[i].sum <= sum)
               if(tabs[i].sum <= sum) {
                 del = tabs[i].del
-                console.log(del)
               }
           }
           info.DelivSum =        del;
@@ -73,6 +70,7 @@ export function   Order( props ):JSX.Element {
 
         Store.dispatch(info)
         setUpd(upd + 1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     let item : Dictionary = {"city": "Якутск"};
@@ -280,18 +278,18 @@ export function   Order( props ):JSX.Element {
       const [ info ] = useState(Store.getState().order)
       const [alert1,  setAlert1] = useState(false)
       const [alert2,  setAlert2] = useState(false)
-      const [value,   setValue]  = useState("")
+      const [ value ]  = useState("")
       const [addr,    setAddr]   = useState<any>({
           city: "", street: "", house: "", flat: ""
       })  
       const [upd, setUpd] = useState( 0 )
 
-      function getISO(dat) {
-        if(dat === undefined) return ""
-        let st = dat.substring(0, 10);
-        st = st.replace('40', '20').replace('-', '.').replace('-', '.');
-        return st
-    }
+    //   function getISO(dat) {
+    //     if(dat === undefined) return ""
+    //     let st = dat.substring(0, 10);
+    //     st = st.replace('40', '20').replace('-', '.').replace('-', '.');
+    //     return st
+    // }
   
       let elem = <>
             <div className="mt-3">

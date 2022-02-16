@@ -508,12 +508,9 @@ async function exec(){
         console.log(page)
     }
 
-    let goods = Store.getState().goods
-
     Store.dispatch({type: "progress", progress: 0.8})
    
     res = await getData("method", {method: "Настройки"}) 
-    console.log(res)
     let market = res[0]
     market.tabs = JSON.parse(market.tabs)
 
