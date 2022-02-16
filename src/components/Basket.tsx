@@ -351,6 +351,7 @@ function Summary() :JSX.Element{
     if(sum.sum === 0 ) sum.del = 0;
 
     setUpd(upd + 1)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   let elem = <>
     <div>
