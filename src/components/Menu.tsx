@@ -131,7 +131,7 @@ const Menu: React.FC = () => {
                       localStorage.setItem("asmrkt.timestamp",  "2022-01-01");
                       localforage.clear();
                       Store.dispatch({type: "load", load: "2022-01-01"})
-                       download(1, "2022-01-01");                    }
+                       download( );                    }
                   }} 
                 >
                   <IonIcon  className="m-mr2" ios={appPage.iosIcon}  />

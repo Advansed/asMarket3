@@ -262,68 +262,31 @@ export const URL        = "https://marketac.ru:49002/node/"
 export async function   getDatas(){
 }
 
-Store.subscribe({num: 10001, type: "goods", func: ()=>{
-    if(Store.getState().lstore) {
-        let goods = Store.getState().goods;  
-        let ind = 0;
-        let jarr = goods.slice(ind * 100, (ind + 1) * 100);
-        while(jarr.length > 0){ ind = ind + 1
-            console.log("goods" + ind.toString())
-            localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
-            jarr = goods.slice(ind * 100, (ind + 1) * 100);
-        }
 
-        deleteSav( ind + 1 )
-    }
-
-}})
-
-Store.subscribe({num: 10002, type: "price", func: ()=>{
-    if(Store.getState().lstore) {
-        let goods = Store.getState().goods;  
-        let ind = 0;
-        let jarr = goods.slice(ind * 100, (ind + 1) * 100);
-        while(jarr.length > 0){ ind = ind + 1
-            console.log("goods" + ind.toString())
-            localForage.setItem("goods" + ind.toString(), JSON.stringify(jarr) );
-            jarr = goods.slice(ind * 100, (ind + 1) * 100);
-        }
-
-        deleteSav( ind + 1 )
-    }
-
-}})
-
-async function deleteSav( ind ){
-    
-    let sav = await localForage.getItem("goods" + ind.toString());
-    if(sav !== undefined && sav !== null) {
-        console.log("deleted goods" + ind.toString())
-        localForage.setItem("goods" + ind.toString(), '[]');
-        deleteSav( ind + 1 )
-    } 
-}
-
-export async function download( page, _dat ){
+export async function download( ){
+    let page = 0
+    let dat_ = Store.getState().load;
+    Store.dispatch({type: "load", load: "" })
 
     let res = await getData("method", {
-        method:     "Р_Продукты",    
+        method:     "П_Картинки",    
         page:       page,
-        _date:      _dat
+        _date:      dat_
     })  
-    console.log(res)
-    if(res.length > 0){
-        Store.dispatch({ type: "goods", goods: res })
-        download( page + 1, _dat )
-    } else {
+    while(res.length > 0){ page = page + 1
+        res.forEach(elem => {
+            localForage.setItem("asmrkt." + elem.Код, elem.Картинка)
+            console.log(elem.Код)
+        });
         res = await getData("method", {
-            method:     "Прайс",
-            _date:      _dat,    
-        })
-        console.log("Прайс")
-        if(res.length > 0) Store.dispatch({type: "price", goods: res})
-        localStorage.setItem("asmrkt.timestamp",  Store.getState().load);
-    }
+            method:     "П_Картинки",    
+            page:       page,
+            _date:      dat_
+        })      
+    } 
+        localStorage.setItem("asmrkt.timestamp"
+            ,  new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
+        );
 
     Store.dispatch({type: "load", load: ""})
 }
@@ -350,20 +313,6 @@ export function Phone(phone): string {
     return str
 }
 
-export async function getProfile(phone){
-    Store.dispatch({type: "auth", auth: true });
-    let res = await getData("method", {
-            method: "Профиль",
-            phone:  phone,
-        })
-    console.log(res)
-    if(res[0] !== undefined) {
-        let login = res[0];login.type = "login"
-        Store.dispatch( login )
-        console.log(login)
-        console.log( Store.getState().auth )
-    } 
-}
 
 export async function Check(good){
     let res = await getData("method", {method: "Товар", Код: good.Код})
@@ -465,23 +414,19 @@ async function exec(){
      
     setForage()
 
-    let _dat : string = ""
-    _dat = await localForage.getItem("asmrkt.timestamp") as string
-    console.log(_dat)
-    if( _dat === null || _dat === undefined )
+    let _dat = await localForage.getItem("asmrkt.timestamp") as string
+
+    if( _dat === null )
         _dat = "2021-01-01 00:00:00";
     Store.dispatch({
         type: "load", 
-        load: new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
+        load:  _dat, //new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
     })
-    let sav = await localForage.getItem("asmrkt.timestamp");
-    if(sav === null){
-        getMarket( true )
-    } else {
-        Store.dispatch({type: "market", market: sav})  
-        getMarket( false )
+    
+    let sav = await localForage.getItem("asmrkt.login");
+    if(sav !== null){
+        getProfile( sav )
     }
-
 
     sav = await localForage.getItem("asmrkt.market");
     if(sav === null){
@@ -507,95 +452,15 @@ async function exec(){
         getCategories( false )
     }
 
-    //console.log( new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19))
-
-    let res: any
-    try {
-        _dat = localStorage.getItem("asmrkt.timestamp") as string
-        console.log(_dat)
-        if( _dat === null || _dat === undefined )
-            _dat = "2021-01-01 00:00:00";
-        Store.dispatch({
-            type: "load", 
-            load: new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
-        })
-        Store.dispatch({type: "progress", progress: 0})
-    
-        let phone = localStorage.getItem("marketAs.login")
-        console.log(phone)
-        if((phone !== undefined) && (phone !== null)) 
-            getProfile(phone)
-    
-        Store.dispatch({type: "progress", progress: 0.1})
-            
-    } catch (error) {
-        console.log( error )        
-        Store.dispatch({type: "error", error: "Ошибка локального хранилища { local }"})
-        
-    }
-
-
-    sav = localStorage.getItem("asmrkt.market");
-    if(sav !== undefined && sav !== null) {
-        sav = JSON.parse(sav);
-        Store.dispatch({type: "market", market: sav})
-        console.log("Настройки")
-    }
-    Store.dispatch({type: "progress", progress: 0.2})
-
-    sav = localStorage.getItem("asmrkt.actions");
-    if(sav !== undefined && sav !== null) {
-        sav = JSON.parse(sav);
-        Store.dispatch({type: "actions", actions: sav})
-    }
-
-    Store.dispatch({type: "progress", progress: 0.4})
-
-    sav = localStorage.getItem("asrmkt.categories");
-    if(sav !== undefined && sav !== null) {
-        sav = JSON.parse(sav);
-        Store.dispatch({type: "categories", categories: sav })
-    }
-
-    Store.dispatch({type: "progress", progress: 0.6})
-
-    let ok = true;let page = 0;
-    let lf = Store.getState().lstore;
-    while( ok && lf ) { 
-        page = page + 1;
-        sav = await localForage.getItem("goods" + page.toString());
-        if(sav !== undefined && sav !== null) {
-            sav = JSON.parse(sav);
-            Store.dispatch({type: "sav_goods", goods: sav })
-        } else ok = false
-        console.log(page)
-    }
-
-    Store.dispatch({type: "progress", progress: 0.8})
-   
-    res = await getData("method", {method: "Настройки"}) 
-    if(res[0] !== undefined && res[0] !== null) {
-        let market = res[0]
-        market.tabs = JSON.parse(market.tabs)
-        localStorage.setItem("asmrkt.market", JSON.stringify(res))
-        Store.dispatch({type: "market", market: res})
-    }
-
-
-    res = await getData("method", {method: "Акции"})
-    if(res !== undefined && res !== null) { 
-        localStorage.setItem("asmrkt.actions", JSON.stringify(res))
-        Store.dispatch({type: "actions", actions: res})  
-    }
-
-    res = await getData("method", {method: "Категории"})
-    if(res !== undefined && res !== null) {
-        let cats1 = res.map((e) => {e.Категории = JSON.parse(e.Категории); return e })
-        localStorage.setItem("asrmkt.categories", JSON.stringify(cats1))
-        Store.dispatch({type: "categories", categories: cats1})  
+    sav = await localForage.getItem("asmrkt.goods");
+    if(sav === null){
+        getGoods( true )
+    } else {
+        Store.dispatch({type: "goods", goods: sav})  
+        getGoods( false )
     }
     
-    download( 1, _dat )
+    download( )
 
     getOrders();
 
@@ -635,4 +500,26 @@ async function  getCategories( redux: boolean ){
             Store.dispatch({type: "categories", categories: cats})
     }
 
+}
+
+async function  getGoods( redux: boolean ){
+    let res = await getData("method", {method: "Продукты"}) 
+    if(Array.isArray(res)) {
+        localForage.setItem("asmrkt.goods", res)
+        if( redux )
+            Store.dispatch({type: "goods", goods: res})
+    }
+
+}
+
+async function getProfile( login ){
+    Store.dispatch({type: "auth", auth: true });
+    let res = await getData("method", {
+            method: "Профиль",
+            phone:  login.code,
+        })
+    if(res[0] !== undefined) {
+        let login = res[0];login.type = "login"
+        Store.dispatch( login )
+    } 
 }

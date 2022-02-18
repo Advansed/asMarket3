@@ -243,21 +243,6 @@ export function   Options():JSX.Element {
             </IonItem>
             <IonItem class="mt-1 mb-1 op-item" lines = "none" detail
                onClick={()=>{
-                 console.log("download")
-                 localStorage.setItem("asmrkt.timestamp",  "2022-01-01");
-                 localforage.clear();
-                 Store.dispatch({type: "load", load: "2022-01-01"})
-                  download(1, "2022-01-01");
-              }}             
-            >
-                <IonThumbnail class="op-thumb" color="blue" slot="start">
-                  <Download />
-                  {/* <IonIcon class= "op-icon" icon = { cloudDownloadOutline }/> */}
-                </IonThumbnail>
-                <IonText> Обновить данные </IonText>
-            </IonItem>
-            <IonItem class="mt-1 mb-1 op-item" lines = "none" detail
-               onClick={()=>{
                // Plugins.App.exitApp();
                 Store.dispatch({type: "auth",   auth: false})
                 Store.dispatch({type: "orders", orders: []})
