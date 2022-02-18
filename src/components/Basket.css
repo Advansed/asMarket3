@@ -129,8 +129,8 @@ a{
     font-size: calc(12px + (26 - 12) * ((100vw - 270px) / (1200 - 270))) !important;;
 }
 .bs-size-btn{
-    width: calc(18px + (40 - 18) * ((100vw - 270px) / (1200 - 270))) !important;
-    height: calc(18px + (40 - 18) * ((100vw - 270px) / (1200 - 270))) !important;
+    width: calc(20px + (40 - 18) * ((100vw - 270px) / (1200 - 270))) !important;
+    height: calc(20px + (40 - 18) * ((100vw - 270px) / (1200 - 270))) !important;
     font-size: calc(12px + (26 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
 }
 

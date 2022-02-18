@@ -38,6 +38,11 @@
     text-decoration: line-through;
 }
 
+.g-card-div {
+    width: 50%;
+    height: auto;
+}
+
 @media screen and (max-width: 2900px) {
     .g-content {
         display: flex;
@@ -54,17 +59,16 @@
     .g-content::-webkit-scrollbar {
         display: none;
     }
-    .g-card-div {
-        width: calc(130px + (320 - 40) * ((100vw - 270px) / (1200 - 270)));
-        height: calc(150px + (330 - 150) * ((100vw - 270px) / (1200 - 270)));
-    }
+
     .g-card {
-        width: 90%;
+        width: 95%;
         height: 95%;
         position: relative;
         margin: 0;
         margin-left: auto;
         margin-right: auto;
+        background-color: white;
+        padding-bottom: 4em;
     }
     
     .g-img {
@@ -91,13 +95,13 @@
 
     }
     .g-size-btn{
-        width: calc(20px + (50 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
-        height: calc(20px + (50 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
+        width: 2.2em;
+        height: 2.4em;
         font-size: calc(12px + (26 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
     }
     .g-size-btn2{
-        width: calc(50px + (150 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
-        height: calc(20px + (50 - 12) * ((100vw - 270px) / (1200 - 270))) !important;
+        width: auto;
+        height: 2.4em;
         
     }
 

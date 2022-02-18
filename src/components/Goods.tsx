@@ -63,56 +63,60 @@ export function     Goods():JSX.Element {
       if(info !== undefined)
         elem = <>
             <div className="g-card-div">
-                <IonCard class="g-card"
+                <div className="g-card"
                     onClick={()=>{
                         Store.dispatch({type: "gcard", gcard: info})
                         hist.push("/page1/_" + info.Код)    
-    //                    Store.dispatch({type: "route", route: "/page/#" + info.Код})
                     }}
                 >
+                    {/* Скидка */}
                     <div className={ info.СтараяЦена > 0 ? "g-discount" : "hidden"}>
                         <div className="a-center"><b>{ (100 - info.Цена * 100 / info.СтараяЦена).toFixed(0) + "%" }</b></div>
-                    </div>                    
+                    </div>        
+
+                    {/* Картинка */}
                     <IonImg src={ info.Картинка } className="g-img"/>
+
+                    {/* Наименование */}
                     <div className="ml-1 mr-1">
                         <IonCardSubtitle className="g-text"> { info.Наименование } </IonCardSubtitle>
                     </div>
+
+                    {/* Кнопки */}
                     <div className="g-position">
-                    <IonButton className="g-size-btn" color="new" size="small"
-                        onClick = {(e)=>{
-                            addBasket(info, 1)
-                            e.stopPropagation()
-                        }}
-                    >+</IonButton>
-                    <IonButton className="g-size-btn2" color="new" size="small">
-                        {
-                        info.СтараяЦена > 0 
-                            ?<>
-                            <div>
-                                <div className="f-10">
-                                    <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Цена)}</b>
+                        <IonButton className="g-size-btn" color="new" size="small"
+                            onClick = {(e)=>{
+                                addBasket(info, 1)
+                                e.stopPropagation()
+                            }}
+                        >+</IonButton>
+                        <IonButton className="g-size-btn2" color="new" size="small">
+                            {
+                            info.СтараяЦена > 0 
+                                ?<>
+                                <div>
+                                    <div className="f-10">
+                                        <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Цена)}</b>
+                                    </div>
+                                    <div className="red f-10">
+                                        <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СтараяЦена)}</b>
+                                    </div>
                                 </div>
-                                <div className="red f-10">
-                                    <b>{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.СтараяЦена)}</b>
+                                </>
+                                :<div className="f-12">
+                                <b >{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Цена)}</b>
                                 </div>
-                            </div>
-                            </>
-                            :<div className="f-12">
-                            <b >{  new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(info?.Цена)}</b>
-                            </div>
-                        }
-                        
-                    </IonButton>  
-                    <IonButton className="g-size-btn" color="new" size="small"
-                        onClick = {(e)=>{
-                            addBasket(info, -1)
-                            e.stopPropagation()
-                        }}                
-                    >-</IonButton>
+                            }
+                            
+                        </IonButton>  
+                        <IonButton className="g-size-btn" color="new" size="small"
+                            onClick = {(e)=>{
+                                addBasket(info, -1)
+                                e.stopPropagation()
+                            }}                
+                        >-</IonButton>
                     </div>
-                    <div>
-                    </div>
-                </IonCard>
+                </div>
             </div>
         </>
       return elem
