@@ -1,5 +1,5 @@
 import { IonAlert, IonIcon, IonSelect, IonSelectOption, IonModal, IonContent, IonInput } from "@ionic/react";
-import { phonePortraitSharp, bicycleSharp, timeSharp, readerSharp } from "ionicons/icons";
+import { phonePortraitSharp, bicycleSharp, timeSharp, readerSharp, constructSharp } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { AddressSuggestions } from "react-dadata";
 import MaskedInput from "../mask/reactTextMask";
@@ -29,7 +29,7 @@ export function   Order( props ):JSX.Element {
         if(info.CustomerName === "")
           info.CustomerName =    Store.getState().login.name
         if(info.Address === "")
-          info.Address =         Store.getState().login.addres
+          info.Address =         Store.getState().login.address
         
         info.Total =           sum
 
@@ -56,11 +56,29 @@ export function   Order( props ):JSX.Element {
               Price:      e.Цена, 
               Total:      e.Сумма}
         })
-        
+
+        let hrs = new Date().getHours()
+        console.log(" time - " + hrs.toFixed())
+        if(hrs < 11) {
+          info.DeliveryTime = "11:00 - 13:00"
+        } else if( hrs < 13) {  
+          info.DeliveryTime = "13:00 - 15:00"
+        } else if( hrs < 15) {  
+          info.DeliveryTime = "15:00 - 17:00"
+        } else if( hrs < 17) {  
+          info.DeliveryTime = "17:00 - 19:00"
+        } else if( hrs < 19) {  
+          info.DeliveryTime = "19:00 - 21:00"
+        } else if( hrs >= 19) {  
+          info.DeliveryTime = "11:00 - 13:00"
+        } 
+  
         let orders = Store.getState().orders;
         if(orders.length > 0){
             let old = orders[0];
-            info.Address  = old.Адрес
+            console.log("old")
+            console.log(old)
+            info.Address  = old.Адрес === undefined ? "" : old.Адрес
             info.lat      = old.lat
             info.lng      = old.lng
         }
@@ -96,7 +114,7 @@ export function   Order( props ):JSX.Element {
         if(info.deliveryMethod === "Доставка" && info.Address === "") ok = false
         if(info.deliveryMethod === "Доставка" && info.DeliveryTime === "") ok = false
         if(info.Phone === "" || info.Phone.indexOf('_') > -1) ok = false
-
+        console.log(info)
         setAll(ok)
       }
 
@@ -241,11 +259,11 @@ export function   Order( props ):JSX.Element {
                   setEdit(!edit)
                   All()
               }}>
-                  <IonSelectOption value="10:00-12:00">11:00 - 13:00</IonSelectOption>
-                  <IonSelectOption value="12:00-14:00">13:00 - 15:00</IonSelectOption>
-                  <IonSelectOption value="14:00-16:00">15:00 - 17:00</IonSelectOption>
-                  <IonSelectOption value="16:00-18:00">17:00 - 19:00</IonSelectOption>
-                  <IonSelectOption value="18:00-20:00">19:00 - 21:00</IonSelectOption>
+                  <IonSelectOption value="11:00-13:00">11:00 - 13:00</IonSelectOption>
+                  <IonSelectOption value="13:00-15:00">13:00 - 15:00</IonSelectOption>
+                  <IonSelectOption value="15:00-17:00">15:00 - 17:00</IonSelectOption>
+                  <IonSelectOption value="17:00-19:00">17:00 - 19:00</IonSelectOption>
+                  <IonSelectOption value="19:00-21:00">19:00 - 21:00</IonSelectOption>
               </IonSelect>
             </div>
             <div className = {!edit ? "flex" : "hidden"}
@@ -260,43 +278,6 @@ export function   Order( props ):JSX.Element {
                  <div className="fs-07 mb-1">Удобное время доставки</div>
                  <div>
                     <span>{ info.DeliveryTime }</span>
-                 </div>
-              </div>
-            </div>
-          </div>
-        </>
-        return elem
-      }
-
-      function Comment():JSX.Element {
-        const [edit, setEdit] = useState(false)
-
-        let elem = <>
-            <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
-              <IonInput
-                  value = { info?.CustomerComment }
-                  placeholder = "Комментарий"
-                  onIonChange={(e: any) => {
-                      info.CustomerComment = (e.target.value as string);
-                    }}
-                  onKeyDown = {(e)=>{
-                    if(e.key === "Enter") setEdit(!edit)
-                  }}
-                />
-            </div>
-          <div className="borders mt-1 ml-1 mr-1">
-            <div className = { "flex" }
-              onClick = {()=>{
-                setEdit(!edit)
-              }}
-            >
-              <div>
-                <IonIcon icon={ readerSharp } className="w-2 h-2"/>
-              </div>         
-              <div className = "ml-2">
-                 <div className="fs-07 mb-1">Комментарий</div>
-                 <div>
-                    <span>{ info.CustomerComment }</span>
                  </div>
               </div>
             </div>
@@ -344,7 +325,6 @@ export function   Order( props ):JSX.Element {
             <DelTime />
             <Address />
           </div>
-          <Comment/>
           <Buttons />
         </IonContent>
         <IonAlert

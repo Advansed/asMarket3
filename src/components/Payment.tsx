@@ -1,7 +1,7 @@
 
 import { IonAlert, IonCardSubtitle, IonCol, IonInput
     , IonIcon, IonItem, IonLabel, IonList, IonSelect, IonSelectOption, IonText, IonModal, IonToolbar, IonRow } from "@ionic/react";
-  import { bicycleOutline, businessOutline, cashOutline, homeOutline, storefrontOutline, cardSharp, cashSharp } from "ionicons/icons";
+  import { bicycleOutline, businessOutline, cashOutline, homeOutline, storefrontOutline, cardSharp, cashSharp, readerSharp } from "ionicons/icons";
   import { useEffect, useState } from "react";
   import { getData1C, getData, Store } from "../pages/Store";
   import './Order.css'
@@ -111,7 +111,7 @@ export function Payment():JSX.Element {
             const [edit, setEdit] = useState(false)
     
             let elem = <>
-              <div className="borders mt-3 ml-1 mr-1">
+              <div className="borders mt-2 ml-1 mr-1">
                 <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
                 <IonSelect 
                       value={ info?.Change  } 
@@ -147,6 +147,45 @@ export function Payment():JSX.Element {
             </>
             return elem
           }
+
+          function Comment():JSX.Element {
+            const [edit, setEdit] = useState(false)
+    
+            let elem = <>
+                <div className={ edit ? "flex fl-space mb-1 mt-2 ml-2 mr-2 bottom fs-12" : "hidden"}>
+                  <IonInput
+                      value = { info?.CustomerComment }
+                      placeholder = "Комментарий"
+                      onIonChange={(e: any) => {
+                          info.CustomerComment = (e.target.value as string);
+                        }}
+                      onKeyDown = {(e)=>{
+                        if(e.key === "Enter") setEdit(!edit)
+                      }}
+                    />
+                </div>
+              <div className="borders mt-2 ml-1 mr-1">
+                <div className = { "flex" }
+                  onClick = {()=>{
+                    setEdit(!edit)
+                  }}
+                >
+                  <div>
+                    <IonIcon icon={ readerSharp } className="w-2 h-2"/>
+                  </div>         
+                  <div className = "ml-2">
+                     <div className="fs-07 mb-1">Комментарий</div>
+                     <div>
+                        <span>{ info.CustomerComment }</span>
+                     </div>
+                  </div>
+                </div>
+              </div>
+            </>
+            return elem
+          }
+    
+    
           
         let elem = <>
              {/* Оплата */}
@@ -156,6 +195,8 @@ export function Payment():JSX.Element {
             <div className={ info.PaymentMethodId === "Наличными курьеру" ? "" : "hidden"}>
               <Change/>
             </div>
+
+            <Comment />
 
             <h4 className="ml-1 mr-1 pb-1"><b> Итоги по заказу</b> </h4>   
               <IonList class="f-14">

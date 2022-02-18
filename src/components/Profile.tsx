@@ -263,14 +263,11 @@ export function   Options():JSX.Element {
                 Store.dispatch({type: "orders", orders: []})
                 Store.dispatch({  
                   type:              "login",
-                  ГУИД:                    0,
-                  Телефон:                "",
-                  ФИО:                    "",
-                  элПочта:                "",
-                  Пароль:                 "",
-                  Роль:                    0,
-                  СМС:                    "", 
-                  Картинка:               "",
+                  code:                   "",
+                  name:                   "",
+                  email:                  "",
+                  password:               "",
+                  address:                "",
               })
                 Store.dispatch({type: "route",  route: "back"})
               }}             

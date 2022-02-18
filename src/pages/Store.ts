@@ -323,9 +323,9 @@ export async function download( page, _dat ){
         console.log("Прайс")
         if(res.length > 0) Store.dispatch({type: "price", goods: res})
         localStorage.setItem("asmrkt.timestamp",  Store.getState().load);
-        Store.dispatch({type: "load", load: ""})
     }
 
+    Store.dispatch({type: "load", load: ""})
 }
 
 export function setToken(token) {
@@ -412,12 +412,104 @@ export function stopOrders(){
 //     console.log(st);
 // }
 
+function setForage(){
+    try {
+
+        localForage.config({
+            driver      : localForage.INDEXEDDB, // Force WebSQL; same as using setDriver()
+            name        : 'asrmrkt',
+            version     : 1.0,
+            size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
+            storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+            description : 'some description'
+        });
+        
+        console.log("IndexedDB")    
+    } catch (error) {
+        try {
+            localForage.config({
+                driver      : localForage.WEBSQL, // Force WebSQL; same as using setDriver()
+                name        : 'asrmrkt',
+                version     : 1.0,
+                size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
+                storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+                description : 'some description'
+            });
+            console.log("WebSQL")    
+        } catch (error) {
+            try {
+                localForage.config({
+                    driver      : localForage.LOCALSTORAGE, // Force WebSQL; same as using setDriver()
+                    name        : 'asrmrkt',
+                    version     : 1.0,
+                    size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
+                    storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+                    description : 'some description'
+                });
+                console.log("LocalStorage")    
+        
+            } catch (error) {
+                Store.dispatch({type : "lstore", lstore : false})
+                console.log( error )        
+                Store.dispatch({type: "error", error: "Ошибка локального хранилища { INDEXEDDB }"})                
+            }
+        }
+    }
+
+}
+
+
 async function exec(){
+    
+    console.log("exec")
      
-    console.log( new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19))
+    setForage()
+
+    let _dat : string = ""
+    _dat = await localForage.getItem("asmrkt.timestamp") as string
+    console.log(_dat)
+    if( _dat === null || _dat === undefined )
+        _dat = "2021-01-01 00:00:00";
+    Store.dispatch({
+        type: "load", 
+        load: new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
+    })
+    let sav = await localForage.getItem("asmrkt.timestamp");
+    if(sav === null){
+        getMarket( true )
+    } else {
+        Store.dispatch({type: "market", market: sav})  
+        getMarket( false )
+    }
+
+
+    sav = await localForage.getItem("asmrkt.market");
+    if(sav === null){
+        getMarket( true )
+    } else {
+        Store.dispatch({type: "market", market: sav})  
+        getMarket( false )
+    }
+    
+    sav = await localForage.getItem("asmrkt.actions");
+    if(sav === null){
+        getActions( true )
+    } else {
+        Store.dispatch({type: "actions", actions: sav})  
+        getActions( false )
+    }
+    
+    sav = await localForage.getItem("asmrkt.categories");
+    if(sav === null){
+        getCategories( true )
+    } else {
+        Store.dispatch({type: "categories", categories: sav})  
+        getCategories( false )
+    }
+
+    //console.log( new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19))
 
     let res: any
-    let _dat : string = ""
     try {
         _dat = localStorage.getItem("asmrkt.timestamp") as string
         console.log(_dat)
@@ -442,37 +534,8 @@ async function exec(){
         
     }
 
-    try {
 
-        localForage.config({
-            driver      : localForage.INDEXEDDB, // Force WebSQL; same as using setDriver()
-            name        : 'asrmrkt',
-            version     : 1.0,
-            size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
-            storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
-            description : 'some description'
-        });
-        
-            
-    } catch (error) {
-        try {
-            localForage.config({
-                driver      : localForage.LOCALSTORAGE, // Force WebSQL; same as using setDriver()
-                name        : 'asrmrkt',
-                version     : 1.0,
-                size        : 1024*1024*512, // Size of database, in bytes. WebSQL-only for now.
-                storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
-                description : 'some description'
-            });
-    
-        } catch (error) {
-            Store.dispatch({type : "lstore", lstore : false})
-            console.log( error )        
-            Store.dispatch({type: "error", error: "Ошибка локального хранилища { INDEXEDDB }"})                
-        }
-    }
-
-    let sav = localStorage.getItem("asmrkt.market");
+    sav = localStorage.getItem("asmrkt.market");
     if(sav !== undefined && sav !== null) {
         sav = JSON.parse(sav);
         Store.dispatch({type: "market", market: sav})
@@ -511,21 +574,26 @@ async function exec(){
     Store.dispatch({type: "progress", progress: 0.8})
    
     res = await getData("method", {method: "Настройки"}) 
-    let market = res[0]
-    market.tabs = JSON.parse(market.tabs)
+    if(res[0] !== undefined && res[0] !== null) {
+        let market = res[0]
+        market.tabs = JSON.parse(market.tabs)
+        localStorage.setItem("asmrkt.market", JSON.stringify(res))
+        Store.dispatch({type: "market", market: res})
+    }
 
-    localStorage.setItem("asmrkt.market", JSON.stringify(res))
-    Store.dispatch({type: "market", market: res})
 
     res = await getData("method", {method: "Акции"})
-    localStorage.setItem("asmrkt.actions", JSON.stringify(res))
-    Store.dispatch({type: "actions", actions: res})  
+    if(res !== undefined && res !== null) { 
+        localStorage.setItem("asmrkt.actions", JSON.stringify(res))
+        Store.dispatch({type: "actions", actions: res})  
+    }
 
     res = await getData("method", {method: "Категории"})
-    console.log(res)
-    let cats1 = res.map((e) => {e.Категории = JSON.parse(e.Категории); return e })
-    localStorage.setItem("asrmkt.categories", JSON.stringify(cats1))
-    Store.dispatch({type: "categories", categories: cats1})  
+    if(res !== undefined && res !== null) {
+        let cats1 = res.map((e) => {e.Категории = JSON.parse(e.Категории); return e })
+        localStorage.setItem("asrmkt.categories", JSON.stringify(cats1))
+        Store.dispatch({type: "categories", categories: cats1})  
+    }
     
     download( 1, _dat )
 
@@ -535,3 +603,36 @@ async function exec(){
 }
 
 exec();
+
+async function  getMarket( redux: boolean ){
+    let res = await getData("method", {method: "Настройки"}) 
+    let market = res[0]
+    if(market !== undefined) {
+        market.tabs = JSON.parse(market.tabs)
+        localForage.setItem("asmrkt.market", market)
+        if( redux )
+            Store.dispatch({type: "market", market: market})
+    }
+
+}
+
+async function  getActions( redux: boolean ){
+    let res = await getData("method", {method: "Акции"}) 
+    if(Array.isArray(res)) {
+        localForage.setItem("asmrkt.actions", res)
+        if( redux )
+            Store.dispatch({type: "actions", actions: res})
+    }
+
+}
+
+async function  getCategories( redux: boolean ){
+    let res = await getData("method", {method: "Категории"}) 
+    if(Array.isArray(res)) {
+        let cats = res.map((e) => {e.Категории = JSON.parse(e.Категории); return e })
+        localForage.setItem("asmrkt.categories", cats)
+        if( redux )
+            Store.dispatch({type: "categories", categories: cats})
+    }
+
+}
