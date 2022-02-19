@@ -1,4 +1,5 @@
 import { IonAlert, IonInput } from "@ionic/react";
+import localForage from "localforage";
 import { useState } from "react";
 import MaskedInput from "../mask/reactTextMask";
 import { getData1C, Phone, Store } from "../pages/Store";
@@ -40,7 +41,7 @@ export function Login(props): JSX.Element {
 
     let elem = <>
             <div className="r-card">
-            <img src ="assets/22.png" />
+            <img src ="assets/22.png" alt="Картинка"/>
             </div>
             <div className="r-circle"><div className="r-circle2"></div></div>
             <div className="r-content">
@@ -108,7 +109,7 @@ export function Login(props): JSX.Element {
                 console.log("ПолучитьСМС")
                 console.log(res)
                 if(res.СМС !== undefined) {
-                    Store.dispatch({type: "login", SMS: res.СМС })
+                    login.SMS              = res.СМС;
                     Store.dispatch({type: "route", route: "/page1/SMS"})
                 }
             
@@ -116,11 +117,14 @@ export function Login(props): JSX.Element {
         
         
         }
-        
+
+        async function setLog(){
+            await localForage.setItem("asmrkt.login", login );
+        }
         
         let elem = <>
                 <div className="r-card">
-                    <img src = "assets/123.png"/>
+                    <img src = "assets/123.png" alt="Картинка" />
                 </div>
                 <div className="r-circle3"><div className="r-circle2"></div></div>
                 <div className="r-content">
@@ -148,12 +152,12 @@ export function Login(props): JSX.Element {
                                 default:    setTires("----");break;       
                             }
                             if(val?.length === 4) {
-                                let SMS = Store.getState().login.SMS
+                                let SMS = login.SMS
                                 if(SMS === val) {
+                                    setLog()
                                     setAlert1(true)    
-                                    Store.dispatch({type: "auth", auth: true})
-                                    Store.dispatch({type: "route", route: "/page1/options"})
-                                    localStorage.setItem("marketAs.login", login.code)
+                                    Store.dispatch({type: "auth", auth: true})                               
+
                                 } else 
                                     setAlert2(true)
                             }
@@ -178,7 +182,15 @@ export function Login(props): JSX.Element {
             cssClass='my-custom-class'
             header={'Успех'}
             message={'Регистрация завершена'}
-            buttons={['Ок']}
+            buttons={[
+                {
+                  text: 'Ок',
+                  handler: () => {
+                    console.log('Confirm Okay');
+                    Store.dispatch({type: "route", route: "/page1/options"})
+                  }
+                }
+              ]}
             />
             <IonAlert
             isOpen={ alert2 }

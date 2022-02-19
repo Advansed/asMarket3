@@ -130,12 +130,13 @@ const Menu: React.FC = () => {
                       console.log("download")
                       localStorage.setItem("asmrkt.timestamp",  "2022-01-01");
                       localforage.clear();
+                      Store.dispatch({type: "auth", auth: false})
                       Store.dispatch({type: "load", load: "2022-01-01"})
                        download( );                    }
                   }} 
                 >
-                  <IonIcon  className="m-mr2" ios={appPage.iosIcon}  />
-                  <IonLabel className=" m-sizetext">{appPage.title}</IonLabel>
+                  <IonIcon  className="m-mr2" ios={ appPage.iosIcon }  />
+                  <IonLabel className=" m-sizetext">{ appPage.title }</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );

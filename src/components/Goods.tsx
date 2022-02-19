@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Store } from "../pages/Store"
-import { IonCard, IonImg, IonText, IonButton, IonCardSubtitle, IonProgressBar} from '@ionic/react';
+import { IonSpinner, IonImg, IonText, IonButton, IonProgressBar} from '@ionic/react';
 
 import './Goods.css'
 import { useHistory } from "react-router";
@@ -40,8 +40,8 @@ export function     Goods():JSX.Element {
             setUpd(upd + 1)
         }
     }})
-    Store.subscribe({num: 25, type: "load", func: ()=>{
-        setLoad(Store.getState().load !== "");
+    Store.subscribe({num: 25, type: "lstore", func: ()=>{
+        setLoad( Store.getState().lstore );
     }})
 
     function     Good(props):JSX.Element {
@@ -49,8 +49,11 @@ export function     Goods():JSX.Element {
         const [upd, setUpd] = useState(0)
         
         async function load(){
-            console.log(info.Код)
-            info.Картинка = await localForage.getItem("asmrkt." + info.Код)
+            let res = await localForage.getItem("asmrkt." + info.Код)
+            if( res !== null ) {
+                info.Картинка = res;    
+            }
+
             setUpd(upd + 1)
         }
         useEffect(()=>{
@@ -75,11 +78,17 @@ export function     Goods():JSX.Element {
                     </div>        
 
                     {/* Картинка */}
-                    <IonImg src={ info.Картинка } className="g-img"/>
+                    <div className={ info.Картинка === "" ? "hidden" : ""}>
+                        <IonImg src={ info.Картинка } className="g-img"/>
+                    </div>
+                    <div className={ info.Картинка === "" ? "flex fl-center g-img" : "hidden"}>
+                        <IonSpinner class="w-50 h-50" name="lines" color="warning"/>
+                    </div>
+                    
 
                     {/* Наименование */}
                     <div className="ml-1 mr-1">
-                        <IonCardSubtitle className="g-text"> { info.Наименование } </IonCardSubtitle>
+                        <div className="g-text fs-08"> { info.Наименование } </div>
                     </div>
 
                     {/* Кнопки */}

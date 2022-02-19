@@ -164,7 +164,7 @@ export function Payment():JSX.Element {
                       }}
                     />
                 </div>
-              <div className="borders mt-2 ml-1 mr-1">
+              <div className="borders mt-2y ml-1 mr-1">
                 <div className = { "flex" }
                   onClick = {()=>{
                     setEdit(!edit)

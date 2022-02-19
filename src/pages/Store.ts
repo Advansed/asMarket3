@@ -266,7 +266,8 @@ export async function   getDatas(){
 export async function download( ){
     let page = 0
     let dat_ = Store.getState().load;
-    Store.dispatch({type: "load", load: "" })
+    Store.dispatch({ type: "load", load: "" })
+    Store.dispatch({ type: "lstore", lstore: true })
 
     let res = await getData("method", {
         method:     "П_Картинки",    
@@ -276,7 +277,6 @@ export async function download( ){
     while(res.length > 0){ page = page + 1
         res.forEach(elem => {
             localForage.setItem("asmrkt." + elem.Код, elem.Картинка)
-            console.log(elem.Код)
         });
         res = await getData("method", {
             method:     "П_Картинки",    
@@ -288,7 +288,7 @@ export async function download( ){
             ,  new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
         );
 
-    Store.dispatch({type: "load", load: ""})
+    Store.dispatch({ type: "lstore", lstore: false })
 }
 
 export function setToken(token) {
@@ -424,6 +424,8 @@ async function exec(){
     })
     
     let sav = await localForage.getItem("asmrkt.login");
+    console.log("login")
+    console.log(sav)
     if(sav !== null){
         getProfile( sav )
     }
@@ -519,6 +521,7 @@ async function getProfile( login ){
             phone:  login.code,
         })
     if(res[0] !== undefined) {
+        localForage.setItem("asmrkt.login", res[0])
         let login = res[0];login.type = "login"
         Store.dispatch( login )
     } 

@@ -49,7 +49,7 @@
         overflow-x: scroll;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: center;
+        /* justify-content: center; */
         background: #e6e6e6; 
         width: 100%;
         height: 100%;
@@ -69,16 +69,19 @@
         margin-right: auto;
         background-color: white;
         padding-bottom: 4em;
+        overflow-wrap: break-word;
+        overflow-y: hidden;                 
     }
     
     .g-img {
-        height: calc(45px + (150 - 45) * ((100vw - 270px) / (1200 - 270)));
+        height: calc( 80vw /  2 );
         width: 100%; 
         top:0.5rem;
         margin-bottom: 0.5rem;
         position: relative;
         text-align: center;    
     }
+  
 
     .g-price {
         display: flex;
@@ -90,8 +93,9 @@
     .g-text{
         position: relative;              
         display: flex;
-        align-items: center;                   
+        align-items: center; 
         width: 100%;
+        /* height: 4em; */
 
     }
     .g-size-btn{
