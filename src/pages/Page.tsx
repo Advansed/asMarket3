@@ -95,6 +95,7 @@ const Page: React.FC = () => {
   Store.subscribe({num: 1, type: "route", func: ()=>{ 
     let route = Store.getState().route;
     switch( route ) {
+      // eslint-disable-next-line no-lone-blocks
       case "back": {
           console.log(hust.location.pathname)
           if(hust.location.pathname === "/page1/options"){
