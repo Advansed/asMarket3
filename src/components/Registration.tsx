@@ -1,4 +1,4 @@
-import { IonAlert, IonInput } from "@ionic/react";
+import { IonAlert, IonInput, IonLoading } from "@ionic/react";
 import localForage from "localforage";
 import { useState } from "react";
 import MaskedInput from "../mask/reactTextMask";
@@ -7,9 +7,11 @@ import './Registration.css'
 
 export function Login(props): JSX.Element {
     const [ login ] = useState( Store.getState().login )
+    const [ load, setLoad] = useState( false )
 
     async function getSMS1() {
 
+        setLoad( true ) 
         let res = await  getData1C("Регистрация", {
             Телефон:    login.code,    
         })
@@ -34,12 +36,14 @@ export function Login(props): JSX.Element {
             }
         
         }
+        setLoad( false ) 
     
     
     }
     
 
     let elem = <>
+            <IonLoading isOpen= { load } message = "Подождите" />
             <div className="r-card">
             <img src ="assets/22.png" alt="Картинка"/>
             </div>
