@@ -284,10 +284,10 @@ export async function download( ){
             _date:      dat_
         })      
     } 
-        localStorage.setItem("asmrkt.timestamp"
-            ,  new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
-        );
-
+        let date_ = new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
+        localForage.setItem("asmrkt.timestamp",  date_ );
+        console.log("Закончено")
+        console.log(date_)
     Store.dispatch({ type: "lstore", lstore: false })
 }
 
@@ -415,13 +415,14 @@ async function exec(){
     setForage()
 
     let _dat = await localForage.getItem("asmrkt.timestamp") as string
-
+    console.log(_dat)
     if( _dat === null )
         _dat = "2021-01-01 00:00:00";
     Store.dispatch({
         type: "load", 
         load:  _dat, //new Date().toISOString().substring(0, 10) + " " + new Date().toISOString().substring(12, 19)
     })
+    
     
     let sav = await localForage.getItem("asmrkt.login");
     console.log("login")

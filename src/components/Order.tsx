@@ -167,7 +167,9 @@ export function   Order( props ):JSX.Element {
         const [edit, setEdit] = useState(false)
         let elem = <>
             <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
-              <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" onIonChange={e => {
+              <IonSelect value={ info?.DeliveryMethod } okText="Да" cancelText="Нет" 
+                  onIonCancel ={ ()=>{ setEdit(!edit)}}
+                  onIonChange={e => {
                   info.DeliveryMethod = e.detail.value
                   if(info?.DeliveryMethod === "Доставка") {
                     info.DelivSum = info.Total  < 1000 ? Store.getState().market.sum : 0
@@ -253,7 +255,9 @@ export function   Order( props ):JSX.Element {
         let elem = <>
           <div className="borders mt-1 ml-1 mr-1">
             <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
-              <IonSelect value={ info?.DeliveryTime } okText="Да" cancelText="Нет" onIonChange={e => {
+              <IonSelect value={ info?.DeliveryTime } okText="Да" cancelText="Нет" 
+                onIonCancel ={ ()=>{ setEdit(!edit)}}
+                onIonChange={e => {
                   info.DeliveryTime = e.detail.value
                   setUpd(upd + 1)
                   setEdit(!edit)
@@ -314,9 +318,6 @@ export function   Order( props ):JSX.Element {
       let elem = <>
       
         <IonContent>
-          {/* <IonItem lines="none">
-              <h4><b>Оформление заказа </b></h4>
-          </IonItem> */}
           {/* Телефон */}
           <Phone />
           {/* Доставка */}

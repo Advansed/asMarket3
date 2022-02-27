@@ -75,13 +75,15 @@ export function Payment():JSX.Element {
             let elem = <>
               <div className="borders mt-3 ml-1 mr-1">
                 <div className={ edit ? "flex fl-space mb-1 mt-1 ml-2 mr-2 bottom fs-12" : "hidden"}>
-                <IonSelect value={ info.PaymentMethodId } okText="Да" cancelText="Нет" onIonChange={e => {
+                <IonSelect value={ info.PaymentMethodId } okText="Да" cancelText="Нет" 
+                  onIonChange={e => {
                     info.PaymentMethodId = e.detail.value
                     setUpd(upd + 1)
                     setEdit(!edit)
-
-                }}>
-                  <IonSelectOption value="Эквайринг">Эквайринг</IonSelectOption>
+                  }}
+                  onIonCancel ={ ()=>{ setEdit(!edit)}}
+                >
+                  <IonSelectOption value="Эквайринг">Оплата картой</IonSelectOption>
                   <IonSelectOption value="Наличными курьеру">Наличными курьеру</IonSelectOption>
                   <IonSelectOption value="Картой курьеру">Картой курьеру</IonSelectOption>
                   {/* <IonSelectOption value="посчету">По счету</IonSelectOption> */}
@@ -164,7 +166,7 @@ export function Payment():JSX.Element {
                       }}
                     />
                 </div>
-              <div className="borders mt-2y ml-1 mr-1">
+              <div className="borders mt-2y mt-2 ml-1 mr-1">
                 <div className = { "flex" }
                   onClick = {()=>{
                     setEdit(!edit)

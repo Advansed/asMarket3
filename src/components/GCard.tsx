@@ -1,13 +1,13 @@
 import { IonCardHeader, IonCardTitle, IonChip, IonCol, IonIcon, IonRow, IonText } from "@ionic/react";
 import { checkmarkCircleOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
-import { Store } from "../pages/Store";
-import { BasketPanel, BasketPanel1 } from '../components/Basket';
+import { getData, Store } from "../pages/Store";
+import { BasketPanel1 } from '../components/Basket';
 import { addBasket } from "./Basket";
 import './GCard.css'
 
 export function   GCard(props):JSX.Element {
-  
+  const [img,     setImg]   = useState("");
   const [good,    setGood]  = useState<any>({})
   const [upd,     setUpd]   = useState(0)
   const [info,    setInfo]  = useState<any> ({
@@ -19,6 +19,18 @@ export function   GCard(props):JSX.Element {
         Картинка:       good.Картинка
   });
  
+  async function load( code ){
+
+    let res = await getData("method", {
+      method:         "ПолучитьКартинку",
+      code:           code,
+    })
+    console.log(res)
+    if(res.length > 0) {
+      setImg(res[0].Картинка)
+
+    }
+  }
 
   useEffect(()=>{
       let basket  = Store.getState().basket;
@@ -35,6 +47,7 @@ export function   GCard(props):JSX.Element {
         Store.dispatch({type: "route", route: "/page/root"})
       else {
         setGood( gcard )
+        load( gcard.Код );
         setInfo({
             Код:                    gcard.Код,
             Наименование:           gcard.Наименование,
@@ -53,7 +66,7 @@ export function   GCard(props):JSX.Element {
   let elem = <>
     <div className="gc-content">
       <div className="f-card mt-3">
-        <img className="" src={  good.Картинка } alt="" />
+        <img className="" src={  img } alt="" />
       </div>
                      
             <div className="f-content">

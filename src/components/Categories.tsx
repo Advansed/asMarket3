@@ -98,7 +98,8 @@ export function Categories(props):JSX.Element {
                 onClick = { () => onClick(info.categories[i], 0) }
             >
                 <div className="ct-circle">
-                <IonImg class="ct-img" src={ info.categories[i].Картинка } /></div>
+                    <IonImg class="ct-img" src={ info.categories[i].Картинка } />
+                </div>
                 <div className="ct-text">
                     <IonText> { info.categories[i].Наименование }</IonText>
                 </div>

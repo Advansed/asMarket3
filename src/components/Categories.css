@@ -4,8 +4,9 @@
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: left;
+    align-items: center;
     width: 100%;
-    height: auto;
+    /* height: auto; */
     border-radius: 10px 10px 0 0;
     
 }
@@ -16,19 +17,23 @@
 
 .ct-card {
     
-    min-width: calc(90px + (170 - 90) * ((100vw - 270px) / (1200 - 270)));
-    height: calc(90px + (170 - 90) * ((100vw - 270px) / (1200 - 270)));
-    margin-top: 10px;
+    /* min-width: calc(90px + (170 - 90) * ((100vw - 270px) / (1200 - 270))); */
+    /* height: calc(90px + (170 - 90) * ((100vw - 270px) / (1200 - 270))); */
+    min-width: 7em;
+    height: 7em;
+    margin-top: 1em;
     margin-bottom: calc(18px + (50 - 18) * ((100vw - 270px) / (1200 - 270)));
     margin-right: calc(-18px + (10 + 18) * ((100vw - 270px) / (1200 - 270)));
 }
 
 .ct-img {
     
-    height: calc(40px + (80 - 40) * ((100vw - 270px) / (1200 - 270)));
+    /* height: calc(40px + (80 - 40) * ((100vw - 270px) / (1200 - 270))); */
+    height: 2.6em;
+    width: 2.6em;
     object-fit: contain;
     margin: 0 auto;
-    padding-top: calc(12px + (22 - 12) * ((100vw - 270px) / (1200 - 270)));
+    /* padding-top: calc(12px + (22 - 12) * ((100vw - 270px) / (1200 - 270))); */
 
     
 }
@@ -52,6 +57,8 @@
     border-radius: 100%;
     border: 2px solid #b8b8b8;
     display: flex;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
     
     
