@@ -119,6 +119,7 @@ export function Payment():JSX.Element {
                       value={ info?.Change  } 
                       okText="Да" 
                       cancelText="Нет" 
+                      onIonCancel ={ ()=>{ setEdit(!edit)}}
                       onIonChange={e => {
                         info.Change = e.detail.value
                         setEdit(!edit)
