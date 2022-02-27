@@ -57,6 +57,7 @@ export function   GCard(props):JSX.Element {
             Картинка:               gcard.Картинка
         })  
       }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   function Количество(){
@@ -129,9 +130,7 @@ export function   GCard(props):JSX.Element {
                       addBasket(good, 1)
                     }}  >
                  +
-                </IonChip>
-            
-            
+                </IonChip>            
             </IonCol>
             </IonRow>
             </div>
